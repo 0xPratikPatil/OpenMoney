@@ -1,0 +1,33 @@
+{
+  "name": "openmoney",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently \"bun run dev:api\" \"bun run dev:web\"",
+    "dev:api": "bun run --cwd apps/api dev",
+    "dev:web": "bun run --cwd apps/web dev",
+    "dev:ingestion": "bun run --cwd apps/ingestion dev",
+    "dev:quant": "bun run --cwd apps/quant-engine dev",
+    "build": "bun run build:shared && bun run build:packages && bun run build:apps",
+    "build:shared": "bun run --cwd packages/shared build",
+    "build:config": "bun run --cwd packages/config build",
+    "build:packages": "bun run build:shared && bun run build:config",
+    "build:apps": "bun run build:api && bun run build:web",
+    "build:api": "bun run --cwd apps/api build",
+    "build:web": "bun run --cwd apps/web build",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit -p tsconfig.base.json",
+    "test": "bun test",
+    "db:generate": "bun run --cwd packages/database generate",
+    "db:migrate": "bun run --cwd packages/database migrate",
+    "db:push": "bun run --cwd packages/database push",
+    "db:studio": "bun run --cwd packages/database studio",
+    "clean": "rm -rf apps/*/.next apps/*/dist packages/*/dist node_modules"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.7.0"
+  }
+}

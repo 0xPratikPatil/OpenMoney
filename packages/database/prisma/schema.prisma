@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth models (better-auth managed — will be auto-generated) ───
+// User, Account, Session, Verification will be added by better-auth CLI
+// See: https://www.better-auth.com/docs/integrations/prisma
+
+// ─── App-specific models ───
+
+model Portfolio {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  currency    String   @default("USD")
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId       String
+  positions    Position[]
+  transactions Transaction[]
+  signals      Signal[]
+  watchlists   Watchlist[]
+
+  @@index([userId])
+}
+
+model Position {
+  id                  String    @id @default(cuid())
+  ticker              String
+  name                String?
+  assetClass          String    @default("equity")
+  quantity            Decimal   @db.Decimal(18, 4)
+  avgEntryPrice       Decimal   @db.Decimal(18, 4)
+  currentPrice        Decimal?  @db.Decimal(18, 4)
+  costBasis           Decimal   @db.Decimal(18, 4)
+  marketValue         Decimal?  @db.Decimal(18, 4)
+  unrealizedPnl       Decimal?  @db.Decimal(18, 4)
+  unrealizedPnlPercent Decimal? @db.Decimal(18, 4)
+  openedAt            DateTime
+  closedAt            DateTime?
+  isOpen              Boolean   @default(true)
+  notes               String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  portfolioId  String
+  portfolio    Portfolio    @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  predictions  Prediction[]
+  transactions Transaction[]
+
+  @@index([portfolioId, ticker])
+  @@index([ticker])
+  @@index([isOpen])
+}
+
+model Transaction {
+  id          String    @id @default(cuid())
+  ticker      String
+  type        String     // "buy" or "sell"
+  quantity    Decimal   @db.Decimal(18, 4)
+  price       Decimal   @db.Decimal(18, 4)
+  fees        Decimal?  @db.Decimal(18, 4)
+  notes       String?
+  executedAt  DateTime
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  positionId  String?
+  position    Position?  @relation(fields: [positionId], references: [id])
+
+  @@index([portfolioId])
+  @@index([ticker])
+}
+
+model Prediction {
+  id               String     @id @default(cuid())
+  title            String
+  ticker           String?
+  direction        String     // "bullish" | "bearish" | "neutral"
+  thesis           String
+  catalysts        String?
+  timeframe        String     // "short_term" | "medium_term" | "long_term"
+  confidence       Int        // 50–99
+  expectedOutcome  String?
+  actualOutcome    String?    // "correct" | "incorrect" | "too_early" | "too_late" | "unresolved"
+  outcomeDate      DateTime?
+  outcomeNotes     String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  // Relations
+  userId     String
+  positionId String?
+  position   Position? @relation(fields: [positionId], references: [id])
+
+  @@index([userId])
+  @@index([userId, actualOutcome])
+  @@index([ticker])
+}
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  name      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userId String
+  items  WatchlistItem[]
+
+  @@index([userId])
+}
+
+model WatchlistItem {
+  id        String   @id @default(cuid())
+  ticker    String
+  note      String?
+  addedAt   DateTime @default(now())
+
+  // Relations
+  watchlistId String
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+
+  @@index([watchlistId])
+  @@index([ticker])
+}
+
+model Signal {
+  id          String    @id @default(cuid())
+  ticker      String?
+  portfolioId String?
+  type        String     // "recommendation" | "alert" | "forecast"
+  action      String?   // "hold" | "add" | "reduce" | "exit" | "rebalance" | "hedge"
+  confidence  Decimal?  @db.Decimal(5, 4)
+  title       String
+  description String
+  reasoning   Json?     // Array of reason strings
+  metadata    Json?     // Arbitrary metadata from quant engine
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  portfolio Portfolio? @relation(fields: [portfolioId], references: [id])
+
+  @@index([ticker, createdAt])
+  @@index([portfolioId])
+  @@index([type, createdAt])
+}
+
+// Future: strategy rules engine
+model StrategyRule {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  enabled     Boolean  @default(true)
+  conditions  Json     // Rule conditions tree (JSON schema)
+  actions     Json     // Actions to take when conditions are met
+  priority    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId String
+
+  @@index([userId])
+  @@index([enabled])
+}
+
+// Usage logging for future monetization
+model UsageRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // "portfolio_created" | "position_added" | "risk_computed" | "signal_generated" | "data_source_queried"
+  quantity  Int      @default(1)
+  metadata  Json?
+  timestamp DateTime @default(now())
+
+  @@index([userId, timestamp])
+  @@index([action, timestamp])
+}
