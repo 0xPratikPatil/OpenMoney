@@ -26,6 +26,34 @@
         "typescript": "^5.7.0",
       },
     },
+    "apps/ingestion": {
+      "name": "@openmoney/ingestion",
+      "version": "0.1.0",
+      "dependencies": {
+        "@openmoney/config": "workspace:*",
+        "@openmoney/database": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "hono": "^4.7.0",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "apps/quant-engine": {
+      "name": "@openmoney/quant-engine",
+      "version": "0.1.0",
+      "dependencies": {
+        "@openmoney/config": "workspace:*",
+        "@openmoney/database": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "hono": "^4.7.0",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
     "apps/web": {
       "name": "@openmoney/web",
       "version": "0.1.0",
@@ -216,6 +244,10 @@
     "@openmoney/config": ["@openmoney/config@workspace:packages/config"],
 
     "@openmoney/database": ["@openmoney/database@workspace:packages/database"],
+
+    "@openmoney/ingestion": ["@openmoney/ingestion@workspace:apps/ingestion"],
+
+    "@openmoney/quant-engine": ["@openmoney/quant-engine@workspace:apps/quant-engine"],
 
     "@openmoney/shared": ["@openmoney/shared@workspace:packages/shared"],
 

@@ -13,6 +13,7 @@ import { marketData } from './routes/v1/market-data';
 import { search } from './routes/v1/search';
 import { user } from './routes/v1/user';
 import { signals } from './routes/v1/signals';
+import { wsHandler } from './routes/ws';
 
 const app = new Hono();
 
@@ -47,4 +48,5 @@ app.route('/api/v1', signals);
 export default {
   port: config.api.port,
   fetch: app.fetch,
+  websocket: wsHandler,
 };

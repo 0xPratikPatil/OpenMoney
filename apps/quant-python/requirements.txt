@@ -1,0 +1,9 @@
+fastapi==0.115.0
+uvicorn==0.32.0
+numpy==2.1.0
+scipy==1.14.0
+statsmodels==0.14.4
+pandas==2.2.0
+arch==7.0.0
+pydantic==2.10.0
+quantsstats==0.3.0
