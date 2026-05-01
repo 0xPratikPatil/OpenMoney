@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -33,27 +34,27 @@ model Portfolio {
 }
 
 model Position {
-  id                  String    @id @default(cuid())
-  ticker              String
-  name                String?
-  assetClass          String    @default("equity")
-  quantity            Decimal   @db.Decimal(18, 4)
-  avgEntryPrice       Decimal   @db.Decimal(18, 4)
-  currentPrice        Decimal?  @db.Decimal(18, 4)
-  costBasis           Decimal   @db.Decimal(18, 4)
-  marketValue         Decimal?  @db.Decimal(18, 4)
-  unrealizedPnl       Decimal?  @db.Decimal(18, 4)
-  unrealizedPnlPercent Decimal? @db.Decimal(18, 4)
-  openedAt            DateTime
-  closedAt            DateTime?
-  isOpen              Boolean   @default(true)
-  notes               String?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                   String    @id @default(cuid())
+  ticker               String
+  name                 String?
+  assetClass           String    @default("equity")
+  quantity             Decimal   @db.Decimal(18, 4)
+  avgEntryPrice        Decimal   @db.Decimal(18, 4)
+  currentPrice         Decimal?  @db.Decimal(18, 4)
+  costBasis            Decimal   @db.Decimal(18, 4)
+  marketValue          Decimal?  @db.Decimal(18, 4)
+  unrealizedPnl        Decimal?  @db.Decimal(18, 4)
+  unrealizedPnlPercent Decimal?  @db.Decimal(18, 4)
+  openedAt             DateTime
+  closedAt             DateTime?
+  isOpen               Boolean   @default(true)
+  notes                String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   // Relations
   portfolioId  String
-  portfolio    Portfolio    @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  portfolio    Portfolio     @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   predictions  Prediction[]
   transactions Transaction[]
 
@@ -63,41 +64,41 @@ model Position {
 }
 
 model Transaction {
-  id          String    @id @default(cuid())
-  ticker      String
-  type        String     // "buy" or "sell"
-  quantity    Decimal   @db.Decimal(18, 4)
-  price       Decimal   @db.Decimal(18, 4)
-  fees        Decimal?  @db.Decimal(18, 4)
-  notes       String?
-  executedAt  DateTime
-  createdAt   DateTime  @default(now())
+  id         String   @id @default(cuid())
+  ticker     String
+  type       String // "buy" or "sell"
+  quantity   Decimal  @db.Decimal(18, 4)
+  price      Decimal  @db.Decimal(18, 4)
+  fees       Decimal? @db.Decimal(18, 4)
+  notes      String?
+  executedAt DateTime
+  createdAt  DateTime @default(now())
 
   // Relations
   portfolioId String
   portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   positionId  String?
-  position    Position?  @relation(fields: [positionId], references: [id])
+  position    Position? @relation(fields: [positionId], references: [id])
 
   @@index([portfolioId])
   @@index([ticker])
 }
 
 model Prediction {
-  id               String     @id @default(cuid())
-  title            String
-  ticker           String?
-  direction        String     // "bullish" | "bearish" | "neutral"
-  thesis           String
-  catalysts        String?
-  timeframe        String     // "short_term" | "medium_term" | "long_term"
-  confidence       Int        // 50–99
-  expectedOutcome  String?
-  actualOutcome    String?    // "correct" | "incorrect" | "too_early" | "too_late" | "unresolved"
-  outcomeDate      DateTime?
-  outcomeNotes     String?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  id              String    @id @default(cuid())
+  title           String
+  ticker          String?
+  direction       String // "bullish" | "bearish" | "neutral"
+  thesis          String
+  catalysts       String?
+  timeframe       String // "short_term" | "medium_term" | "long_term"
+  confidence      Int // 50–99
+  expectedOutcome String?
+  actualOutcome   String? // "correct" | "incorrect" | "too_early" | "too_late" | "unresolved"
+  outcomeDate     DateTime?
+  outcomeNotes    String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   // Relations
   userId     String
@@ -117,17 +118,20 @@ model Watchlist {
   updatedAt DateTime @updatedAt
 
   // Relations
-  userId String
-  items  WatchlistItem[]
+  userId      String
+  portfolioId String?
+  portfolio   Portfolio?      @relation(fields: [portfolioId], references: [id])
+  items       WatchlistItem[]
 
   @@index([userId])
+  @@index([portfolioId])
 }
 
 model WatchlistItem {
-  id        String   @id @default(cuid())
-  ticker    String
-  note      String?
-  addedAt   DateTime @default(now())
+  id      String   @id @default(cuid())
+  ticker  String
+  note    String?
+  addedAt DateTime @default(now())
 
   // Relations
   watchlistId String
@@ -141,13 +145,13 @@ model Signal {
   id          String    @id @default(cuid())
   ticker      String?
   portfolioId String?
-  type        String     // "recommendation" | "alert" | "forecast"
-  action      String?   // "hold" | "add" | "reduce" | "exit" | "rebalance" | "hedge"
+  type        String // "recommendation" | "alert" | "forecast"
+  action      String? // "hold" | "add" | "reduce" | "exit" | "rebalance" | "hedge"
   confidence  Decimal?  @db.Decimal(5, 4)
   title       String
   description String
-  reasoning   Json?     // Array of reason strings
-  metadata    Json?     // Arbitrary metadata from quant engine
+  reasoning   Json? // Array of reason strings
+  metadata    Json? // Arbitrary metadata from quant engine
   expiresAt   DateTime?
   createdAt   DateTime  @default(now())
 
@@ -160,13 +164,14 @@ model Signal {
 }
 
 // Future: strategy rules engine
+
 model StrategyRule {
   id          String   @id @default(cuid())
   name        String
   description String?
   enabled     Boolean  @default(true)
-  conditions  Json     // Rule conditions tree (JSON schema)
-  actions     Json     // Actions to take when conditions are met
+  conditions  Json // Rule conditions tree (JSON schema)
+  actions     Json // Actions to take when conditions are met
   priority    Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -179,14 +184,78 @@ model StrategyRule {
 }
 
 // Usage logging for future monetization
+
 model UsageRecord {
   id        String   @id @default(cuid())
   userId    String
-  action    String   // "portfolio_created" | "position_added" | "risk_computed" | "signal_generated" | "data_source_queried"
+  action    String // "portfolio_created" | "position_added" | "risk_computed" | "signal_generated" | "data_source_queried"
   quantity  Int      @default(1)
   metadata  Json?
   timestamp DateTime @default(now())
 
   @@index([userId, timestamp])
   @@index([action, timestamp])
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }

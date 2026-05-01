@@ -1,0 +1,28 @@
+{
+  "name": "@openmoney/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./src/lib/auth": "./src/lib/auth.ts"
+  },
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist",
+    "start": "bun run dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@openmoney/shared": "workspace:*",
+    "@openmoney/config": "workspace:*",
+    "@openmoney/database": "workspace:*",
+    "hono": "^4.7.0",
+    "zod": "^3.24.0",
+    "@hono/zod-validator": "^0.4.0",
+    "better-auth": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

@@ -15,6 +15,7 @@ export const UpdatePortfolioSchema = CreatePortfolioSchema.partial();
 export type UpdatePortfolioInput = z.infer<typeof UpdatePortfolioSchema>;
 
 export const CreatePositionSchema = z.object({
+  portfolioId: z.string(),
   ticker: z.string().min(1).max(10).toUpperCase(),
   name: z.string().max(200).optional(),
   assetClass: AssetClassEnum.default('equity'),
