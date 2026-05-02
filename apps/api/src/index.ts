@@ -7,6 +7,7 @@ import { globalRegistry } from '@openmoney/provider-core';
 import { auth } from './lib/auth';
 import { authMiddleware } from './middleware/auth';
 import { initializeProviders } from './lib/provider-init';
+import { ok } from './lib/response';
 import { portfolios } from './routes/v1/portfolios';
 import { positions } from './routes/v1/positions';
 import { watchlists } from './routes/v1/watchlists';
@@ -17,6 +18,7 @@ import { user } from './routes/v1/user';
 import { signals } from './routes/v1/signals';
 import { wsHandler } from './routes/ws';
 import { marketData as providerMarketData, providerRoutes } from './routes/market-data';
+import { queryRouter } from './routes/query';
 
 // Initialize provider system at startup (registers all providers into globalRegistry)
 initializeProviders();
@@ -32,15 +34,14 @@ app.use('/api/*', cors({
 
 // Health check — includes provider system info
 app.get('/health', (c) => {
-  return c.json({
+  return c.json(ok({
     status: 'ok',
-    version: '0.1.0',
-    timestamp: new Date().toISOString(),
+    version: '0.0.1',
     providers: globalRegistry.availableProviders,
     models: [...globalRegistry.getAll().values()].flatMap(
       (p) => Array.from(p.fetcherMap.keys()),
     ),
-  });
+  }));
 });
 
 // Auth routes (better-auth)
@@ -51,6 +52,9 @@ app.all('/api/auth/*', (c) => {
 // Provider market data routes (bring-your-own-key, no auth required)
 app.route('/', providerMarketData);
 app.route('/', providerRoutes);
+
+// Unified query API (bring-your-own-key, no auth required)
+app.route('/', queryRouter);
 
 // Protected API v1 routes
 app.use('/api/v1/*', authMiddleware);
