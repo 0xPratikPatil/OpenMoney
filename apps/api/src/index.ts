@@ -3,8 +3,10 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { secureHeaders } from 'hono/secure-headers';
 import { config } from '@openmoney/config';
+import { globalRegistry } from '@openmoney/provider-core';
 import { auth } from './lib/auth';
 import { authMiddleware } from './middleware/auth';
+import { initializeProviders } from './lib/provider-init';
 import { portfolios } from './routes/v1/portfolios';
 import { positions } from './routes/v1/positions';
 import { watchlists } from './routes/v1/watchlists';
@@ -14,6 +16,10 @@ import { search } from './routes/v1/search';
 import { user } from './routes/v1/user';
 import { signals } from './routes/v1/signals';
 import { wsHandler } from './routes/ws';
+import { marketData as providerMarketData, providerRoutes } from './routes/market-data';
+
+// Initialize provider system at startup (registers all providers into globalRegistry)
+initializeProviders();
 
 const app = new Hono();
 
@@ -24,14 +30,27 @@ app.use('/api/*', cors({
   credentials: true,
 }));
 
+// Health check — includes provider system info
 app.get('/health', (c) => {
-  return c.json({ status: 'ok', version: '0.1.0', timestamp: new Date().toISOString() });
+  return c.json({
+    status: 'ok',
+    version: '0.1.0',
+    timestamp: new Date().toISOString(),
+    providers: globalRegistry.availableProviders,
+    models: [...globalRegistry.getAll().values()].flatMap(
+      (p) => Array.from(p.fetcherMap.keys()),
+    ),
+  });
 });
 
 // Auth routes (better-auth)
 app.all('/api/auth/*', (c) => {
   return auth.handler(c.req.raw);
 });
+
+// Provider market data routes (bring-your-own-key, no auth required)
+app.route('/', providerMarketData);
+app.route('/', providerRoutes);
 
 // Protected API v1 routes
 app.use('/api/v1/*', authMiddleware);

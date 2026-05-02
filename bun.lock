@@ -17,6 +17,8 @@
         "@hono/zod-validator": "^0.4.0",
         "@openmoney/config": "workspace:*",
         "@openmoney/database": "workspace:*",
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/provider-yfinance": "workspace:*",
         "@openmoney/shared": "workspace:*",
         "better-auth": "^1.6.0",
         "hono": "^4.7.0",
@@ -90,6 +92,28 @@
       },
       "devDependencies": {
         "prisma": "^6.0.0",
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/provider-core": {
+      "name": "@openmoney/provider-core",
+      "version": "0.0.1",
+      "dependencies": {
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/yfinance": {
+      "name": "@openmoney/provider-yfinance",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
         "typescript": "^5.7.0",
       },
     },
@@ -246,6 +270,10 @@
     "@openmoney/database": ["@openmoney/database@workspace:packages/database"],
 
     "@openmoney/ingestion": ["@openmoney/ingestion@workspace:apps/ingestion"],
+
+    "@openmoney/provider-core": ["@openmoney/provider-core@workspace:packages/provider-core"],
+
+    "@openmoney/provider-yfinance": ["@openmoney/provider-yfinance@workspace:packages/providers/yfinance"],
 
     "@openmoney/quant-engine": ["@openmoney/quant-engine@workspace:apps/quant-engine"],
 
