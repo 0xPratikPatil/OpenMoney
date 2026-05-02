@@ -38,7 +38,7 @@ export class YFinanceFuturesCurveFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceFuturesCurveQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Fetch futures chain to get available contract symbols
     const futures = await fetchFuturesChain(query.symbol);
     if (futures.length === 0) throw new EmptyDataError("No futures chain found");
@@ -79,7 +79,7 @@ export class YFinanceFuturesCurveFetcher extends AbstractFetcher<
     return results;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceFuturesCurveData[]> {
+  async transformData(raw: unknown) {
     const items = raw as Array<{ expiration: string; price: number | null }>;
     if (items.length === 0) throw new EmptyDataError("No futures curve data found");
     return items.map((item) =>

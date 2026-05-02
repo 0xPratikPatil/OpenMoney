@@ -33,7 +33,7 @@ export class TmxGainersFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxGainersQueryParams>,
-  ): Promise<z.input<typeof TmxGainersQueryParams>> {
+  ) {
     return {
       exchange: params.exchange ?? "tsx",
       limit: params.limit ?? 20,
@@ -43,11 +43,11 @@ export class TmxGainersFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TmxGainersQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchGainers(query.exchange);
   }
 
-  async transformData(raw: unknown): Promise<TmxGainersData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxGainersData.parse({

@@ -49,14 +49,14 @@ export class EcbBalanceOfPaymentsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EcbBalanceOfPaymentsQueryParams>,
-  ): Promise<z.input<typeof EcbBalanceOfPaymentsQueryParams>> {
+  ) {
     return { ...params };
   }
 
   async extractData(
     _query: z.infer<typeof EcbBalanceOfPaymentsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Fetch euro area balance of payments — main items
     const dataflow = "BP6/M.N.I8.W1.S1.S1.T.N.FA.F._Z._Z._Z.XDC._Z.S.N";
     const json = await fetchEcbData(dataflow, {
@@ -67,7 +67,7 @@ export class EcbBalanceOfPaymentsFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<EcbBalanceOfPaymentsData[]> {
+  ) {
     const parsed = parseObservations(raw as any);
     if (parsed.length === 0) throw new EmptyDataError("No balance of payments data returned");
 

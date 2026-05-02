@@ -29,14 +29,14 @@ export class EcbYieldCurveFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EcbYieldCurveQueryParams>,
-  ): Promise<z.input<typeof EcbYieldCurveQueryParams>> {
+  ) {
     return { ...params };
   }
 
   async extractData(
     _query: z.infer<typeof EcbYieldCurveQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Fetch yield curve data — euro area, all tenors, nominal rates
     const dataflow = "YC/B.U2.EUR.4F.G_N_A+G_N_C";
     const json = await fetchEcbData(dataflow, {});
@@ -45,7 +45,7 @@ export class EcbYieldCurveFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<EcbYieldCurveData[]> {
+  ) {
     const parsed = parseObservations(raw as any);
     if (parsed.length === 0) throw new EmptyDataError("No yield curve data returned");
 

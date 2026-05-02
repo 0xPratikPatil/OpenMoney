@@ -35,7 +35,7 @@ export class SECInstitutionsSearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECInstitutionsSearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const xml = await secXmlFetch("/cgi-bin/browse-edgar", {
       action: "getcompany",
       CIK: query.query,
@@ -45,7 +45,7 @@ export class SECInstitutionsSearchFetcher extends AbstractFetcher<
     return xml;
   }
 
-  async transformData(raw: unknown): Promise<SECInstitutionsSearchData[]> {
+  async transformData(raw: unknown) {
     const xml = raw as string;
     const entries = parseFeedEntries(xml);
     if (entries.length === 0) throw new EmptyDataError("No institutions found");

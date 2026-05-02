@@ -45,14 +45,14 @@ export class FredYieldCurveFetcher extends AbstractFetcher<
 
   async transformQuery(
     _params: z.input<typeof FredYieldCurveQueryParams>,
-  ): Promise<z.input<typeof FredYieldCurveQueryParams>> {
+  ) {
     return {};
   }
 
   async extractData(
     _query: z.infer<typeof FredYieldCurveQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.fred_api_key;
     const results: Record<string, string> = {};
 
@@ -78,7 +78,7 @@ export class FredYieldCurveFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<FredYieldCurveData[]> {
+  ) {
     const results = raw as Record<string, string>;
 
     let latestDate = "";

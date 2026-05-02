@@ -43,21 +43,21 @@ export class AVEquityProfileFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof AVEquityProfileQueryParams>,
-  ): Promise<z.input<typeof AVEquityProfileQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof AVEquityProfileQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     return avFetch("OVERVIEW", apiKey, { symbol: query.symbol });
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<AVEquityProfileData[]> {
+  ) {
     const profile = raw as Record<string, unknown>;
     if (!profile || !profile.Symbol) throw new EmptyDataError("No company overview data returned");
 

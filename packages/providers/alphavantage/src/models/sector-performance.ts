@@ -23,21 +23,21 @@ export class AVSectorPerformanceFetcher extends AbstractFetcher<
 
   async transformQuery(
     _params: z.input<typeof AVSectorPerformanceQueryParams>,
-  ): Promise<z.input<typeof AVSectorPerformanceQueryParams>> {
+  ) {
     return {};
   }
 
   async extractData(
     _query: z.infer<typeof AVSectorPerformanceQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     return avFetch("SECTOR", apiKey);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<AVSectorPerformanceData[]> {
+  ) {
     const data = raw as Record<string, unknown>;
     const sections = data["Rank A: Real-Time Performance"] as Record<string, string> | undefined;
     if (!sections) throw new EmptyDataError("No sector performance data returned");

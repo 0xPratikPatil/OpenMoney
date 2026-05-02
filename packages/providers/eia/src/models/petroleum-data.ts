@@ -35,7 +35,7 @@ export class EIAPetroleumDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EIAPetroleumDataQueryParams>,
-  ): Promise<z.input<typeof EIAPetroleumDataQueryParams>> {
+  ) {
     return {
       series: params.series,
       start: params.start,
@@ -47,7 +47,7 @@ export class EIAPetroleumDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof EIAPetroleumDataQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.eia_api_key;
     const path = `/petroleum/${query.series}/data`;
     return eiaFetch<EIAResponse>(
@@ -64,7 +64,7 @@ export class EIAPetroleumDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof EIAPetroleumDataQueryParams>,
-  ): Promise<EIAPetroleumDataData[]> {
+  ) {
     const response = raw as EIAResponse;
     const data = response?.response?.data;
     if (!data || data.length === 0) {

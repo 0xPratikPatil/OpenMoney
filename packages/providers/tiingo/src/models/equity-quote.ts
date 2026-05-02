@@ -42,20 +42,20 @@ export class TiingoEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TiingoEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof TiingoEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TiingoEquityQuoteQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const quote = await fetchIEXQuote(query.symbol, credentials);
     if (!quote) throw new EmptyDataError(`No IEX quote data for ${query.symbol}`);
     return quote;
   }
 
-  async transformData(raw: unknown): Promise<TiingoEquityQuoteData[]> {
+  async transformData(raw: unknown) {
     const q = raw as Record<string, unknown>;
     return [
       TiingoEquityQuoteData.parse({

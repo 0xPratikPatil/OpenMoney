@@ -43,7 +43,7 @@ export class PolygonCryptoHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof PolygonCryptoHistoricalQueryParams>,
-  ): Promise<z.input<typeof PolygonCryptoHistoricalQueryParams>> {
+  ) {
     let fromSym: string;
     let toSym: string;
 
@@ -75,7 +75,7 @@ export class PolygonCryptoHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof PolygonCryptoHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const ticker = `X:${query.fromSymbol}${query.toSymbol}`;
     const fromStr = (query.from as Date).toISOString().split("T")[0]!;
     const toStr = query.to
@@ -85,7 +85,7 @@ export class PolygonCryptoHistoricalFetcher extends AbstractFetcher<
     return fetchAggs(ticker, query.multiplier, query.timespan, fromStr, toStr, credentials);
   }
 
-  async transformData(raw: unknown): Promise<PolygonCryptoHistoricalData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError();
     return rows.map((row) =>

@@ -29,14 +29,14 @@ export class EcbCurrencyReferenceRatesFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EcbCurrencyReferenceRatesQueryParams>,
-  ): Promise<z.input<typeof EcbCurrencyReferenceRatesQueryParams>> {
+  ) {
     return { currencies: params.currencies };
   }
 
   async extractData(
     query: z.infer<typeof EcbCurrencyReferenceRatesQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Use wildcard for currency to get all available rates
     const dataflow = "EXR/D..EUR.SP00.A";
     const today = new Date();
@@ -51,7 +51,7 @@ export class EcbCurrencyReferenceRatesFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<EcbCurrencyReferenceRatesData[]> {
+  ) {
     const { json, filterCurrencies } = raw as any;
     const parsed = parseObservations(json);
 

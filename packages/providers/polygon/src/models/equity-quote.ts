@@ -46,20 +46,20 @@ export class PolygonEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof PolygonEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof PolygonEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof PolygonEquityQuoteQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const snapshot = await fetchEquitySnapshot(query.symbol, credentials);
     if (!snapshot) throw new EmptyDataError(`No quote data for ${query.symbol}`);
     return snapshot;
   }
 
-  async transformData(raw: unknown): Promise<PolygonEquityQuoteData[]> {
+  async transformData(raw: unknown) {
     const t = raw as any;
     return [
       PolygonEquityQuoteData.parse({

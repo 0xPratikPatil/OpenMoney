@@ -36,7 +36,7 @@ export class OECDEconomicOutlookFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof OECDEconomicOutlookQueryParams>,
-  ): Promise<z.input<typeof OECDEconomicOutlookQueryParams>> {
+  ) {
     return {
       subject: params.subject ?? "GDP",
       measure: params.measure ?? "GROWTH",
@@ -48,7 +48,7 @@ export class OECDEconomicOutlookFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof OECDEconomicOutlookQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // OECD Economic Outlook: EO dataset with GDP/MEASURE subject
     const path = `/EO${new Date().getFullYear()}/COMPLETE.${query.subject}.${query.measure}.ALL./all`;
     return oecdFetch<OECDDataSet>(
@@ -63,7 +63,7 @@ export class OECDEconomicOutlookFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     _query?: z.infer<typeof OECDEconomicOutlookQueryParams>,
-  ): Promise<OECDEconomicOutlookData[]> {
+  ) {
     const dataSet = raw as OECDDataSet;
     if (!dataSet?.dataSets || dataSet.dataSets.length === 0) {
       throw new EmptyDataError("No OECD Economic Outlook data returned");

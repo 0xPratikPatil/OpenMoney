@@ -32,20 +32,20 @@ export class CboeIndexConstituentsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeIndexConstituentsQueryParams>,
-  ): Promise<z.input<typeof CboeIndexConstituentsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase().replace("^", "") };
   }
 
   async extractData(
     query: z.infer<typeof CboeIndexConstituentsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchIndexConstituents(query.symbol);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<CboeIndexConstituentsData[]> {
+  ) {
     const constituents = raw as Array<Record<string, unknown>>;
     if (constituents.length === 0) throw new EmptyDataError("No constituents data returned");
     return constituents.map((c) =>

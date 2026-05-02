@@ -1,32 +1,36 @@
-import { RateLimitError, UnauthorizedError } from "@openmoney/provider-core";
+import { ProviderHttpClient } from "@openmoney/shared";
 
-const FMP_BASE = "https://financialmodelingprep.com/api";
+// ---------------------------------------------------------------------------
+// Shared FMP HTTP client
+// ---------------------------------------------------------------------------
 
-/**
- * Generic FMP API fetch wrapper.
- * Adds apiKey as query param, handles HTTP errors.
- */
+const fmpClient = new ProviderHttpClient({
+  baseUrl: "https://financialmodelingprep.com/api",
+  userAgent: "OpenMoney/0.1.0",
+  timeout: 30000,
+  retry: { maxRetries: 3, baseDelayMs: 1000, maxDelayMs: 10000 },
+  cache: { ttlMs: 60000, enabled: true },
+  auth: { type: "query", key: "apikey", credentialKey: "fmp_api_key" },
+});
+
+// ---------------------------------------------------------------------------
+// Backward-compatible fetch wrapper
+//
+// Model files call  fmpFetch<T>(path, apiKey, params?)  so we keep this
+// exact signature.  Internally it delegates to the shared HTTP client.
+// ---------------------------------------------------------------------------
+
 export async function fmpFetch<T>(
   path: string,
   apiKey: string,
   params?: Record<string, string | number | undefined>,
 ): Promise<T> {
-  const url = new URL(`${FMP_BASE}${path}`);
-  url.searchParams.set("apikey", apiKey);
-  if (params) {
-    for (const [key, val] of Object.entries(params)) {
-      if (val !== undefined) url.searchParams.set(key, String(val));
-    }
-  }
-
-  const response = await fetch(url.toString());
-  if (!response.ok) {
-    if (response.status === 429) throw new RateLimitError("FMP rate limit exceeded");
-    if (response.status === 401 || response.status === 403) throw new UnauthorizedError("Invalid FMP API key");
-    throw new Error(`FMP API error: ${response.status} ${response.statusText}`);
-  }
-  return response.json() as Promise<T>;
+  return fmpClient.get<T>(path, params, { fmp_api_key: apiKey });
 }
+
+// ---------------------------------------------------------------------------
+// Types  (unchanged — kept in this file for backward compatibility)
+// ---------------------------------------------------------------------------
 
 export interface FmpQuote {
   symbol: string;
@@ -170,7 +174,6 @@ export interface FmpFinancialStatement {
   totalDebt?: number;
   netDebt?: number;
   // Cash flow fields
-  // Note: netIncome, depreciationAndAmortization, inventory are declared above in income/balance sheet sections
   deferredIncomeTax?: number;
   stockBasedCompensation?: number;
   changeInWorkingCapital?: number;

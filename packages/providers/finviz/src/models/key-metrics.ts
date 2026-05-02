@@ -37,14 +37,14 @@ export class FinvizKeyMetricsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FinvizKeyMetricsQueryParams>,
-  ): Promise<z.input<typeof FinvizKeyMetricsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof FinvizKeyMetricsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const html = await fetchQuotePage(query.symbol);
     if (!html.includes("snapshot-td2-cp")) {
       throw new EmptyDataError(`No data found for ${query.symbol}`);
@@ -55,7 +55,7 @@ export class FinvizKeyMetricsFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof FinvizKeyMetricsQueryParams>,
-  ): Promise<FinvizKeyMetricsData[]> {
+  ) {
     const data = raw as Record<string, string>;
     if (Object.keys(data).length === 0) {
       throw new EmptyDataError("No key metrics parsed");

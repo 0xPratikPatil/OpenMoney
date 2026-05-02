@@ -38,7 +38,7 @@ export class SECEquityFtdFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECEquityFtdQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // FTD data published weekly at /files/data/fails/
     const path = query.date
       ? `/files/data/fails/daily${query.date.replace(/-/g, "")}.json`
@@ -53,7 +53,7 @@ export class SECEquityFtdFetcher extends AbstractFetcher<
     }
   }
 
-  async transformData(raw: unknown): Promise<SECEquityFtdData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const rows = (data as any)?.data ?? (data as any)?.results ?? data;
     if (!Array.isArray(rows)) throw new EmptyDataError("No FTD data available");

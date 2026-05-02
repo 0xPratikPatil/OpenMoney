@@ -34,18 +34,18 @@ export class TmxBondPricesFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxBondPricesQueryParams>,
-  ): Promise<z.input<typeof TmxBondPricesQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxBondPricesQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchBond(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxBondPricesData[]> {
+  async transformData(raw: unknown) {
     const bond = raw as Record<string, unknown>;
     if (!bond || Object.keys(bond).length === 0) return [];
 

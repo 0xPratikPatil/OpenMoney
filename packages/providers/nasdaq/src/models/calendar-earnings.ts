@@ -34,7 +34,7 @@ export class NasdaqCalendarEarningsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof NasdaqCalendarEarningsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["nasdaq_api_key"];
     const raw = await nasdaqFetch<unknown>(
       "/datatables/NDAQ/EARCAL",
@@ -44,7 +44,7 @@ export class NasdaqCalendarEarningsFetcher extends AbstractFetcher<
     return raw;
   }
 
-  async transformData(raw: unknown): Promise<NasdaqCalendarEarningsData[]> {
+  async transformData(raw: unknown) {
     const rows = extractDatatable(raw);
     if (rows.length === 0) throw new EmptyDataError("No earnings calendar data found");
 

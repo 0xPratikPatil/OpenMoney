@@ -34,14 +34,14 @@ export class NasdaqCalendarIpoFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof NasdaqCalendarIpoQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["nasdaq_api_key"];
     const params: Record<string, string> = {};
     const raw = await nasdaqFetch<unknown>("/datatables/NDAQ/IPOCAL", params, apiKey);
     return raw;
   }
 
-  async transformData(raw: unknown): Promise<NasdaqCalendarIpoData[]> {
+  async transformData(raw: unknown) {
     const rows = extractDatatable(raw);
     if (rows.length === 0) throw new EmptyDataError("No IPO calendar data found");
 

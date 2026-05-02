@@ -34,11 +34,11 @@ export class GovUSTreasuryAuctionsFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof GovUSTreasuryAuctionsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return treasuryFetch<unknown>("/securities/auctioned", { format: "json" });
   }
 
-  async transformData(raw: unknown): Promise<GovUSTreasuryAuctionsData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Array<Record<string, unknown>>;
     if (!Array.isArray(data) || data.length === 0) {
       throw new EmptyDataError("No treasury auction data found");

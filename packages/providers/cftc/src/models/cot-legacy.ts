@@ -40,11 +40,11 @@ export class CFTCotLegacyFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof CFTCotLegacyQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return cftcFetch<string>("/cot.txt");
   }
 
-  async transformData(raw: unknown): Promise<CFTCotLegacyData[]> {
+  async transformData(raw: unknown) {
     const csv = raw as string;
     const rows = parseCFTCReportCsv(csv);
 

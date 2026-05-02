@@ -54,7 +54,7 @@ export class StockgridDarkPoolFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof StockgridDarkPoolQueryParams>,
-  ): Promise<z.input<typeof StockgridDarkPoolQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       limit: params.limit,
@@ -64,7 +64,7 @@ export class StockgridDarkPoolFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof StockgridDarkPoolQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchStockgridData(
       StockgridEndpoint.DARK_POOL,
       query.symbol,
@@ -73,7 +73,7 @@ export class StockgridDarkPoolFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<StockgridDarkPoolData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

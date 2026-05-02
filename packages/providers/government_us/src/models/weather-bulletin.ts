@@ -36,12 +36,12 @@ export class GovUSWeatherBulletinFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof GovUSWeatherBulletinQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // National Weather Service API
     return govPublicFetch<unknown>("https://api.weather.gov/alerts/active?area=US");
   }
 
-  async transformData(raw: unknown): Promise<GovUSWeatherBulletinData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const features = (data as any)?.features ?? [];
 

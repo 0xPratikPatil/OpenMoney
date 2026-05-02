@@ -48,7 +48,7 @@ export class YFinanceKeyMetricsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceKeyMetricsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const result = await fetchQuoteSummary(query.symbol, "defaultKeyStatistics,financialData");
     const stats = result?.defaultKeyStatistics ?? {};
     const finData = result?.financialData ?? {};
@@ -56,7 +56,7 @@ export class YFinanceKeyMetricsFetcher extends AbstractFetcher<
     return merged;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceKeyMetricsData[]> {
+  async transformData(raw: unknown) {
     const d = raw as Record<string, unknown>;
     return [
       YFinanceKeyMetricsData.parse({

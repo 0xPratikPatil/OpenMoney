@@ -36,7 +36,7 @@ export class SADividendHistoryFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SADividendHistoryQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const items = await fetchSAJson<SADividendItem>(
       `/api/v3/dividends/${query.symbol}`,
       { limit: query.limit },
@@ -44,7 +44,7 @@ export class SADividendHistoryFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<SADividendHistoryData[]> {
+  async transformData(raw: unknown) {
     const items = raw as SADividendItem[];
     return items.map((item) =>
       SADividendHistoryData.parse({

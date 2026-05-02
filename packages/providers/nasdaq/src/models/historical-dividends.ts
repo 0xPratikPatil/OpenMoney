@@ -31,7 +31,7 @@ export class NasdaqHistoricalDividendsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof NasdaqHistoricalDividendsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["nasdaq_api_key"];
     const raw = await nasdaqFetch<unknown>(
       "/datatables/NDAQ/DIVCAL",
@@ -41,7 +41,7 @@ export class NasdaqHistoricalDividendsFetcher extends AbstractFetcher<
     return raw;
   }
 
-  async transformData(raw: unknown): Promise<NasdaqHistoricalDividendsData[]> {
+  async transformData(raw: unknown) {
     const rows = extractDatatable(raw);
     if (rows.length === 0) throw new EmptyDataError("No historical dividend data found");
 

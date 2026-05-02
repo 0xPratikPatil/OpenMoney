@@ -35,21 +35,21 @@ export class CboeIndexSnapshotsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeIndexSnapshotsQueryParams>,
-  ): Promise<z.input<typeof CboeIndexSnapshotsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase().replace("^", "") };
   }
 
   async extractData(
     query: z.infer<typeof CboeIndexSnapshotsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchIndexSnapshot(query.symbol);
   }
 
   async transformData(
     raw: unknown,
     query?: z.infer<typeof CboeIndexSnapshotsQueryParams>,
-  ): Promise<CboeIndexSnapshotsData[]> {
+  ) {
     const data = raw as Record<string, unknown> | null;
     if (!data) throw new EmptyDataError("No index snapshot data returned");
 

@@ -43,11 +43,11 @@ export class CFTCotFinancialFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof CFTCotFinancialQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return cftcFetch<string>("/fof.txt");
   }
 
-  async transformData(raw: unknown): Promise<CFTCotFinancialData[]> {
+  async transformData(raw: unknown) {
     const csv = raw as string;
     const rows = parseCFTCReportCsv(csv);
 

@@ -33,7 +33,7 @@ export class SECEquitySearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECEquitySearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const xml = await secXmlFetch("/cgi-bin/browse-edgar", {
       action: "getcompany",
       CIK: query.symbol,
@@ -42,7 +42,7 @@ export class SECEquitySearchFetcher extends AbstractFetcher<
     return xml;
   }
 
-  async transformData(raw: unknown): Promise<SECEquitySearchData[]> {
+  async transformData(raw: unknown) {
     const xml = raw as string;
 
     const extract = (tag: string): string | null => {

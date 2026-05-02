@@ -52,7 +52,7 @@ export class StockgridShortVolumeFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof StockgridShortVolumeQueryParams>,
-  ): Promise<z.input<typeof StockgridShortVolumeQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       limit: params.limit,
@@ -62,7 +62,7 @@ export class StockgridShortVolumeFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof StockgridShortVolumeQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchStockgridData(
       StockgridEndpoint.SHORT_VOLUME,
       query.symbol,
@@ -71,7 +71,7 @@ export class StockgridShortVolumeFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<StockgridShortVolumeData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

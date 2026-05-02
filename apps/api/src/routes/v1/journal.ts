@@ -67,8 +67,8 @@ const router = new Hono<Bindings>()
     });
 
     const total = resolved.length;
-    const correct = resolved.filter((p) => p.actualOutcome === 'correct').length;
-    const incorrect = resolved.filter((p) => p.actualOutcome === 'incorrect').length;
+    const correct = resolved.filter((p: { actualOutcome: string | null }) => p.actualOutcome === 'correct').length;
+    const incorrect = resolved.filter((p: { actualOutcome: string | null }) => p.actualOutcome === 'incorrect').length;
     const accuracy = total > 0 ? correct / total : 0;
 
     // Calibration by confidence bracket
@@ -82,7 +82,7 @@ const router = new Hono<Bindings>()
 
     // Brier score (simplified: (accuracy - confidence/100)^2 averaged)
     const brierScore = resolved.length > 0
-      ? resolved.reduce((sum, p) => {
+      ? resolved.reduce((sum: number, p: { confidence: number; actualOutcome: string | null }) => {
           const expected = p.confidence / 100;
           const outcome = p.actualOutcome === 'correct' ? 1 : 0;
           return sum + (outcome - expected) ** 2;

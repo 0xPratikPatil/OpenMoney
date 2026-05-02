@@ -31,18 +31,18 @@ export class TmxEtfSectorsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxEtfSectorsQueryParams>,
-  ): Promise<z.input<typeof TmxEtfSectorsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxEtfSectorsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchEtfSectors(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxEtfSectorsData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxEtfSectorsData.parse({

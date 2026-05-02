@@ -36,7 +36,7 @@ export class IMFDotDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof IMFDotDataQueryParams>,
-  ): Promise<z.input<typeof IMFDotDataQueryParams>> {
+  ) {
     return {
       refArea: params.refArea,
       indicator: params.indicator ?? "TMG_CIF_USD",
@@ -48,7 +48,7 @@ export class IMFDotDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IMFDotDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = `/CompactData/DOT/M.${query.refArea}.${query.indicator}`;
     return imfFetch<{ CompactData: { DataSet: { Series: IMFDataRow } } }>(
       path,
@@ -62,7 +62,7 @@ export class IMFDotDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof IMFDotDataQueryParams>,
-  ): Promise<IMFDotDataData[]> {
+  ) {
     const response = raw as { CompactData: { DataSet: { Series: IMFDataRow } } };
     const series = response?.CompactData?.DataSet?.Series;
     if (!series?.Obs || series.Obs.length === 0) {

@@ -41,7 +41,7 @@ export class TEMarketsDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TEMarketsDataQueryParams>,
-  ): Promise<z.input<typeof TEMarketsDataQueryParams>> {
+  ) {
     return {
       symbol: params.symbol,
       market: params.market,
@@ -51,7 +51,7 @@ export class TEMarketsDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TEMarketsDataQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.tradingeconomics_api_key;
 
     if (query.symbol) {
@@ -67,7 +67,7 @@ export class TEMarketsDataFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<TEMarketsDataData[]> {
+  ) {
     const markets = raw as TEMarketData[];
     if (!markets || markets.length === 0) {
       throw new EmptyDataError("No Trading Economics market data returned");

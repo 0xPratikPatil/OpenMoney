@@ -44,7 +44,7 @@ export class CongressHearingsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof CongressHearingsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const congress = query.congress ?? "118";
     const path = `/committee/${congress}${query.chamber ? `/${query.chamber}` : ""}/hearings`;
 
@@ -54,7 +54,7 @@ export class CongressHearingsFetcher extends AbstractFetcher<
     });
   }
 
-  async transformData(raw: unknown): Promise<CongressHearingsData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const hearings = (data as any)?.hearings ?? [];
 

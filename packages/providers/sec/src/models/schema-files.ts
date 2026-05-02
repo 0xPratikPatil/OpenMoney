@@ -29,12 +29,12 @@ export class SECSchemaFilesFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof SECSchemaFilesQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Fetch SEC's taxonomy directory listing
     return secXmlFetch("/files/edgar/taxonomies.xml");
   }
 
-  async transformData(raw: unknown): Promise<SECSchemaFilesData[]> {
+  async transformData(raw: unknown) {
     const xml = raw as string;
     const entries = parseFeedEntries(xml);
 

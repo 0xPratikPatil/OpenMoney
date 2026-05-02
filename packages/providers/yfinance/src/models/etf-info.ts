@@ -62,7 +62,7 @@ export class YFinanceEtfInfoFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceEtfInfoQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const [result, quotesRecord] = await Promise.all([
       fetchQuoteSummary(query.symbol, "summaryProfile,quoteType"),
       fetchQuotes([query.symbol]),
@@ -80,7 +80,7 @@ export class YFinanceEtfInfoFetcher extends AbstractFetcher<
     return merged;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceEtfInfoData[]> {
+  async transformData(raw: unknown) {
     const d = raw as Record<string, unknown>;
 
     // Format inception date if present

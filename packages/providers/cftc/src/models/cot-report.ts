@@ -47,7 +47,7 @@ export class CFTCotReportFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof CFTCotReportQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     let path: string;
     switch (query.reportType) {
       case "financial":
@@ -65,7 +65,7 @@ export class CFTCotReportFetcher extends AbstractFetcher<
     return cftcFetch<string>(path);
   }
 
-  async transformData(raw: unknown): Promise<CFTCotReportData[]> {
+  async transformData(raw: unknown) {
     const csv = raw as string;
     const rows = parseCFTCReportCsv(csv);
 

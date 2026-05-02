@@ -35,7 +35,7 @@ export class SAAnalystRatingsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SAAnalystRatingsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const items = await fetchSAJson<SAAnalystRating>(
       `/api/v3/analyst-ratings/${query.symbol}`,
       { limit: query.limit },
@@ -43,7 +43,7 @@ export class SAAnalystRatingsFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<SAAnalystRatingsData[]> {
+  async transformData(raw: unknown) {
     const items = raw as SAAnalystRating[];
     return items.map((item) =>
       SAAnalystRatingsData.parse({

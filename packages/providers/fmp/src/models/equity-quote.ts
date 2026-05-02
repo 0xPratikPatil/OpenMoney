@@ -43,14 +43,14 @@ export class FMPEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FMPEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof FMPEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof FMPEquityQuoteQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["fmp_api_key"];
     if (!apiKey) throw new Error("FMP API key is required");
     const data = await fmpFetch<FmpQuote[]>(
@@ -61,7 +61,7 @@ export class FMPEquityQuoteFetcher extends AbstractFetcher<
     return data;
   }
 
-  async transformData(raw: unknown): Promise<FMPEquityQuoteData[]> {
+  async transformData(raw: unknown) {
     const quotes = raw as FmpQuote[];
     return quotes
       .filter((q) => q.symbol)

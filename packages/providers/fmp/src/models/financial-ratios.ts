@@ -47,7 +47,7 @@ export class FMPFinancialRatiosFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FMPFinancialRatiosQueryParams>,
-  ): Promise<z.input<typeof FMPFinancialRatiosQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       limit: params.limit ?? 1,
@@ -57,7 +57,7 @@ export class FMPFinancialRatiosFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FMPFinancialRatiosQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["fmp_api_key"];
     if (!apiKey) throw new Error("FMP API key is required");
     const data = await fmpFetch<Array<FmpFinancialStatement & { ratios?: Record<string, unknown> }>>(
@@ -69,7 +69,7 @@ export class FMPFinancialRatiosFetcher extends AbstractFetcher<
     return data;
   }
 
-  async transformData(raw: unknown): Promise<FMPFinancialRatiosData[]> {
+  async transformData(raw: unknown) {
     const items = raw as Array<FmpFinancialStatement & { ratios?: Record<string, unknown> }>;
     return items
       .filter((item) => item.symbol)

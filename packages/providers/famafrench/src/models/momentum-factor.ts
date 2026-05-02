@@ -41,7 +41,7 @@ export class FamaFrenchMomentumFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FamaFrenchMomentumQueryParams>,
-  ): Promise<z.input<typeof FamaFrenchMomentumQueryParams>> {
+  ) {
     return {
       frequency: params.frequency ?? "daily",
     };
@@ -50,7 +50,7 @@ export class FamaFrenchMomentumFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FamaFrenchMomentumQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const dataset =
       query.frequency === "daily"
         ? FamaFrenchDataset.MOMENTUM_DAILY
@@ -61,7 +61,7 @@ export class FamaFrenchMomentumFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<FamaFrenchMomentumData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

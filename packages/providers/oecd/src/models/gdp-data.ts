@@ -35,7 +35,7 @@ export class OECDGdpDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof OECDGdpDataQueryParams>,
-  ): Promise<z.input<typeof OECDGdpDataQueryParams>> {
+  ) {
     return {
       country: params.country ?? "USA",
       measure: params.measure ?? "LNBQRSA",
@@ -47,7 +47,7 @@ export class OECDGdpDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof OECDGdpDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = `/SNA_TABLE1/Q.${query.country}.${query.measure}.C/all`;
     return oecdFetch<OECDDataSet>(
       path,
@@ -61,7 +61,7 @@ export class OECDGdpDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     _query?: z.infer<typeof OECDGdpDataQueryParams>,
-  ): Promise<OECDGdpDataData[]> {
+  ) {
     const dataSet = raw as OECDDataSet;
     if (!dataSet?.dataSets || dataSet.dataSets.length === 0) {
       throw new EmptyDataError("No OECD GDP data returned");

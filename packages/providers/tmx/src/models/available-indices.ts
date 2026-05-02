@@ -67,7 +67,7 @@ export class TmxAvailableIndicesFetcher extends AbstractFetcher<
     return { ...params };
   }
 
-  async extractData(): Promise<unknown> {
+  async extractData() {
     return Object.entries(TMX_INDICES).map(([code, info]) => ({
       code,
       symbol: info.symbol,
@@ -75,7 +75,7 @@ export class TmxAvailableIndicesFetcher extends AbstractFetcher<
     }));
   }
 
-  async transformData(raw: unknown): Promise<TmxAvailableIndicesData[]> {
+  async transformData(raw: unknown) {
     const indices = raw as Array<Record<string, string>>;
     return indices.map((i) =>
       TmxAvailableIndicesData.parse({

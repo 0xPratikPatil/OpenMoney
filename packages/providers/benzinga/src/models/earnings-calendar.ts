@@ -42,7 +42,7 @@ export class BenzingaEarningsCalendarFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof BenzingaEarningsCalendarQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const items = await fetchBenzinga<BenzingaEarningsItem>("/calendar/earnings", {
       tickers: query.symbol,
       dateFrom: query.dateFrom,
@@ -52,7 +52,7 @@ export class BenzingaEarningsCalendarFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<BenzingaEarningsCalendarData[]> {
+  async transformData(raw: unknown) {
     const items = raw as BenzingaEarningsItem[];
     return items.map((item) =>
       BenzingaEarningsCalendarData.parse({

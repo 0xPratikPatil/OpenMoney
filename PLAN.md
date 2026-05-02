@@ -4,17 +4,17 @@
 
 ## Service breakdown
 
-| Service | Responsibility | Tech | Port | Depends on |
-|---------|---------------|------|------|------------|
-| `api-gateway` | Hono API server: auth middleware, route dispatch, CORS, rate limiting, request validation | Hono + Bun | 4000 | `packages/database`, `packages/shared` |
-| `web-frontend` | Next.js 15 App Router: dashboard, portfolio UX, risk views, journal, watchlists | Next.js + Bun | 3000 | `api-gateway`, `packages/shared` |
-| `ingestion` | Market data pipeline: WebSocket listeners, REST pollers, normalization, quality checks | Hono + Bun + Redis | — | `packages/database`, `packages/shared`, Redis |
-| `quant-engine` | Risk metrics, indicators, signal generation, action recommendations | Bun + TypeScript | — | `packages/database`, `packages/shared`, Redis |
-| `quant-python` | Python computation: ARIMA, GARCH, Monte Carlo, QuantStats risk metrics | FastAPI (Python 3.12) | 5000 | — (called by quant-engine) |
-| `notification` | Email, web push, WebSocket alerts, daily digest | Hono + Bun | 4003 | `packages/database`, Redis |
-| `docs` | Fumadocs documentation site | Next.js | 3001 | — |
-| `redis` | Cache, pub/sub, rate limiting, session store, Streams | Redis 7 | 6379 | — |
-| `db` | PostgreSQL 15 + TimescaleDB 2.x | Postgres + TimescaleDB | 5432 | — |
+| Service | Responsibility | Tech | Port | Status | Depends on |
+|---------|---------------|------|------|--------|------------|
+| `api-gateway` | Hono API server: auth middleware, route dispatch, CORS, rate limiting, request validation | Hono + Bun | 4000 | ✅ Live | `packages/database`, `packages/shared` |
+| `web-frontend` | Next.js 15 App Router: dashboard, portfolio UX, risk views, journal, watchlists | Next.js + Bun | 3000 | 🔧 In dev | `api-gateway`, `packages/shared` |
+| `ingestion` | Market data pipeline: WebSocket listeners, REST pollers, normalization, quality checks | Hono + Bun + Redis | — | 🔧 Planned | `packages/database`, `packages/shared`, Redis |
+| `quant-engine` | Risk metrics, indicators, signal generation, action recommendations | Bun + TypeScript | — | 🔧 Planned | `packages/database`, `packages/shared`, Redis |
+| `quant-python` | Python computation: ARIMA, GARCH, Monte Carlo, QuantStats risk metrics | FastAPI (Python 3.12) | 5000 | 🔧 Planned | — (called by quant-engine) |
+| `notification` | Email, web push, WebSocket alerts, daily digest | Hono + Bun | 4003 | 🔧 Planned | `packages/database`, Redis |
+| `docs` | Fumadocs documentation site | Next.js | 3001 | 🔧 Planned | — |
+| `redis` | Cache, pub/sub, rate limiting, session store, Streams | Redis 7 | 6379 | ✅ Docker | — |
+| `db` | PostgreSQL 15 + TimescaleDB 2.x | Postgres + TimescaleDB | 5432 | ✅ Docker | — |
 
 ## Monorepo structure
 
@@ -489,53 +489,75 @@ All assumptions made for each phase are documented inline.
 
 ## Provider implementation plan
 
-### Provider matrix — current status (updated)
+### Provider implementation — by category
 
-| Provider | Package | Status | API Key | Focus Models |
-|----------|---------|--------|---------|--------------|
-| **Yahoo Finance** | `@openmoney/provider-yfinance` | ✅ **FULL** 29 models | ❌ Free | Equities, ETFs, screeners, forex, crypto, futures, indices |
-| **Alpha Vantage** | `@openmoney/provider-alphavantage` | ✅ **FULL** 7 models | ✅ Free tier | Equities, forex, crypto, economic indicators |
-| **Financial Modeling Prep** | `@openmoney/provider-fmp` | ✅ **FULL** 8 models | ✅ Required | Fundamentals: statements, ratios, profiles |
-| **FRED** | `@openmoney/provider-fred` | ✅ **FULL** 5 models | ✅ Free | Economic series, treasury, yield curve |
-| **SEC** | `@openmoney/provider-sec` | ✅ **FULL** 17 models | ❌ Free | Filings, insider trading, CIK map, FTD, institutions |
-| **TMX** | `@openmoney/provider-tmx` | ✅ **FULL** 23 models | ❌ Free | Canadian equities, ETFs, bonds, dividends |
-| **CBOE** | `@openmoney/provider-cboe` | ✅ **FULL** 10 models | ❌ Free | Options chains, futures, indices |
-| **Deribit** | `@openmoney/provider-deribit` | ✅ **FULL** 5 models | ❌ Free | Crypto options, futures |
-| **ECB** | `@openmoney/provider-ecb` | ✅ **FULL** 3 models | ❌ Free | Currency rates, yield curve, balance of payments |
-| **Finviz** | `@openmoney/provider-finviz` | ✅ **FULL** 6 models | ❌ Free | Screeners, profiles, key metrics, price targets |
-| **Government US** | `@openmoney/provider-government_us` | ✅ **FULL** 6 models | ❌ Free | Treasury prices, auctions, commodities, weather |
-| **NASDAQ** | `@openmoney/provider-nasdaq` | ✅ **FULL** 9 models | ❌ Free | Dividends, earnings, IPOs, screeners, retail |
-| **Polygon.io** | `@openmoney/provider-polygon` | ❌ **NOT STARTED** | ✅ Required | Real-time + historical equities, forex, crypto, options |
-| **Benzinga** | `@openmoney/provider-benzinga` | ⬜ **STUB** | ✅ Required | News, analyst ratings |
-| **BizToc** | `@openmoney/provider-biztoc` | ⬜ **STUB** | ❌ Free | Business news aggregation |
-| **BLS** | `@openmoney/provider-bls` | ⬜ **STUB** | ✅ Free | Labor statistics, employment, CPI |
-| **CFTC** | `@openmoney/provider-cftc` | ⬜ **STUB** | ❌ Free | COT reports, commitments of traders |
-| **Congress Gov** | `@openmoney/provider-congress_gov` | ⬜ **STUB** | ❌ Free | Congressional data, bills |
-| **EconDB** | `@openmoney/provider-econdb` | ⬜ **STUB** | ✅ Required | Global economic indicators |
-| **EIA** | `@openmoney/provider-eia` | ⬜ **STUB** | ✅ Free | Energy data, petroleum, natural gas |
-| **Fama-French** | `@openmoney/provider-famafrench` | ⬜ **STUB** | ❌ Free | Factor returns, portfolios |
-| **Federal Reserve** | `@openmoney/provider-federal_reserve` | ⬜ **STUB** | ❌ Free | Fed data, H.8, assets, liabilities |
-| **FINRA** | `@openmoney/provider-finra` | ⬜ **STUB** | ❌ Free | Short interest, trade reporting |
-| **IMF** | `@openmoney/provider-imf` | ⬜ **STUB** | ❌ Free | IMF data, DOTS, IFS |
-| **Intrinio** | `@openmoney/provider-intrinio` | ⬜ **STUB** | ✅ Required | Financial data, fundamentals |
-| **Multpl** | `@openmoney/provider-multpl` | ⬜ **STUB** | ❌ Free | Macro trends, Shiller PE |
-| **OECD** | `@openmoney/provider-oecd` | ⬜ **STUB** | ❌ Free | OECD economic data |
-| **Seeking Alpha** | `@openmoney/provider-seeking_alpha` | ⬜ **STUB** | ❌ Free | Earnings transcripts, ratings |
-| **Stockgrid** | `@openmoney/provider-stockgrid` | ⬜ **STUB** | ❌ Free | Dark pool, short volume |
-| **Tiingo** | `@openmoney/provider-tiingo` | ⬜ **STUB** | ✅ Required | Historical prices, fundamentals |
-| **Tradier** | `@openmoney/provider-tradier` | ⬜ **STUB** | ✅ Required | Options, equities, streaming |
-| **Trading Economics** | `@openmoney/provider-tradingeconomics` | ⬜ **STUB** | ✅ Required | Economic indicators, calendars |
-| **WSJ** | `@openmoney/provider-wsj` | ⬜ **STUB** | ❌ Free | News, markets data |
+| Category | Provider | Package | Status | API Key | Models |
+|----------|----------|---------|--------|---------|--------|
+| **Equity - Prices & Quotes** | Yahoo Finance | `@openmoney/provider-yfinance` | ✅ FULL | ❌ Free | equity/quote, equity/historical, equity/profile, equity/screener, +25 more |
+| | Polygon.io | `@openmoney/provider-polygon` | ✅ FULL | ✅ Required | equity/quote, equity/historical, forex, crypto, options |
+| | Tradier | `@openmoney/provider-tradier` | 🔧 STUB | ✅ Required | equity/historical, equity/quote, options |
+| | Intrinio | `@openmoney/provider-intrinio` | 🔧 STUB | ✅ Required | equity/quote, historical, profile, screener, financials |
+| | Tiingo | `@openmoney/provider-tiingo` | 🔧 STUB | ✅ Required | equity/historical, equity/quote, crypto |
+| | FMP | `@openmoney/provider-fmp` | ✅ FULL | ✅ Required | equity/profile, financials, ratios |
+| | TMX | `@openmoney/provider-tmx` | ✅ FULL | ❌ Free | Canadian equities, ETFs, bonds, dividends |
+| **Economic & Macro** | FRED | `@openmoney/provider-fred` | ✅ FULL | ✅ Free | Economic series, treasury rates, yield curve |
+| | BLS | `@openmoney/provider-bls` | 🔧 STUB | ✅ Free | CPI, employment, PPI, unemployment |
+| | EIA | `@openmoney/provider-eia` | 🔧 STUB | ✅ Free | Energy data, petroleum, natural gas, coal, electricity |
+| | IMF | `@openmoney/provider-imf` | 🔧 STUB | ❌ Free | DOTS, IFS, WEO, fiscal data |
+| | OECD | `@openmoney/provider-oecd` | 🔧 STUB | ❌ Free | GDP, inflation, employment, outlook |
+| | EconDB | `@openmoney/provider-econdb` | 🔧 STUB | ✅ Required | Global indicators, country data, time series |
+| | Federal Reserve | `@openmoney/provider-federal_reserve` | 🔧 STUB | ❌ Free | H.8, H.15, H.41, G.17 data |
+| | ECB | `@openmoney/provider-ecb` | ✅ FULL | ❌ Free | Currency rates, yield curve, balance of payments |
+| | Government US | `@openmoney/provider-government_us` | ✅ FULL | ❌ Free | Treasury prices, auctions, commodities |
+| **Fixed Income** | Multpl | `@openmoney/provider-multpl` | 🔧 STUB | ❌ Free | Shiller PE, treasury rates, market-cap-to-GDP |
+| | FINRA | `@openmoney/provider-finra` | 🔧 STUB | ❌ Free | Short interest, OTC, trade reporting |
+| **Futures & Options** | CBOE | `@openmoney/provider-cboe` | ✅ FULL | ❌ Free | Options chains, futures, indices |
+| | Deribit | `@openmoney/provider-deribit` | ✅ FULL | ❌ Free | Crypto options, futures |
+| **Crypto** | Polygon.io | `@openmoney/provider-polygon` | ✅ FULL | ✅ Required | Crypto historical |
+| | Tiingo | `@openmoney/provider-tiingo` | 🔧 STUB | ✅ Required | Crypto historical |
+| **Fundamentals** | FMP | `@openmoney/provider-fmp` | ✅ FULL | ✅ Required | Financial statements, ratios, profiles |
+| | SEC | `@openmoney/provider-sec` | ✅ FULL | ❌ Free | Filings, insider trading, CIK map, institutions |
+| | Intrinio | `@openmoney/provider-intrinio` | 🔧 STUB | ✅ Required | Financial statements, ratios |
+| | Finviz | `@openmoney/provider-finviz` | ✅ FULL | ❌ Free | Screeners, profiles, key metrics |
+| **News & Research** | Benzinga | `@openmoney/provider-benzinga` | 🔧 STUB | ✅ Required | News, analyst ratings |
+| | BizToc | `@openmoney/provider-biztoc` | 🔧 STUB | ❌ Free | Business news |
+| | Seeking Alpha | `@openmoney/provider-seeking_alpha` | 🔧 STUB | ❌ Free | Earnings transcripts, analyst ratings |
+| | WSJ | `@openmoney/provider-wsj` | 🔧 STUB | ❌ Free | Market news, sector performance |
+| **Regulatory** | CFTC | `@openmoney/provider-cftc` | 🔧 STUB | ❌ Free | COT reports |
+| | Congress Gov | `@openmoney/provider-congress_gov` | 🔧 STUB | ❌ Free | Bills, hearings, members, nominations |
+| **Analytics** | Fama-French | `@openmoney/provider-famafrench` | 🔧 STUB | ❌ Free | Factor returns, portfolios |
+| | Stockgrid | `@openmoney/provider-stockgrid` | 🔧 STUB | ❌ Free | Dark pool, short volume, order flow |
+| | NASDAQ | `@openmoney/provider-nasdaq` | ✅ FULL | ❌ Free | Dividends, earnings, IPOs, screeners |
+| | Trading Economics | `@openmoney/provider-tradingeconomics` | 🔧 STUB | ✅ Required | Economic indicators, calendar |
 
-### Summary
+**Summary**: 33 providers — 12 fully implemented, 21 stubs/planned. All free providers work out of the box. Paid providers require API key configuration.
 
-| Category | Count |
-|----------|-------|
-| **TOTAL providers** | 33 |
-| **FULL (implemented)** | 12 |
-| **STUB (scaffold only)** | 20 |
-| **NOT STARTED** | 1 (Polygon.io) |
-| **REMAINING to build** | **21** |
+### Data flow architecture
+
+```
+User Request → Domain Router (equity/quote) 
+  → QueryExecutor 
+    → ProviderRegistry.get("yfinance")
+      → AbstractFetcher.fetchData({symbol: "AAPL"})
+        → transformQuery (normalize params)
+        → extractData (ProviderHttpClient → external API)
+        → transformData (Zod parse → standard schema)
+    → OBBject (standard response envelope)
+  → Hono Response ({ success, data, meta })
+```
+
+### Current priorities
+
+1. ✅ Phase 1: Provider-core strengthening (RegistryMap, OBBject, test(), ProviderInterface)
+2. ✅ Phase 2: API domain routers (equity, etf, forex, crypto, futures, index, economic)
+3. ✅ Phase 3: Shared ProviderHttpClient with retry/caching/auth
+4. ✅ yfinance provider rewrite using shared patterns
+5. ✅ FMP + Polygon rewrites
+6. 🔄 **Fix remaining TS errors** (~45 transformQuery type mismatches + ~22 v1 route errors)
+7. 🔄 **Register all FULL providers** in provider-init.ts for testing
+8. ⏳ **Integration testing** — verify each category returns real data
+9. ⏳ **V1 route type fixes** (older CRUD routes need proper types)
+10. ⏳ **Grouped provider registration** — auto-discovery pattern
 
 ### Package structure (each provider follows same pattern)
 

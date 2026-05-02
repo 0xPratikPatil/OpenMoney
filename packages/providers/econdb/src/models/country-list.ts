@@ -28,21 +28,21 @@ export class EconDBCountryListFetcher extends AbstractFetcher<
 
   async transformQuery(
     _params: z.input<typeof EconDBCountryListQueryParams>,
-  ): Promise<z.input<typeof EconDBCountryListQueryParams>> {
+  ) {
     return {};
   }
 
   async extractData(
     _query: z.infer<typeof EconDBCountryListQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.econdb_api_key;
     return econdbFetch<EconDBCountry[]>("/api/countries", apiKey);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<EconDBCountryListData[]> {
+  ) {
     const countries = raw as EconDBCountry[];
     if (!countries || countries.length === 0) {
       throw new EmptyDataError("No countries returned from EconDB");

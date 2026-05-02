@@ -41,7 +41,7 @@ export class BLSppiFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof BLSppiQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return blsFetch(
       PPI_SERIES_IDS,
       credentials.bls_api_key,
@@ -50,7 +50,7 @@ export class BLSppiFetcher extends AbstractFetcher<
     );
   }
 
-  async transformData(raw: unknown): Promise<BLSppiData[]> {
+  async transformData(raw: unknown) {
     const response = raw as any;
     const observations = extractBLSObservations(response);
 

@@ -60,7 +60,7 @@ export class YFinanceAvailableIndicesFetcher extends AbstractFetcher<
     return { ...params };
   }
 
-  async extractData(): Promise<unknown> {
+  async extractData() {
     return Object.entries(INDICES).map(([code, info]) => ({
       code,
       symbol: info.ticker,
@@ -68,7 +68,7 @@ export class YFinanceAvailableIndicesFetcher extends AbstractFetcher<
     }));
   }
 
-  async transformData(raw: unknown): Promise<YFinanceAvailableIndicesData[]> {
+  async transformData(raw: unknown) {
     const indices = raw as Array<Record<string, string>>;
     return indices.map((i) =>
       YFinanceAvailableIndicesData.parse({

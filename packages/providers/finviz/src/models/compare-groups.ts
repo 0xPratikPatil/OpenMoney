@@ -30,14 +30,14 @@ export class FinvizCompareGroupsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FinvizCompareGroupsQueryParams>,
-  ): Promise<z.input<typeof FinvizCompareGroupsQueryParams>> {
+  ) {
     return { groupBy: params.groupBy ?? "sector" };
   }
 
   async extractData(
     _query: z.infer<typeof FinvizCompareGroupsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Use the groups page for sector performance
     const url = "https://finviz.com/groups.ashx?g=sector&v=210&o=name";
     const response = await fetch(url, {
@@ -54,7 +54,7 @@ export class FinvizCompareGroupsFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<FinvizCompareGroupsData[]> {
+  ) {
     const html = raw as string;
 
     // Parse the groups table

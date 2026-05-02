@@ -42,14 +42,14 @@ export class FINRATradeReportingFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FINRATradeReportingQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return finraGetFetch<unknown>("/group/OTCMarketMaking/name/otcTradeVolume", {
       symbol: query.symbol,
       limit: String(query.limit ?? 100),
     });
   }
 
-  async transformData(raw: unknown): Promise<FINRATradeReportingData[]> {
+  async transformData(raw: unknown) {
     const rows = extractFinraData(raw, "data");
 
     return rows.map((r) => {

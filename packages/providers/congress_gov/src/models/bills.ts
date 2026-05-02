@@ -47,7 +47,7 @@ export class CongressBillsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof CongressBillsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = query.billType
       ? `/bill/${query.congress ?? "118"}/${query.billType}`
       : `/bill/${query.congress ?? "118"}`;
@@ -58,7 +58,7 @@ export class CongressBillsFetcher extends AbstractFetcher<
     });
   }
 
-  async transformData(raw: unknown): Promise<CongressBillsData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const bills = (data as any)?.bills ?? [];
 

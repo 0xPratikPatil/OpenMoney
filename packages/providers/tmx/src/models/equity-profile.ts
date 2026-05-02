@@ -42,18 +42,18 @@ export class TmxEquityProfileFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxEquityProfileQueryParams>,
-  ): Promise<z.input<typeof TmxEquityProfileQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxEquityProfileQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchCompanyProfile(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxEquityProfileData[]> {
+  async transformData(raw: unknown) {
     const profile = raw as Record<string, unknown>;
     if (!profile || Object.keys(profile).length === 0) return [];
 

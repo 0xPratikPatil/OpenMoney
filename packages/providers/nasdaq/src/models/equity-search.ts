@@ -33,11 +33,11 @@ export class NasdaqEquitySearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof NasdaqEquitySearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return nasdaqPublicFetch<unknown>(`/api/quote/${encodeURIComponent(query.symbol)}/info`);
   }
 
-  async transformData(raw: unknown): Promise<NasdaqEquitySearchData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const info = (data as any)?.data ?? data;
 

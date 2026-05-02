@@ -40,12 +40,12 @@ export class GovUSCommodityPsdDataFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof GovUSCommodityPsdDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // USDA PSD data available via their public API
     return usdaFetch<unknown>("/psd-online/api/commodities");
   }
 
-  async transformData(raw: unknown): Promise<GovUSCommodityPsdDataData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Array<Record<string, unknown>>;
     if (!Array.isArray(data) || data.length === 0) {
       throw new EmptyDataError("No PSD commodity data found");

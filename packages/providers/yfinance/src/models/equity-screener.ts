@@ -30,13 +30,19 @@ export class YFinanceEquityScreenerFetcher extends AbstractFetcher<
   requireCredentials = false;
 
   async transformQuery(params: z.input<typeof YFinanceEquityScreenerQueryParams>) {
-    return { ...params, limit: params.limit ?? 200 };
+    return {
+      ...params,
+      mktcap_min: params.mktcap_min ?? 500000000,
+      price_min: params.price_min ?? 5,
+      volume_min: params.volume_min ?? 10000,
+      limit: params.limit ?? 200,
+    };
   }
 
   async extractData(
     query: z.infer<typeof YFinanceEquityScreenerQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const operands: any[] = [];
 
     if (query.exchange) {
@@ -97,7 +103,7 @@ export class YFinanceEquityScreenerFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<z.output<typeof YFScreenerData>[]> {
+  ) {
     const quotes = raw as any[];
     if (quotes.length === 0) throw new EmptyDataError();
     return quotes.map((q) => YFScreenerData.parse(mapScreenerQuote(q)));

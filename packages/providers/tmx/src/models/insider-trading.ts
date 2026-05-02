@@ -36,18 +36,18 @@ export class TmxInsiderTradingFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxInsiderTradingQueryParams>,
-  ): Promise<z.input<typeof TmxInsiderTradingQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxInsiderTradingQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchInsiderTrading(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxInsiderTradingData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxInsiderTradingData.parse({

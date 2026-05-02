@@ -35,7 +35,7 @@ export class OECDEmploymentDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof OECDEmploymentDataQueryParams>,
-  ): Promise<z.input<typeof OECDEmploymentDataQueryParams>> {
+  ) {
     return {
       country: params.country ?? "USA",
       subject: params.subject ?? "UNEMP",
@@ -47,7 +47,7 @@ export class OECDEmploymentDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof OECDEmploymentDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = `/STLABOUR/M.${query.country}.${query.subject}.all/all`;
     return oecdFetch<OECDDataSet>(
       path,
@@ -61,7 +61,7 @@ export class OECDEmploymentDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     _query?: z.infer<typeof OECDEmploymentDataQueryParams>,
-  ): Promise<OECDEmploymentDataData[]> {
+  ) {
     const dataSet = raw as OECDDataSet;
     if (!dataSet?.dataSets || dataSet.dataSets.length === 0) {
       throw new EmptyDataError("No OECD employment data returned");

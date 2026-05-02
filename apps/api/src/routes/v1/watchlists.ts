@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { prisma } from '@openmoney/database';
-import { CreateWatchlistSchema, AddWatchlistItemSchema } from '@openmoney/shared/schemas';
+import { CreateWatchlistSchema, WatchlistItemSchema } from '@openmoney/shared/schemas';
 import type { AuthVariables } from '../../middleware/auth';
 
 type Bindings = { Variables: AuthVariables };
@@ -40,7 +40,7 @@ const router = new Hono<Bindings>()
   })
 
   // Add item to watchlist
-  .post('/:id/items', zValidator('json', AddWatchlistItemSchema), async (c) => {
+  .post('/:id/items', zValidator('json', WatchlistItemSchema.omit({ id: true, addedAt: true })), async (c) => {
     const userId = c.get('userId');
     const { id } = c.req.param();
     const watchlist = await prisma.watchlist.findFirst({ where: { id, userId } });

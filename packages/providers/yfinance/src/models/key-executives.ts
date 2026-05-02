@@ -36,7 +36,7 @@ export class YFinanceKeyExecutivesFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceKeyExecutivesQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const officers = await apiFetchKeyExecutives(query.symbol);
     if (officers.length === 0) throw new EmptyDataError("No executive data found");
     // Remove maxAge field
@@ -46,7 +46,7 @@ export class YFinanceKeyExecutivesFetcher extends AbstractFetcher<
     return officers;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceKeyExecutivesData[]> {
+  async transformData(raw: unknown) {
     const officers = raw as Array<Record<string, unknown>>;
     return officers.map((o) =>
       YFinanceKeyExecutivesData.parse({

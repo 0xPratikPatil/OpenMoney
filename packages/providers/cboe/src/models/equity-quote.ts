@@ -44,21 +44,21 @@ export class CboeEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof CboeEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase().replace("^", "") };
   }
 
   async extractData(
     query: z.infer<typeof CboeEquityQuoteQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchQuote(query.symbol);
   }
 
   async transformData(
     raw: unknown,
     query?: z.infer<typeof CboeEquityQuoteQueryParams>,
-  ): Promise<CboeEquityQuoteData[]> {
+  ) {
     const response = raw as any;
     const data = response?.data?.[0];
     if (!data) throw new EmptyDataError("No quote data returned from CBOE");

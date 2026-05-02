@@ -32,7 +32,7 @@ export class SECSecFilingFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECSecFilingQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Parse accession number into CIK components for EDGAR URL
     const accession = query.accession;
     const parts = accession.split("-");
@@ -50,7 +50,7 @@ export class SECSecFilingFetcher extends AbstractFetcher<
     return secFetch<string>(path);
   }
 
-  async transformData(raw: unknown): Promise<SECSecFilingData[]> {
+  async transformData(raw: unknown) {
     const content = raw as string;
     if (!content || content.length < 100) throw new EmptyDataError("Empty or invalid filing");
 

@@ -35,12 +35,12 @@ export class SECCompareCompanyFactsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECCompareCompanyFactsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const cik = query.cik.padStart(10, "0");
     return secJsonFetch<Record<string, unknown>>(`/api/xbrl/companyfacts/CIK${cik}.json`);
   }
 
-  async transformData(raw: unknown): Promise<SECCompareCompanyFactsData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const facts = (data as any)?.facts;
     if (!facts) throw new EmptyDataError("No company facts available");

@@ -45,7 +45,7 @@ export class BenzingaCompanyNewsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof BenzingaCompanyNewsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const items = await fetchBenzinga<BenzingaNewsItem>("/news", {
       symbols: query.symbol,
       pageSize: query.limit,
@@ -56,7 +56,7 @@ export class BenzingaCompanyNewsFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<BenzingaCompanyNewsData[]> {
+  async transformData(raw: unknown) {
     const items = raw as BenzingaNewsItem[];
     return items.map((item) =>
       BenzingaCompanyNewsData.parse({

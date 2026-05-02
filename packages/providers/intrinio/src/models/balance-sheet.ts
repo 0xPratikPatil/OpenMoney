@@ -56,7 +56,7 @@ export class IntrinioBalanceSheetFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IntrinioBalanceSheetQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const startStr = query.startDate
       ? (query.startDate as Date).toISOString().split("T")[0]
       : undefined;
@@ -76,7 +76,7 @@ export class IntrinioBalanceSheetFetcher extends AbstractFetcher<
     return { totalAssets, totalLiabilities, shareholdersEquity, cashAndEquivalents, longTermDebt };
   }
 
-  async transformData(raw: unknown): Promise<IntrinioBalanceSheetData[]> {
+  async transformData(raw: unknown) {
     const d = raw as Record<string, Array<Record<string, unknown>>>;
 
     const dateMap = new Map<string, Record<string, unknown>>();

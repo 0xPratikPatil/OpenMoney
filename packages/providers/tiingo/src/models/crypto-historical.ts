@@ -44,7 +44,7 @@ export class TiingoCryptoHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TiingoCryptoHistoricalQueryParams>,
-  ): Promise<z.input<typeof TiingoCryptoHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       baseCurrency: params.baseCurrency,
@@ -58,7 +58,7 @@ export class TiingoCryptoHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TiingoCryptoHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const ticker = query.symbol.includes("-")
       ? query.symbol.replace("-", "")
       : query.symbol;
@@ -72,7 +72,7 @@ export class TiingoCryptoHistoricalFetcher extends AbstractFetcher<
     return fetchCryptoPrices(ticker, credentials, startStr, endStr, query.resampleFreq);
   }
 
-  async transformData(raw: unknown): Promise<TiingoCryptoHistoricalData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError();
     return rows.map((row) =>

@@ -41,7 +41,7 @@ export class PolygonEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof PolygonEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof PolygonEquityHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       multiplier: params.multiplier ?? 1,
@@ -54,7 +54,7 @@ export class PolygonEquityHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof PolygonEquityHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const fromStr = typeof query.from === "string" ? query.from : (query.from as Date).toISOString().split("T")[0]!;
     const toStr = query.to
       ? (typeof query.to === "string" ? query.to : (query.to as Date).toISOString().split("T")[0]!)
@@ -63,7 +63,7 @@ export class PolygonEquityHistoricalFetcher extends AbstractFetcher<
     return fetchAggs(query.symbol, query.multiplier, query.timespan, fromStr, toStr, credentials);
   }
 
-  async transformData(raw: unknown): Promise<PolygonEquityHistoricalData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError();
     return rows.map((row) =>

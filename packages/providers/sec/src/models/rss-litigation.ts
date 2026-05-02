@@ -32,11 +32,11 @@ export class SECRssLitigationFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof SECRssLitigationQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return secXmlFetch("/litigation/litreleases/litreleases.xml");
   }
 
-  async transformData(raw: unknown): Promise<SECRssLitigationData[]> {
+  async transformData(raw: unknown) {
     const xml = raw as string;
     const entries = parseFeedEntries(xml);
 

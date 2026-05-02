@@ -35,11 +35,11 @@ export class NasdaqEconomicCalendarFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof NasdaqEconomicCalendarQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return nasdaqPublicFetch<unknown>("/api/calendar/economics");
   }
 
-  async transformData(raw: unknown): Promise<NasdaqEconomicCalendarData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const rows = (data as any)?.data?.rows ?? (data as any)?.data ?? [];
 

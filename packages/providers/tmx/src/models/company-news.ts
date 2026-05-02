@@ -35,7 +35,7 @@ export class TmxCompanyNewsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxCompanyNewsQueryParams>,
-  ): Promise<z.input<typeof TmxCompanyNewsQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       limit: params.limit ?? 20,
@@ -45,11 +45,11 @@ export class TmxCompanyNewsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TmxCompanyNewsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchCompanyNews(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxCompanyNewsData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.slice(0, (rows as any).limit ?? 20).map((row) =>
       TmxCompanyNewsData.parse({

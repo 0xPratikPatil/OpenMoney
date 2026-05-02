@@ -35,7 +35,7 @@ export class EIACoalDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EIACoalDataQueryParams>,
-  ): Promise<z.input<typeof EIACoalDataQueryParams>> {
+  ) {
     return {
       series: params.series,
       start: params.start,
@@ -47,7 +47,7 @@ export class EIACoalDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof EIACoalDataQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.eia_api_key;
     const path = `/coal/${query.series}/data`;
     return eiaFetch<EIAResponse>(
@@ -64,7 +64,7 @@ export class EIACoalDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof EIACoalDataQueryParams>,
-  ): Promise<EIACoalDataData[]> {
+  ) {
     const response = raw as EIAResponse;
     const data = response?.response?.data;
     if (!data || data.length === 0) {

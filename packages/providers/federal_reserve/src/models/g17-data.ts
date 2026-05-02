@@ -42,11 +42,11 @@ export class FRBG17DataFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof FRBG17QueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return frbFetch<unknown>(`/series/${G17_SERIES_ID}`, { format: "json" });
   }
 
-  async transformData(raw: unknown): Promise<FRBG17Data[]> {
+  async transformData(raw: unknown) {
     const observations = extractFRBObservations(raw);
     if (observations.length === 0) {
       throw new EmptyDataError("No G.17 data available");

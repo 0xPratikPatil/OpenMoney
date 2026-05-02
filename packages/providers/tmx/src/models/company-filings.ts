@@ -34,18 +34,18 @@ export class TmxCompanyFilingsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxCompanyFilingsQueryParams>,
-  ): Promise<z.input<typeof TmxCompanyFilingsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxCompanyFilingsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchFilings(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxCompanyFilingsData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxCompanyFilingsData.parse({

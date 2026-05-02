@@ -37,12 +37,12 @@ export class GovUSWeatherBulletinDownloadFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof GovUSWeatherBulletinDownloadQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const fetchUrl = query.url ?? "https://www.weather.gov/documentation/current-weather";
     return govPublicFetch<string>(fetchUrl);
   }
 
-  async transformData(raw: unknown): Promise<GovUSWeatherBulletinDownloadData[]> {
+  async transformData(raw: unknown) {
     const content = raw as string;
     if (!content || content.length < 50) throw new EmptyDataError("Empty weather bulletin content");
 

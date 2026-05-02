@@ -35,13 +35,13 @@ export class WSJSectorPerformanceFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof WSJSectorPerformanceQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = "/api/market-data/sectors";
     const items = await fetchWSJ<WSJSectorPerformance>(path);
     return items.slice(0, query.limit);
   }
 
-  async transformData(raw: unknown): Promise<WSJSectorPerformanceData[]> {
+  async transformData(raw: unknown) {
     const items = raw as WSJSectorPerformance[];
     return items.map((item) =>
       WSJSectorPerformanceData.parse({

@@ -60,14 +60,14 @@ export class FMPKeyMetricsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FMPKeyMetricsQueryParams>,
-  ): Promise<z.input<typeof FMPKeyMetricsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof FMPKeyMetricsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["fmp_api_key"];
     if (!apiKey) throw new Error("FMP API key is required");
     const data = await fmpFetch<FmpKeyMetricsResponse[]>(
@@ -78,7 +78,7 @@ export class FMPKeyMetricsFetcher extends AbstractFetcher<
     return data;
   }
 
-  async transformData(raw: unknown): Promise<FMPKeyMetricsData[]> {
+  async transformData(raw: unknown) {
     const items = raw as FmpKeyMetricsResponse[];
     return items
       .filter((item) => item.symbol)

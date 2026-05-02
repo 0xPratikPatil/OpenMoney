@@ -39,14 +39,14 @@ export class FMPEquityProfileFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FMPEquityProfileQueryParams>,
-  ): Promise<z.input<typeof FMPEquityProfileQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof FMPEquityProfileQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["fmp_api_key"];
     if (!apiKey) throw new Error("FMP API key is required");
     const data = await fmpFetch<FmpProfile[]>(
@@ -57,7 +57,7 @@ export class FMPEquityProfileFetcher extends AbstractFetcher<
     return data;
   }
 
-  async transformData(raw: unknown): Promise<FMPEquityProfileData[]> {
+  async transformData(raw: unknown) {
     const profiles = raw as FmpProfile[];
     return profiles
       .filter((p) => p.symbol)

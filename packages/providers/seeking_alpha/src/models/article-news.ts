@@ -41,7 +41,7 @@ export class SAArticleNewsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SAArticleNewsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = query.symbol
       ? `/api/v3/news/${query.symbol}`
       : "/api/v3/news";
@@ -52,7 +52,7 @@ export class SAArticleNewsFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<SAArticleNewsData[]> {
+  async transformData(raw: unknown) {
     const items = raw as SAArticle[];
     return items.map((item) =>
       SAArticleNewsData.parse({

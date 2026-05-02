@@ -33,18 +33,18 @@ export class TmxTreasuryPricesFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxTreasuryPricesQueryParams>,
-  ): Promise<z.input<typeof TmxTreasuryPricesQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxTreasuryPricesQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchTreasury(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxTreasuryPricesData[]> {
+  async transformData(raw: unknown) {
     const treasury = raw as Record<string, unknown>;
     if (!treasury || Object.keys(treasury).length === 0) return [];
 

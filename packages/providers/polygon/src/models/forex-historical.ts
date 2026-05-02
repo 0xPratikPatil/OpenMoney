@@ -41,7 +41,7 @@ export class PolygonForexHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof PolygonForexHistoricalQueryParams>,
-  ): Promise<z.input<typeof PolygonForexHistoricalQueryParams>> {
+  ) {
     let fromSym: string;
     let toSym: string;
 
@@ -74,7 +74,7 @@ export class PolygonForexHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof PolygonForexHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const ticker = `C:${query.fromSymbol}${query.toSymbol}`;
     const fromStr = (query.from as Date).toISOString().split("T")[0]!;
     const toStr = query.to
@@ -84,7 +84,7 @@ export class PolygonForexHistoricalFetcher extends AbstractFetcher<
     return fetchAggs(ticker, query.multiplier, query.timespan, fromStr, toStr, credentials);
   }
 
-  async transformData(raw: unknown): Promise<PolygonForexHistoricalData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError();
     return rows.map((row) =>

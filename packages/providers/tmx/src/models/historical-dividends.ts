@@ -32,18 +32,18 @@ export class TmxHistoricalDividendsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxHistoricalDividendsQueryParams>,
-  ): Promise<z.input<typeof TmxHistoricalDividendsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxHistoricalDividendsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchDividends(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxHistoricalDividendsData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxHistoricalDividendsData.parse({

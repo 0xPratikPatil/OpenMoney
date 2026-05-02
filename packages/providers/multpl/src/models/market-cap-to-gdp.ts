@@ -41,7 +41,7 @@ export class MultplMarketCapToGdpFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof MultplMarketCapToGdpQueryParams>,
-  ): Promise<z.input<typeof MultplMarketCapToGdpQueryParams>> {
+  ) {
     return {
       startDate: params.startDate,
       endDate: params.endDate,
@@ -52,13 +52,13 @@ export class MultplMarketCapToGdpFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof MultplMarketCapToGdpQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchMultplTableCsv(MultplEndpoint.MARKET_CAP_TO_GDP);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<MultplMarketCapToGdpData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

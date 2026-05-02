@@ -32,14 +32,14 @@ export class AVCryptoHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof AVCryptoHistoricalQueryParams>,
-  ): Promise<z.input<typeof AVCryptoHistoricalQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof AVCryptoHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     return avFetch("DIGITAL_CURRENCY_DAILY", apiKey, {
       symbol: query.symbol,
@@ -49,7 +49,7 @@ export class AVCryptoHistoricalFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<AVCryptoHistoricalData[]> {
+  ) {
     const data = raw as Record<string, unknown>;
     const series = data["Time Series (Digital Currency Daily)"] as Record<string, Record<string, string>> | undefined;
     if (!series) throw new EmptyDataError("No Time Series (Digital Currency Daily) data returned");

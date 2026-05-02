@@ -35,18 +35,18 @@ export class TmxPriceTargetConsensusFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxPriceTargetConsensusQueryParams>,
-  ): Promise<z.input<typeof TmxPriceTargetConsensusQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxPriceTargetConsensusQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchPriceTargets(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxPriceTargetConsensusData[]> {
+  async transformData(raw: unknown) {
     const targets = raw as Record<string, unknown>;
     if (!targets || Object.keys(targets).length === 0) return [];
 

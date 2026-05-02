@@ -31,14 +31,14 @@ export class CboeFuturesCurveFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeFuturesCurveQueryParams>,
-  ): Promise<z.input<typeof CboeFuturesCurveQueryParams>> {
+  ) {
     return { root: params.root.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof CboeFuturesCurveQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const roots = await fetchFuturesRoots();
     const rootData = roots.find(
       (r: any) => (r.root ?? r.symbol ?? "").toUpperCase() === query.root,
@@ -60,7 +60,7 @@ export class CboeFuturesCurveFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<CboeFuturesCurveData[]> {
+  ) {
     const data = raw as any;
     const futures = data?.data ?? [];
 

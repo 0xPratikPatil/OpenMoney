@@ -39,13 +39,13 @@ export class YFinanceIncomeStatementFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceIncomeStatementQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const statements = await fetchIncomeStatements(query.symbol);
     if (statements.length === 0) throw new EmptyDataError();
     return statements;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceIncomeStatementData[]> {
+  async transformData(raw: unknown) {
     const statements = raw as Array<Record<string, unknown>>;
     return statements.map((s) =>
       YFinanceIncomeStatementData.parse({

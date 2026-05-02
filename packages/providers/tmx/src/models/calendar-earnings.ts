@@ -31,18 +31,18 @@ export class TmxCalendarEarningsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxCalendarEarningsQueryParams>,
-  ): Promise<z.input<typeof TmxCalendarEarningsQueryParams>> {
+  ) {
     return { date: params.date };
   }
 
   async extractData(
     query: z.infer<typeof TmxCalendarEarningsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchEarnings(query.date);
   }
 
-  async transformData(raw: unknown): Promise<TmxCalendarEarningsData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxCalendarEarningsData.parse({

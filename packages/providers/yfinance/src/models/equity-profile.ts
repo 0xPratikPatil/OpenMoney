@@ -41,14 +41,14 @@ export class YFinanceEquityProfileFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceEquityProfileQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const result = await fetchQuoteSummary(query.symbol, "assetProfile");
     const profile = result?.assetProfile;
     if (!profile) throw new EmptyDataError("No profile data found");
     return { symbol: query.symbol, ...profile };
   }
 
-  async transformData(raw: unknown): Promise<YFinanceEquityProfileData[]> {
+  async transformData(raw: unknown) {
     const d = raw as Record<string, unknown>;
     return [
       YFinanceEquityProfileData.parse({

@@ -40,7 +40,7 @@ export class YFinanceEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof YFinanceEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof YFinanceEquityHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       interval: params.interval ?? "1d",
@@ -51,13 +51,13 @@ export class YFinanceEquityHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceEquityHistoricalQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchHistorical(query.symbol, query.interval as any, query.range as any);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<YFinanceEquityHistoricalData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       YFinanceEquityHistoricalData.parse({

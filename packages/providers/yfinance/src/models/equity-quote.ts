@@ -49,14 +49,14 @@ export class YFinanceEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof YFinanceEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof YFinanceEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof YFinanceEquityQuoteQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const symbols = query.symbol.includes(",")
       ? query.symbol.split(",").map((s) => s.trim())
       : [query.symbol];
@@ -65,7 +65,7 @@ export class YFinanceEquityQuoteFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<YFinanceEquityQuoteData[]> {
+  ) {
     const quotes = raw as Record<string, YahooFinanceQuote>;
     return Object.values(quotes)
       .filter((q) => q.symbol)

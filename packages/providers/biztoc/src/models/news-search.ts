@@ -37,7 +37,7 @@ export class BizTocNewsSearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof BizTocNewsSearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const items = await fetchBizToc<BizTocArticle>("/news/search", {
       q: query.query,
       n: query.limit,
@@ -45,7 +45,7 @@ export class BizTocNewsSearchFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<BizTocNewsSearchData[]> {
+  async transformData(raw: unknown) {
     const items = raw as BizTocArticle[];
     return items.map((item) =>
       BizTocNewsSearchData.parse({

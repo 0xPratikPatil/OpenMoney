@@ -28,20 +28,20 @@ export class CboeAvailableIndicesFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeAvailableIndicesQueryParams>,
-  ): Promise<z.input<typeof CboeAvailableIndicesQueryParams>> {
+  ) {
     return { ...params };
   }
 
   async extractData(
     _query: z.infer<typeof CboeAvailableIndicesQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchAllIndices();
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<CboeAvailableIndicesData[]> {
+  ) {
     const indices = raw as Array<Record<string, unknown>>;
     if (indices.length === 0) throw new EmptyDataError("No indices data returned");
     return indices.map((i) =>

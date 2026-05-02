@@ -33,18 +33,18 @@ export class TmxEtfHoldingsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxEtfHoldingsQueryParams>,
-  ): Promise<z.input<typeof TmxEtfHoldingsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxEtfHoldingsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchEtfHoldings(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxEtfHoldingsData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxEtfHoldingsData.parse({

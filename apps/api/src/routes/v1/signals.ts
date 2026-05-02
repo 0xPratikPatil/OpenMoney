@@ -11,7 +11,7 @@ const router = new Hono<Bindings>()
   .get('/', async (c) => {
     const userId = c.get('userId');
     const portfolios = await prisma.portfolio.findMany({ where: { userId }, select: { id: true } });
-    const portfolioIds = portfolios.map((p) => p.id);
+    const portfolioIds = portfolios.map((p: { id: string }) => p.id);
 
     const signals = await prisma.signal.findMany({
       where: { portfolioId: { in: portfolioIds } },

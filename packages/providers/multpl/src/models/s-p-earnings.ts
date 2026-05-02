@@ -39,7 +39,7 @@ export class MultplEarningsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof MultplEarningsQueryParams>,
-  ): Promise<z.input<typeof MultplEarningsQueryParams>> {
+  ) {
     return {
       startDate: params.startDate,
       endDate: params.endDate,
@@ -50,13 +50,13 @@ export class MultplEarningsFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof MultplEarningsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchMultplTableCsv(MultplEndpoint.S_P_EARNINGS);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<MultplEarningsData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError("No earnings data returned");

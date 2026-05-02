@@ -48,7 +48,7 @@ export class FredTreasuryRatesFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FredTreasuryRatesQueryParams>,
-  ): Promise<z.input<typeof FredTreasuryRatesQueryParams>> {
+  ) {
     return {
       observationStart: params.observationStart,
       observationEnd: params.observationEnd,
@@ -58,7 +58,7 @@ export class FredTreasuryRatesFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FredTreasuryRatesQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.fred_api_key;
     const results: Record<string, FredObservation[]> = {};
 
@@ -81,7 +81,7 @@ export class FredTreasuryRatesFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<FredTreasuryRatesData[]> {
+  ) {
     const results = raw as Record<string, FredObservation[]>;
 
     const tenorKeys = Object.keys(TENOR_SERIES);

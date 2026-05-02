@@ -13,7 +13,7 @@ const router = new Hono<Bindings>()
   .get('/', async (c) => {
     const userId = c.get('userId');
     const portfolios = await prisma.portfolio.findMany({ where: { userId }, select: { id: true } });
-    const portfolioIds = portfolios.map((p) => p.id);
+    const portfolioIds = portfolios.map((p: { id: string }) => p.id);
     const isOpen = c.req.query('isOpen') !== 'false';
     const positions = await prisma.position.findMany({
       where: { portfolioId: { in: portfolioIds }, isOpen },
@@ -42,7 +42,7 @@ const router = new Hono<Bindings>()
     const updateData: Record<string, unknown> = {};
     if (data.quantity !== undefined) updateData.quantity = data.quantity;
     if (data.avgEntryPrice !== undefined) { updateData.avgEntryPrice = data.avgEntryPrice; updateData.costBasis = data.quantity! * data.avgEntryPrice; }
-    if (data.currentPrice !== undefined) updateData.currentPrice = data.currentPrice;
+    if ('currentPrice' in data) updateData.currentPrice = (data as { currentPrice?: number }).currentPrice;
     if (data.notes !== undefined) updateData.notes = data.notes;
     if (data.isOpen !== undefined) updateData.isOpen = data.isOpen;
     if (data.isOpen === false) updateData.closedAt = new Date();

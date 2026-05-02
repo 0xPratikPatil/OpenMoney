@@ -33,7 +33,7 @@ export class AVEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof AVEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof AVEquityHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       outputsize: params.outputsize ?? "compact",
@@ -43,7 +43,7 @@ export class AVEquityHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof AVEquityHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     return avFetch("TIME_SERIES_DAILY_ADJUSTED", apiKey, {
       symbol: query.symbol,
@@ -53,7 +53,7 @@ export class AVEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<AVEquityHistoricalData[]> {
+  ) {
     const data = raw as Record<string, unknown>;
     const series = data["Time Series (Daily)"] as Record<string, Record<string, string>> | undefined;
     if (!series) throw new EmptyDataError("No Time Series (Daily) data returned");

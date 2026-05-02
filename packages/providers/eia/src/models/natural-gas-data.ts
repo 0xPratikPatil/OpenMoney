@@ -35,7 +35,7 @@ export class EIANaturalGasDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EIANaturalGasDataQueryParams>,
-  ): Promise<z.input<typeof EIANaturalGasDataQueryParams>> {
+  ) {
     return {
       series: params.series,
       start: params.start,
@@ -47,7 +47,7 @@ export class EIANaturalGasDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof EIANaturalGasDataQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.eia_api_key;
     const path = `/natural-gas/${query.series}/data`;
     return eiaFetch<EIAResponse>(
@@ -64,7 +64,7 @@ export class EIANaturalGasDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof EIANaturalGasDataQueryParams>,
-  ): Promise<EIANaturalGasDataData[]> {
+  ) {
     const response = raw as EIAResponse;
     const data = response?.response?.data;
     if (!data || data.length === 0) {

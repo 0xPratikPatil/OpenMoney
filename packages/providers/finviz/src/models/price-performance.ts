@@ -35,14 +35,14 @@ export class FinvizPricePerformanceFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FinvizPricePerformanceQueryParams>,
-  ): Promise<z.input<typeof FinvizPricePerformanceQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof FinvizPricePerformanceQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const html = await fetchQuotePage(query.symbol);
     if (!html.includes("snapshot-td2-cp")) {
       throw new EmptyDataError(`No data found for ${query.symbol}`);
@@ -53,7 +53,7 @@ export class FinvizPricePerformanceFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof FinvizPricePerformanceQueryParams>,
-  ): Promise<FinvizPricePerformanceData[]> {
+  ) {
     const data = raw as Record<string, string>;
     if (Object.keys(data).length === 0) {
       throw new EmptyDataError("No performance data parsed");

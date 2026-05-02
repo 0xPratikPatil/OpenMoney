@@ -27,13 +27,13 @@ export class YFinanceHistoricalDividendsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceHistoricalDividendsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const dividends = await fetchDividends(query.symbol);
     if (dividends.length === 0) throw new EmptyDataError("No dividend data found");
     return dividends;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceHistoricalDividendsData[]> {
+  async transformData(raw: unknown) {
     const dividends = raw as Array<{ date: Date; dividend: number }>;
     return dividends.map((d) =>
       YFinanceHistoricalDividendsData.parse({

@@ -45,7 +45,7 @@ export class FamaFrenchFactorFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FamaFrenchFactorQueryParams>,
-  ): Promise<z.input<typeof FamaFrenchFactorQueryParams>> {
+  ) {
     return {
       frequency: params.frequency ?? "daily",
     };
@@ -54,7 +54,7 @@ export class FamaFrenchFactorFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FamaFrenchFactorQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const dataset =
       query.frequency === "daily"
         ? FamaFrenchDataset.FACTORS_3_DAILY
@@ -65,7 +65,7 @@ export class FamaFrenchFactorFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<FamaFrenchFactorData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError("No Fama-French factor data returned");

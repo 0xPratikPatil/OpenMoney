@@ -35,8 +35,8 @@ const router = new Hono<Bindings>()
     });
     if (!portfolio) return c.json({ success: false, error: 'Not found' }, 404);
 
-    const totalCostBasis = portfolio.positions.reduce((s, p) => s + Number(p.costBasis), 0);
-    const totalMarketValue = portfolio.positions.reduce((s, p) => s + Number(p.marketValue ?? 0), 0);
+    const totalCostBasis = portfolio.positions.reduce((s: number, p: { costBasis: unknown }) => s + Number(p.costBasis), 0);
+    const totalMarketValue = portfolio.positions.reduce((s: number, p: { marketValue: unknown }) => s + Number(p.marketValue ?? 0), 0);
     const totalReturn = totalMarketValue - totalCostBasis;
 
     return c.json({
@@ -57,7 +57,7 @@ const router = new Hono<Bindings>()
   // Create portfolio
   .post('/', zValidator('json', CreatePortfolioSchema), async (c) => {
     const userId = c.get('userId');
-    const data = c.req.valid('json');
+    const data = c.req.valid('json') as { isDefault?: boolean; name: string; description?: string; currency?: string };
     if (data.isDefault) {
       await prisma.portfolio.updateMany({ where: { userId, isDefault: true }, data: { isDefault: false } });
     }
@@ -69,7 +69,7 @@ const router = new Hono<Bindings>()
   .put('/:id', zValidator('json', UpdatePortfolioSchema), async (c) => {
     const userId = c.get('userId');
     const { id } = c.req.param();
-    const data = c.req.valid('json');
+    const data = c.req.valid('json') as { isDefault?: boolean; name?: string; description?: string; currency?: string };
     const existing = await prisma.portfolio.findFirst({ where: { id, userId } });
     if (!existing) return c.json({ success: false, error: 'Not found' }, 404);
     if (data.isDefault) {
@@ -129,12 +129,12 @@ const router = new Hono<Bindings>()
   })
 
   // Add position to portfolio
-  .post('/:id/positions', zValidator('json', CreatePositionSchema.omit({ portfolioId: true })), async (c) => {
+  .post('/:id/positions', zValidator('json', CreatePositionSchema), async (c) => {
     const userId = c.get('userId');
     const { id } = c.req.param();
     const portfolio = await prisma.portfolio.findFirst({ where: { id, userId } });
     if (!portfolio) return c.json({ success: false, error: 'Portfolio not found' }, 404);
-    const data = c.req.valid('json');
+    const data = c.req.valid('json') as { ticker: string; name?: string; assetClass?: string; quantity: number; avgEntryPrice: number; openedAt?: string; notes?: string };
     const costBasis = data.quantity * data.avgEntryPrice;
     const position = await prisma.position.create({
       data: { portfolioId: id, ...data, costBasis, openedAt: data.openedAt ? new Date(data.openedAt) : new Date() },

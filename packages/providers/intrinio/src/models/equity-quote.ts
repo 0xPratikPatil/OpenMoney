@@ -47,20 +47,20 @@ export class IntrinioEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof IntrinioEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof IntrinioEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof IntrinioEquityQuoteQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const quote = await fetchRealtimePrice(query.symbol, credentials);
     if (!quote) throw new EmptyDataError(`No realtime price data for ${query.symbol}`);
     return quote;
   }
 
-  async transformData(raw: unknown): Promise<IntrinioEquityQuoteData[]> {
+  async transformData(raw: unknown) {
     const q = raw as Record<string, unknown>;
     return [
       IntrinioEquityQuoteData.parse({

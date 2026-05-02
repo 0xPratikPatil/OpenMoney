@@ -44,13 +44,13 @@ export class IntrinioEquityProfileFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IntrinioEquityProfileQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const profile = await fetchCompanyProfile(query.symbol, credentials);
     if (!profile) throw new EmptyDataError(`No profile data for ${query.symbol}`);
     return profile;
   }
 
-  async transformData(raw: unknown): Promise<IntrinioEquityProfileData[]> {
+  async transformData(raw: unknown) {
     const p = raw as Record<string, unknown>;
     return [
       IntrinioEquityProfileData.parse({

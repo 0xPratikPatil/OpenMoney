@@ -34,11 +34,11 @@ export class GovUSTreasuryPricesFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof GovUSTreasuryPricesQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return treasuryFetch<unknown>("/securities/searched", { format: "json" });
   }
 
-  async transformData(raw: unknown): Promise<GovUSTreasuryPricesData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Array<Record<string, unknown>>;
     if (!Array.isArray(data) || data.length === 0) {
       throw new EmptyDataError("No treasury price data found");

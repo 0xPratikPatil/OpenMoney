@@ -36,7 +36,7 @@ export class NasdaqCompanyFilingsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof NasdaqCompanyFilingsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["nasdaq_api_key"];
     const raw = await nasdaqFetch<unknown>(
       "/datatables/SHARADER/EC2",
@@ -46,7 +46,7 @@ export class NasdaqCompanyFilingsFetcher extends AbstractFetcher<
     return raw;
   }
 
-  async transformData(raw: unknown): Promise<NasdaqCompanyFilingsData[]> {
+  async transformData(raw: unknown) {
     const rows = extractDatatable(raw);
     if (rows.length === 0) throw new EmptyDataError("No company filings found");
 

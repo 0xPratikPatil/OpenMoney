@@ -33,14 +33,14 @@ export class AVForexQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof AVForexQuoteQueryParams>,
-  ): Promise<z.input<typeof AVForexQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof AVForexQuoteQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     // Symbol "EURUSD" -> from_currency=EUR, to_currency=USD
     const fromCurrency = query.symbol.slice(0, 3);
@@ -53,7 +53,7 @@ export class AVForexQuoteFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<AVForexQuoteData[]> {
+  ) {
     const data = raw as Record<string, unknown>;
     const rateData = data["Realtime Currency Exchange Rate"] as Record<string, unknown> | undefined;
     if (!rateData) throw new EmptyDataError("No Realtime Currency Exchange Rate data returned");
@@ -107,7 +107,7 @@ export class AVForexHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof AVForexHistoricalQueryParams>,
-  ): Promise<z.input<typeof AVForexHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       outputsize: params.outputsize ?? "compact",
@@ -117,7 +117,7 @@ export class AVForexHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof AVForexHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     const fromCurrency = query.symbol.slice(0, 3);
     const toCurrency = query.symbol.slice(3);
@@ -130,7 +130,7 @@ export class AVForexHistoricalFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<AVForexHistoricalData[]> {
+  ) {
     const data = raw as Record<string, unknown>;
     const series = data["Time Series FX (Daily)"] as Record<string, Record<string, string>> | undefined;
     if (!series) throw new EmptyDataError("No Time Series FX (Daily) data returned");

@@ -47,13 +47,13 @@ export class YFinanceCurrencyHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceCurrencyHistoricalQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchHistorical(query.symbol, query.interval as any, query.range as any);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<YFinanceCurrencyHistoricalData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError();
     return rows.map((row) =>

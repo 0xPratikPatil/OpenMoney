@@ -54,7 +54,7 @@ export class StockgridOrderFlowFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof StockgridOrderFlowQueryParams>,
-  ): Promise<z.input<typeof StockgridOrderFlowQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       limit: params.limit,
@@ -64,7 +64,7 @@ export class StockgridOrderFlowFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof StockgridOrderFlowQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchStockgridData(
       StockgridEndpoint.ORDER_FLOW,
       query.symbol,
@@ -73,7 +73,7 @@ export class StockgridOrderFlowFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<StockgridOrderFlowData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

@@ -36,7 +36,7 @@ export class IMFWeoDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof IMFWeoDataQueryParams>,
-  ): Promise<z.input<typeof IMFWeoDataQueryParams>> {
+  ) {
     return {
       refArea: params.refArea,
       indicator: params.indicator ?? "NGDP_RPCH",
@@ -48,7 +48,7 @@ export class IMFWeoDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IMFWeoDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = `/CompactData/WEO/A.${query.refArea}.${query.indicator}`;
     return imfFetch<{ CompactData: { DataSet: { Series: IMFDataRow } } }>(
       path,
@@ -62,7 +62,7 @@ export class IMFWeoDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof IMFWeoDataQueryParams>,
-  ): Promise<IMFWeoDataData[]> {
+  ) {
     const response = raw as { CompactData: { DataSet: { Series: IMFDataRow } } };
     const series = response?.CompactData?.DataSet?.Series;
     if (!series?.Obs || series.Obs.length === 0) {

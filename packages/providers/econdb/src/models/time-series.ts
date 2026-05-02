@@ -35,7 +35,7 @@ export class EconDBTimeSeriesFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EconDBTimeSeriesQueryParams>,
-  ): Promise<z.input<typeof EconDBTimeSeriesQueryParams>> {
+  ) {
     return {
       seriesId: params.seriesId,
       startDate: params.startDate,
@@ -47,7 +47,7 @@ export class EconDBTimeSeriesFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof EconDBTimeSeriesQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.econdb_api_key;
     const path = `/api/series/${query.seriesId}`;
     return econdbFetch<EconDBTimeSeries>(
@@ -64,7 +64,7 @@ export class EconDBTimeSeriesFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof EconDBTimeSeriesQueryParams>,
-  ): Promise<EconDBTimeSeriesData[]> {
+  ) {
     const response = raw as EconDBTimeSeries;
     if (!response.dates || response.dates.length === 0) {
       throw new EmptyDataError("No EconDB time-series data returned");

@@ -38,20 +38,20 @@ export class CboeOptionsChainFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeOptionsChainQueryParams>,
-  ): Promise<z.input<typeof CboeOptionsChainQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase().replace("^", "") };
   }
 
   async extractData(
     query: z.infer<typeof CboeOptionsChainQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchOptionsChain(query.symbol);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<CboeOptionsChainData[]> {
+  ) {
     const data = raw as any;
     const options = data?.data?.options ?? [];
 

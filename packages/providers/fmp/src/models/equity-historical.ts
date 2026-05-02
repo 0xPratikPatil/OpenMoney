@@ -37,7 +37,7 @@ export class FMPEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FMPEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof FMPEquityHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       timeseries: params.timeseries ?? undefined,
@@ -47,7 +47,7 @@ export class FMPEquityHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FMPEquityHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["fmp_api_key"];
     if (!apiKey) throw new Error("FMP API key is required");
     const params: Record<string, string | number | undefined> = {};
@@ -63,7 +63,7 @@ export class FMPEquityHistoricalFetcher extends AbstractFetcher<
     return { symbol: data.symbol, historical: data.historical };
   }
 
-  async transformData(raw: unknown): Promise<FMPEquityHistoricalData[]> {
+  async transformData(raw: unknown) {
     const { symbol, historical } = raw as { symbol: string; historical: FmpHistoricalRow[] };
     return historical.map((row) =>
       FMPEquityHistoricalData.parse({

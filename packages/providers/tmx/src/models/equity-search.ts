@@ -32,7 +32,7 @@ export class TmxEquitySearchFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxEquitySearchQueryParams>,
-  ): Promise<z.input<typeof TmxEquitySearchQueryParams>> {
+  ) {
     return {
       query: params.query,
       exchange: params.exchange ?? "tsx",
@@ -42,11 +42,11 @@ export class TmxEquitySearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TmxEquitySearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return searchCompanies(query.exchange, query.query);
   }
 
-  async transformData(raw: unknown): Promise<TmxEquitySearchData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxEquitySearchData.parse({

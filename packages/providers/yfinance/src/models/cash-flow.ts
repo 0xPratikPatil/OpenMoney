@@ -38,13 +38,13 @@ export class YFinanceCashFlowFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceCashFlowQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const statements = await fetchCashFlowStatements(query.symbol);
     if (statements.length === 0) throw new EmptyDataError();
     return statements;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceCashFlowData[]> {
+  async transformData(raw: unknown) {
     const statements = raw as Array<Record<string, unknown>>;
     return statements.map((s) =>
       YFinanceCashFlowData.parse({

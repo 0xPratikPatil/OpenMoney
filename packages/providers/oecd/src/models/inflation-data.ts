@@ -35,7 +35,7 @@ export class OECDInflationDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof OECDInflationDataQueryParams>,
-  ): Promise<z.input<typeof OECDInflationDataQueryParams>> {
+  ) {
     return {
       country: params.country ?? "USA",
       measure: params.measure ?? "CPALTT01",
@@ -47,7 +47,7 @@ export class OECDInflationDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof OECDInflationDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = `/PRICES_CPI/M.${query.country}.${query.measure}.all/all`;
     return oecdFetch<OECDDataSet>(
       path,
@@ -61,7 +61,7 @@ export class OECDInflationDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     _query?: z.infer<typeof OECDInflationDataQueryParams>,
-  ): Promise<OECDInflationDataData[]> {
+  ) {
     const dataSet = raw as OECDDataSet;
     if (!dataSet?.dataSets || dataSet.dataSets.length === 0) {
       throw new EmptyDataError("No OECD inflation data returned");

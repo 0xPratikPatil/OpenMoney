@@ -35,14 +35,14 @@ export class DeribitOptionsChainFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof DeribitOptionsChainQueryParams>,
-  ): Promise<z.input<typeof DeribitOptionsChainQueryParams>> {
+  ) {
     return { symbol: params.symbol };
   }
 
   async extractData(
     query: z.infer<typeof DeribitOptionsChainQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Get book summary for the option
     const summaries = await fetchDeribit<any[]>("get_book_summary_by_instrument", {
       instrument_name: query.symbol,
@@ -52,7 +52,7 @@ export class DeribitOptionsChainFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<DeribitOptionsChainData[]> {
+  ) {
     const summaries = raw as Array<Record<string, unknown>>;
     if (summaries.length === 0) throw new EmptyDataError("No options chain data returned");
 

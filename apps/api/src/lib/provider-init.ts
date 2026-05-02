@@ -1,5 +1,17 @@
 import { globalRegistry, QueryExecutor } from "@openmoney/provider-core";
 import { yfinanceProvider } from "@openmoney/provider-yfinance";
+import { fmpProvider } from "@openmoney/provider-fmp";
+import { alphavantageProvider } from "@openmoney/provider-alphavantage";
+import { polygonProvider } from "@openmoney/provider-polygon";
+import { secProvider } from "@openmoney/provider-sec";
+import { tmxProvider } from "@openmoney/provider-tmx";
+import { cboeProvider } from "@openmoney/provider-cboe";
+import { deribitProvider } from "@openmoney/provider-deribit";
+import { ecbProvider } from "@openmoney/provider-ecb";
+import { finvizProvider } from "@openmoney/provider-finviz";
+import { governmentUsProvider } from "@openmoney/provider-government_us";
+import { nasdaqProvider } from "@openmoney/provider-nasdaq";
+import { fredProvider } from "@openmoney/provider-fred";
 
 /**
  * Initialize all registered providers.
@@ -7,13 +19,22 @@ import { yfinanceProvider } from "@openmoney/provider-yfinance";
  * Equivalent to OpenBB's RegistryLoader.from_extensions()
  */
 export function initializeProviders(): void {
-  // Register yfinance (free, no API key needed)
+  // -- No API key needed --
   globalRegistry.register(yfinanceProvider);
 
-  // Future: register polygon, fmp, alphavantage, etc.
-  // globalRegistry.register(polygonProvider);
-  // globalRegistry.register(fmpProvider);
-  // globalRegistry.register(alphavantageProvider);
+  // -- Free tier available --
+  globalRegistry.register(fmpProvider);
+  globalRegistry.register(alphavantageProvider);
+  globalRegistry.register(polygonProvider);
+  globalRegistry.register(secProvider);
+  globalRegistry.register(tmxProvider);
+  globalRegistry.register(cboeProvider);
+  globalRegistry.register(deribitProvider);
+  globalRegistry.register(ecbProvider);
+  globalRegistry.register(finvizProvider);
+  globalRegistry.register(governmentUsProvider);
+  globalRegistry.register(nasdaqProvider);
+  globalRegistry.register(fredProvider);
 }
 
 /**

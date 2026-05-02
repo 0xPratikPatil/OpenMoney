@@ -38,7 +38,7 @@ export class SAEarningsTranscriptsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SAEarningsTranscriptsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const items = await fetchSAJson<SAArticle>(
       `/api/v3/earnings-transcripts/${query.symbol}`,
       { limit: query.limit },
@@ -46,7 +46,7 @@ export class SAEarningsTranscriptsFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<SAEarningsTranscriptsData[]> {
+  async transformData(raw: unknown) {
     const items = raw as SAArticle[];
     return items.map((item) =>
       SAEarningsTranscriptsData.parse({

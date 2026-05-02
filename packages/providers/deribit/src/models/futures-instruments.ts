@@ -35,7 +35,7 @@ export class DeribitFuturesInstrumentsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof DeribitFuturesInstrumentsQueryParams>,
-  ): Promise<z.input<typeof DeribitFuturesInstrumentsQueryParams>> {
+  ) {
     const currency = (params.currency ?? "BTC").toUpperCase() as "BTC" | "ETH" | "SOL" | "USDC";
     const kind = params.kind ?? "future";
     return { currency, kind };
@@ -44,7 +44,7 @@ export class DeribitFuturesInstrumentsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof DeribitFuturesInstrumentsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const instruments = await fetchDeribit<any[]>("get_instruments", {
       currency: query.currency,
       kind: query.kind,
@@ -55,7 +55,7 @@ export class DeribitFuturesInstrumentsFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<DeribitFuturesInstrumentsData[]> {
+  ) {
     const instruments = raw as Array<Record<string, unknown>>;
     if (instruments.length === 0) throw new EmptyDataError("No instruments found");
 

@@ -39,14 +39,14 @@ export class FinvizEquityScreenerFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FinvizEquityScreenerQueryParams>,
-  ): Promise<z.input<typeof FinvizEquityScreenerQueryParams>> {
+  ) {
     return { filters: params.filters, limit: params.limit ?? 200 };
   }
 
   async extractData(
     query: z.infer<typeof FinvizEquityScreenerQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const params: Record<string, string> = {
       t: query.filters ?? "",
       o: "-change",
@@ -59,7 +59,7 @@ export class FinvizEquityScreenerFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<FinvizEquityScreenerData[]> {
+  ) {
     const records = raw as Array<Record<string, string>>;
     if (records.length === 0) throw new EmptyDataError("No screener results found");
 

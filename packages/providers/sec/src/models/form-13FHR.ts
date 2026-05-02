@@ -38,7 +38,7 @@ export class SECForm13FHRFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECForm13FHRQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const xml = await secXmlFetch("/cgi-bin/browse-edgar", {
       action: "getcompany",
       CIK: query.cik,
@@ -49,7 +49,7 @@ export class SECForm13FHRFetcher extends AbstractFetcher<
     return xml;
   }
 
-  async transformData(raw: unknown): Promise<SECForm13FHRData[]> {
+  async transformData(raw: unknown) {
     const xml = raw as string;
     const entries = parseFeedEntries(xml);
     if (entries.length === 0) throw new EmptyDataError("No 13F-HR filings found");

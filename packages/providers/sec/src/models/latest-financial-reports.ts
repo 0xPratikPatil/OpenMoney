@@ -35,12 +35,12 @@ export class SECLatestFinancialReportsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECLatestFinancialReportsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const cik = query.cik.padStart(10, "0");
     return secJsonFetch<Record<string, unknown>>(`/api/xbrl/companyfacts/CIK${cik}.json`);
   }
 
-  async transformData(raw: unknown): Promise<SECLatestFinancialReportsData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const facts = (data as any)?.facts?.["us-gaap"];
     if (!facts) throw new EmptyDataError("No financial report data available");

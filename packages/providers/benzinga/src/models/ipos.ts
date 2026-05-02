@@ -42,7 +42,7 @@ export class BenzingaIposFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof BenzingaIposQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const items = await fetchBenzinga<BenzingaIPOItem>("/calendar/ipos", {
       dateFrom: query.dateFrom,
       dateTo: query.dateTo,
@@ -52,7 +52,7 @@ export class BenzingaIposFetcher extends AbstractFetcher<
     return items;
   }
 
-  async transformData(raw: unknown): Promise<BenzingaIposData[]> {
+  async transformData(raw: unknown) {
     const items = raw as BenzingaIPOItem[];
     return items.map((item) =>
       BenzingaIposData.parse({

@@ -29,7 +29,7 @@ export class DeribitFuturesCurveFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof DeribitFuturesCurveQueryParams>,
-  ): Promise<z.input<typeof DeribitFuturesCurveQueryParams>> {
+  ) {
     const currency = (params.currency ?? "BTC").toUpperCase() as "BTC" | "ETH" | "SOL" | "USDC";
     return { currency };
   }
@@ -37,7 +37,7 @@ export class DeribitFuturesCurveFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof DeribitFuturesCurveQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // Get all active futures for this currency
     const instruments = await fetchDeribit<any[]>("get_instruments", {
       currency: query.currency,
@@ -82,7 +82,7 @@ export class DeribitFuturesCurveFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<DeribitFuturesCurveData[]> {
+  ) {
     const results = raw as Array<{ symbol: string; expiration: string | null; price: number | null }>;
     if (results.length === 0) throw new EmptyDataError("No futures curve data returned");
 

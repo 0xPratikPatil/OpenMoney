@@ -41,7 +41,7 @@ export class MultplDividendYieldFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof MultplDividendYieldQueryParams>,
-  ): Promise<z.input<typeof MultplDividendYieldQueryParams>> {
+  ) {
     return {
       startDate: params.startDate,
       endDate: params.endDate,
@@ -52,13 +52,13 @@ export class MultplDividendYieldFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof MultplDividendYieldQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchMultplTableCsv(MultplEndpoint.S_P_DIVIDEND_YIELD);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<MultplDividendYieldData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

@@ -33,11 +33,11 @@ export class NasdaqTopRetailFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof NasdaqTopRetailQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return nasdaqPublicFetch<unknown>("/api/retail/top");
   }
 
-  async transformData(raw: unknown): Promise<NasdaqTopRetailData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const rows = (data as any)?.data?.rows ?? (data as any)?.data ?? [];
 

@@ -36,7 +36,7 @@ export class WSJMarketNewsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof WSJMarketNewsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = query.category
       ? `/api/news/${query.category}`
       : "/api/news/markets";
@@ -44,7 +44,7 @@ export class WSJMarketNewsFetcher extends AbstractFetcher<
     return items.slice(0, query.limit);
   }
 
-  async transformData(raw: unknown): Promise<WSJMarketNewsData[]> {
+  async transformData(raw: unknown) {
     const items = raw as WSJNewsItem[];
     return items.map((item) =>
       WSJMarketNewsData.parse({

@@ -35,7 +35,7 @@ export class SECManagementDiscussionAnalysisFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECManagementDiscussionAnalysisQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // First fetch filing entries for 10-K/10-Q
     const xml = await secXmlFetch("/cgi-bin/browse-edgar", {
       action: "getcompany",
@@ -47,7 +47,7 @@ export class SECManagementDiscussionAnalysisFetcher extends AbstractFetcher<
     return xml;
   }
 
-  async transformData(raw: unknown): Promise<SECManagementDiscussionAnalysisData[]> {
+  async transformData(raw: unknown) {
     const xml = raw as string;
     const entries = parseFeedEntries(xml);
     if (entries.length === 0) throw new EmptyDataError("No 10-K/10-Q filings found");

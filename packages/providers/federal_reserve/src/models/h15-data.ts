@@ -43,11 +43,11 @@ export class FRBH15DataFetcher extends AbstractFetcher<
   async extractData(
     _query: z.infer<typeof FRBH15QueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return frbFetch<unknown>(`/series/${H15_SERIES_ID}`, { format: "json" });
   }
 
-  async transformData(raw: unknown): Promise<FRBH15Data[]> {
+  async transformData(raw: unknown) {
     const observations = extractFRBObservations(raw);
     if (observations.length === 0) {
       throw new EmptyDataError("No H.15 data available");

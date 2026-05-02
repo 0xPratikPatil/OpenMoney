@@ -34,20 +34,20 @@ export class CboeIndexHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeIndexHistoricalQueryParams>,
-  ): Promise<z.input<typeof CboeIndexHistoricalQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase().replace("^", "") };
   }
 
   async extractData(
     query: z.infer<typeof CboeIndexHistoricalQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchHistorical(query.symbol);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<CboeIndexHistoricalData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError("No index historical data returned");
     return rows.map((row) =>

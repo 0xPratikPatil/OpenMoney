@@ -38,13 +38,13 @@ export class IntrinioEquityScreenerFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IntrinioEquityScreenerQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const results = await searchSecurities(query.query, credentials);
     if (results.length === 0) throw new EmptyDataError("No matching securities found");
     return results;
   }
 
-  async transformData(raw: unknown): Promise<IntrinioEquityScreenerData[]> {
+  async transformData(raw: unknown) {
     const securities = raw as Array<Record<string, unknown>>;
     return securities.map((s) =>
       IntrinioEquityScreenerData.parse({

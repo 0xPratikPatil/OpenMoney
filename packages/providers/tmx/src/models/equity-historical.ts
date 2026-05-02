@@ -37,7 +37,7 @@ export class TmxEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof TmxEquityHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       interval: params.interval ?? "1d",
@@ -48,11 +48,11 @@ export class TmxEquityHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TmxEquityHistoricalQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchHistorical(query.symbol, query.interval, query.range);
   }
 
-  async transformData(raw: unknown): Promise<TmxEquityHistoricalData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxEquityHistoricalData.parse({

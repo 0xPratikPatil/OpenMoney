@@ -32,7 +32,7 @@ export class FredSeriesFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FredSeriesQueryParams>,
-  ): Promise<z.input<typeof FredSeriesQueryParams>> {
+  ) {
     return {
       seriesId: params.seriesId,
       observationStart: params.observationStart,
@@ -47,7 +47,7 @@ export class FredSeriesFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FredSeriesQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.fred_api_key;
     const response = await fredFetch<FredSeriesResponse>(
       "/series/observations",
@@ -68,7 +68,7 @@ export class FredSeriesFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof FredSeriesQueryParams>,
-  ): Promise<FredSeriesData[]> {
+  ) {
     const response = raw as FredSeriesResponse;
     if (!response.observations || response.observations.length === 0) {
       throw new EmptyDataError("No FRED series observations returned");

@@ -42,7 +42,7 @@ export class NasdaqEquityScreenerFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof NasdaqEquityScreenerQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const params: Record<string, string> = {
       limit: String(query.limit ?? 100),
     };
@@ -52,7 +52,7 @@ export class NasdaqEquityScreenerFetcher extends AbstractFetcher<
     return nasdaqPublicFetch<unknown>("/api/screener/stocks", params);
   }
 
-  async transformData(raw: unknown): Promise<NasdaqEquityScreenerData[]> {
+  async transformData(raw: unknown) {
     const data = raw as Record<string, unknown>;
     const rows = (data as any)?.data?.rows ?? (data as any)?.data ?? [];
 

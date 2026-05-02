@@ -33,14 +33,14 @@ export class TmxEtfInfoFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxEtfInfoQueryParams>,
-  ): Promise<z.input<typeof TmxEtfInfoQueryParams>> {
+  ) {
     return { ...params };
   }
 
   async extractData(
     query: z.infer<typeof TmxEtfInfoQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const etfs = await fetchEtfList();
     if (query.symbol) {
       const upper = query.symbol.toUpperCase();
@@ -51,7 +51,7 @@ export class TmxEtfInfoFetcher extends AbstractFetcher<
     return etfs;
   }
 
-  async transformData(raw: unknown): Promise<TmxEtfInfoData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxEtfInfoData.parse({

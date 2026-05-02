@@ -50,7 +50,7 @@ export class FredEconomicDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FredEconomicDataQueryParams>,
-  ): Promise<z.input<typeof FredEconomicDataQueryParams>> {
+  ) {
     return {
       indicator: params.indicator,
       observationStart: params.observationStart,
@@ -62,7 +62,7 @@ export class FredEconomicDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FredEconomicDataQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.fred_api_key;
     const seriesId = INDICATOR_MAP[query.indicator] ?? "";
     return fredFetch<FredSeriesResponse>(
@@ -81,7 +81,7 @@ export class FredEconomicDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof FredEconomicDataQueryParams>,
-  ): Promise<FredEconomicDataData[]> {
+  ) {
     const response = raw as FredSeriesResponse;
     if (!response.observations || response.observations.length === 0) {
       throw new EmptyDataError("No economic data returned from FRED");

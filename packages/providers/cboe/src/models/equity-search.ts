@@ -52,14 +52,14 @@ export class CboeEquitySearchFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeEquitySearchQueryParams>,
-  ): Promise<z.input<typeof CboeEquitySearchQueryParams>> {
+  ) {
     return { query: params.query.toUpperCase(), limit: params.limit ?? 50 };
   }
 
   async extractData(
     _query: z.infer<typeof CboeEquitySearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const csv = await fetchSymbolDirectory();
     const lines = csv.split("\n").filter((l) => l.trim().length > 0);
     if (lines.length < 2) throw new EmptyDataError("No symbol directory data");
@@ -85,7 +85,7 @@ export class CboeEquitySearchFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof CboeEquitySearchQueryParams>,
-  ): Promise<CboeEquitySearchData[]> {
+  ) {
     const records = raw as Array<Record<string, string>>;
     const searchQuery = query?.query?.toUpperCase() ?? "";
     const limit = query?.limit ?? 50;

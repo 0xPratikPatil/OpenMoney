@@ -42,13 +42,13 @@ export class YFinanceBalanceSheetFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceBalanceSheetQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const sheets = await fetchBalanceSheets(query.symbol);
     if (sheets.length === 0) throw new EmptyDataError();
     return sheets;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceBalanceSheetData[]> {
+  async transformData(raw: unknown) {
     const sheets = raw as Array<Record<string, unknown>>;
     return sheets.map((s) =>
       YFinanceBalanceSheetData.parse({

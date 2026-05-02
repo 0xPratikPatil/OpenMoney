@@ -38,7 +38,7 @@ export class TradierEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TradierEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof TradierEquityHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       interval: params.interval ?? "daily",
@@ -50,7 +50,7 @@ export class TradierEquityHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TradierEquityHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const startStr = query.startDate
       ? (query.startDate as Date).toISOString().split("T")[0]
       : undefined;
@@ -61,7 +61,7 @@ export class TradierEquityHistoricalFetcher extends AbstractFetcher<
     return fetchHistorical(query.symbol, credentials, query.interval, startStr, endStr);
   }
 
-  async transformData(raw: unknown): Promise<TradierEquityHistoricalData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError();
     return rows.map((row) =>

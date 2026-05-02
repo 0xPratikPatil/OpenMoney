@@ -36,13 +36,13 @@ export class YFinanceCompanyNewsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceCompanyNewsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const news = await fetchNews(query.symbol);
     if (news.length === 0) throw new EmptyDataError();
     return news.slice(0, query.limit);
   }
 
-  async transformData(raw: unknown): Promise<YFinanceCompanyNewsData[]> {
+  async transformData(raw: unknown) {
     const articles = raw as Array<Record<string, unknown>>;
     return articles.map((a) =>
       YFinanceCompanyNewsData.parse({

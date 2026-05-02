@@ -22,7 +22,7 @@ export class YFActiveFetcher extends AbstractFetcher<typeof YFActiveQueryParams,
   async extractData(
     query: z.infer<typeof YFActiveQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const data = await fetchScreener({
       offset: 0,
       size: 250,
@@ -50,7 +50,7 @@ export class YFActiveFetcher extends AbstractFetcher<typeof YFActiveQueryParams,
 
   async transformData(
     raw: unknown,
-  ): Promise<z.output<typeof YFScreenerData>[]> {
+  ) {
     const quotes = raw as any[];
     if (quotes.length === 0) throw new EmptyDataError();
     return quotes.map((q) => YFScreenerData.parse(mapScreenerQuote(q)));

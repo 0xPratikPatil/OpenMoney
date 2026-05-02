@@ -39,18 +39,18 @@ export class TmxOptionsChainsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxOptionsChainsQueryParams>,
-  ): Promise<z.input<typeof TmxOptionsChainsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxOptionsChainsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchOptions(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxOptionsChainsData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     return rows.map((row) =>
       TmxOptionsChainsData.parse({

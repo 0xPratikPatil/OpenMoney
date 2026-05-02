@@ -59,7 +59,7 @@ export class IntrinioIncomeStatementFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IntrinioIncomeStatementQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const startStr = query.startDate
       ? (query.startDate as Date).toISOString().split("T")[0]
       : undefined;
@@ -84,7 +84,7 @@ export class IntrinioIncomeStatementFetcher extends AbstractFetcher<
     };
   }
 
-  async transformData(raw: unknown): Promise<IntrinioIncomeStatementData[]> {
+  async transformData(raw: unknown) {
     const d = raw as Record<string, Array<Record<string, unknown>>>;
 
     // Merge all data series by date

@@ -29,21 +29,21 @@ export class CboeIndexSearchFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeIndexSearchQueryParams>,
-  ): Promise<z.input<typeof CboeIndexSearchQueryParams>> {
+  ) {
     return { query: params.query.toUpperCase(), limit: params.limit ?? 50 };
   }
 
   async extractData(
     _query: z.infer<typeof CboeIndexSearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchAllIndices();
   }
 
   async transformData(
     raw: unknown,
     query?: z.infer<typeof CboeIndexSearchQueryParams>,
-  ): Promise<CboeIndexSearchData[]> {
+  ) {
     const indices = raw as Array<Record<string, unknown>>;
     if (indices.length === 0) throw new EmptyDataError("No indices data returned");
 

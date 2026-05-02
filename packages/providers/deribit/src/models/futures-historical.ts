@@ -34,7 +34,7 @@ export class DeribitFuturesHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof DeribitFuturesHistoricalQueryParams>,
-  ): Promise<z.input<typeof DeribitFuturesHistoricalQueryParams>> {
+  ) {
     const now = Math.floor(Date.now() / 1000);
     return {
       symbol: params.symbol,
@@ -47,7 +47,7 @@ export class DeribitFuturesHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof DeribitFuturesHistoricalQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const now = Math.floor(Date.now() / 1000);
     const data = await fetchDeribit<any>("get_tradingview_chart_data", {
       instrument_name: query.symbol,
@@ -60,7 +60,7 @@ export class DeribitFuturesHistoricalFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<DeribitFuturesHistoricalData[]> {
+  ) {
     const data = raw as Record<string, unknown> | null;
     if (!data) throw new EmptyDataError("No historical data returned");
 

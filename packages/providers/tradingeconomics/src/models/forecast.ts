@@ -38,7 +38,7 @@ export class TEForecastFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TEForecastQueryParams>,
-  ): Promise<z.input<typeof TEForecastQueryParams>> {
+  ) {
     return {
       country: params.country,
       indicator: params.indicator,
@@ -48,7 +48,7 @@ export class TEForecastFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TEForecastQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.tradingeconomics_api_key;
     const path = query.indicator
       ? `/forecast/country/${query.country}/${query.indicator}`
@@ -58,7 +58,7 @@ export class TEForecastFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<TEForecastData[]> {
+  ) {
     const forecasts = raw as TEForecast[];
     if (!forecasts || forecasts.length === 0) {
       throw new EmptyDataError("No Trading Economics forecasts returned");

@@ -38,13 +38,13 @@ export class YFinanceOptionsChainsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinanceOptionsChainsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const results = await fetchOptions(query.symbol, query.expiration);
     if (results.length === 0) throw new EmptyDataError();
     return results;
   }
 
-  async transformData(raw: unknown): Promise<YFinanceOptionsChainData[]> {
+  async transformData(raw: unknown) {
     const results = raw as Array<any>;
     const allOptions: any[] = [];
     for (const result of results) {

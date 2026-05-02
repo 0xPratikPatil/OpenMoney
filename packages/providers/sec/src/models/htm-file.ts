@@ -30,13 +30,13 @@ export class SECHtmFileFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECHtmFileQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const content = await secFetch<string>(query.url);
     if (!content || content.length < 100) throw new EmptyDataError("Empty or invalid HTM content");
     return content;
   }
 
-  async transformData(raw: unknown): Promise<SECHtmFileData[]> {
+  async transformData(raw: unknown) {
     const content = raw as string;
     return [
       SECHtmFileData.parse({

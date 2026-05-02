@@ -35,7 +35,7 @@ export class EIAElectricityDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EIAElectricityDataQueryParams>,
-  ): Promise<z.input<typeof EIAElectricityDataQueryParams>> {
+  ) {
     return {
       series: params.series,
       start: params.start,
@@ -47,7 +47,7 @@ export class EIAElectricityDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof EIAElectricityDataQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.eia_api_key;
     const path = `/electricity/${query.series}/data`;
     return eiaFetch<EIAResponse>(
@@ -64,7 +64,7 @@ export class EIAElectricityDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof EIAElectricityDataQueryParams>,
-  ): Promise<EIAElectricityDataData[]> {
+  ) {
     const response = raw as EIAResponse;
     const data = response?.response?.data;
     if (!data || data.length === 0) {

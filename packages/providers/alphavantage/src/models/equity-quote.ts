@@ -36,21 +36,21 @@ export class AVEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof AVEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof AVEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof AVEquityQuoteQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     return avFetch("GLOBAL_QUOTE", apiKey, { symbol: query.symbol });
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<AVEquityQuoteData[]> {
+  ) {
     const data = raw as Record<string, unknown>;
     const quoteData = data["Global Quote"] as Record<string, unknown> | undefined;
     if (!quoteData) throw new EmptyDataError("No Global Quote data returned");

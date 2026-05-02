@@ -56,7 +56,7 @@ export class MultplTreasuryRateFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof MultplTreasuryRateQueryParams>,
-  ): Promise<z.input<typeof MultplTreasuryRateQueryParams>> {
+  ) {
     return {
       maturity: params.maturity ?? 10,
       startDate: params.startDate,
@@ -68,7 +68,7 @@ export class MultplTreasuryRateFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof MultplTreasuryRateQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const endpoint = endpointForMaturity(query.maturity as any);
     return fetchMultplTableCsv(endpoint);
   }
@@ -76,7 +76,7 @@ export class MultplTreasuryRateFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof MultplTreasuryRateQueryParams>,
-  ): Promise<MultplTreasuryRateData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

@@ -36,7 +36,7 @@ export class TECountryIndicatorsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TECountryIndicatorsQueryParams>,
-  ): Promise<z.input<typeof TECountryIndicatorsQueryParams>> {
+  ) {
     return {
       country: params.country,
       indicator: params.indicator,
@@ -46,7 +46,7 @@ export class TECountryIndicatorsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TECountryIndicatorsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.tradingeconomics_api_key;
     const path = query.indicator
       ? `/country/${query.country}/${query.indicator}`
@@ -56,7 +56,7 @@ export class TECountryIndicatorsFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<TECountryIndicatorsData[]> {
+  ) {
     const indicators = raw as TECountryIndicator[];
     if (!indicators || indicators.length === 0) {
       throw new EmptyDataError("No Trading Economics indicators returned");

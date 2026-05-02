@@ -38,7 +38,7 @@ export class TECalendarFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TECalendarQueryParams>,
-  ): Promise<z.input<typeof TECalendarQueryParams>> {
+  ) {
     return {
       country: params.country,
       startDate: params.startDate,
@@ -49,7 +49,7 @@ export class TECalendarFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TECalendarQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.tradingeconomics_api_key;
     let path = "/calendar";
     if (query.country) {
@@ -63,7 +63,7 @@ export class TECalendarFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<TECalendarData[]> {
+  ) {
     const events = raw as TECalendarEvent[];
     if (!events || events.length === 0) {
       throw new EmptyDataError("No Trading Economics calendar events returned");

@@ -46,14 +46,14 @@ export class TradierEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TradierEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof TradierEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TradierEquityQuoteQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const symbols = query.symbol.includes(",")
       ? query.symbol.split(",").map((s) => s.trim())
       : [query.symbol];
@@ -62,7 +62,7 @@ export class TradierEquityQuoteFetcher extends AbstractFetcher<
     return quotes;
   }
 
-  async transformData(raw: unknown): Promise<TradierEquityQuoteData[]> {
+  async transformData(raw: unknown) {
     const quotes = raw as Array<Record<string, unknown>>;
     return quotes.map((q) =>
       TradierEquityQuoteData.parse({

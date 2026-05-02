@@ -39,7 +39,7 @@ export class MultplShillerPeFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof MultplShillerPeQueryParams>,
-  ): Promise<z.input<typeof MultplShillerPeQueryParams>> {
+  ) {
     return {
       startDate: params.startDate,
       endDate: params.endDate,
@@ -50,13 +50,13 @@ export class MultplShillerPeFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof MultplShillerPeQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchMultplTableCsv(MultplEndpoint.SHILLER_PE);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<MultplShillerPeData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError("No Shiller P/E data returned");

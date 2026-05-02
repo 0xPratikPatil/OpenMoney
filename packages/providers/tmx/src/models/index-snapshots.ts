@@ -35,18 +35,18 @@ export class TmxIndexSnapshotsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxIndexSnapshotsQueryParams>,
-  ): Promise<z.input<typeof TmxIndexSnapshotsQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxIndexSnapshotsQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchIndex(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxIndexSnapshotsData[]> {
+  async transformData(raw: unknown) {
     const idx = raw as Record<string, unknown>;
     if (!idx || Object.keys(idx).length === 0) return [];
 

@@ -39,14 +39,14 @@ export class YFinancePriceTargetConsensusFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof YFinancePriceTargetConsensusQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const quotes = await fetchQuotes([query.symbol]);
     const quote = quotes[query.symbol];
     if (!quote) throw new EmptyDataError(`No data for symbol: ${query.symbol}`);
     return quote;
   }
 
-  async transformData(raw: unknown): Promise<YFinancePriceTargetConsensusData[]> {
+  async transformData(raw: unknown) {
     const quote = raw as Record<string, unknown>;
     const symbol = quote.symbol as string;
     if (!symbol) throw new EmptyDataError("No symbol in response");

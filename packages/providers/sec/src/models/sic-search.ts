@@ -32,12 +32,12 @@ export class SECSicSearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECSicSearchQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     // SEC SIC code listing
     return secFetch<string>(`/cgi-bin/browse-edgar?action=getcompany&SIC=${encodeURIComponent(query.query)}&owner=exclude&count=1`);
   }
 
-  async transformData(raw: unknown): Promise<SECSicSearchData[]> {
+  async transformData(raw: unknown) {
     const html = raw as string;
 
     // Parse SIC info from the SEC page

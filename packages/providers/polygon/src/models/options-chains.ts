@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AbstractFetcher, EmptyDataError } from "@openmoney/provider-core";
-import { polygonFetch } from "../utils/api";
+import { fetchOptionsChain } from "../utils/api";
 
 export const PolygonOptionsChainsQueryParams = z.object({
   symbol: z.string().transform((s) => s.toUpperCase()),
@@ -53,15 +53,11 @@ export class PolygonOptionsChainsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof PolygonOptionsChainsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
-    const data = await polygonFetch<any>(
-      `/v3/snapshot/options/${encodeURIComponent(query.symbol)}`,
-      credentials,
-    );
-    return data?.results ?? [];
+  ) {
+    return fetchOptionsChain(query.symbol, credentials);
   }
 
-  async transformData(raw: unknown): Promise<PolygonOptionsChainData[]> {
+  async transformData(raw: unknown) {
     const results = raw as any[];
     if (results.length === 0) throw new EmptyDataError();
 

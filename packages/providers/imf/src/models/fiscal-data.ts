@@ -36,7 +36,7 @@ export class IMFFiscalDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof IMFFiscalDataQueryParams>,
-  ): Promise<z.input<typeof IMFFiscalDataQueryParams>> {
+  ) {
     return {
       refArea: params.refArea,
       indicator: params.indicator ?? "GGXWDG_GDP",
@@ -48,7 +48,7 @@ export class IMFFiscalDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IMFFiscalDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = `/CompactData/FM/A.${query.refArea}.${query.indicator}`;
     return imfFetch<{ CompactData: { DataSet: { Series: IMFDataRow } } }>(
       path,
@@ -62,7 +62,7 @@ export class IMFFiscalDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof IMFFiscalDataQueryParams>,
-  ): Promise<IMFFiscalDataData[]> {
+  ) {
     const response = raw as { CompactData: { DataSet: { Series: IMFDataRow } } };
     const series = response?.CompactData?.DataSet?.Series;
     if (!series?.Obs || series.Obs.length === 0) {

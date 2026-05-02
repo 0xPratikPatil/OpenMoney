@@ -77,7 +77,7 @@ export class FamaFrenchIndustryPortfolioFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FamaFrenchIndustryPortfolioQueryParams>,
-  ): Promise<z.input<typeof FamaFrenchIndustryPortfolioQueryParams>> {
+  ) {
     return {
       count: params.count ?? 10,
       frequency: params.frequency ?? "daily",
@@ -87,14 +87,14 @@ export class FamaFrenchIndustryPortfolioFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FamaFrenchIndustryPortfolioQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const dataset = datasetForIndustry(query.count as any, query.frequency);
     return fetchDataset(dataset, query.frequency);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<FamaFrenchIndustryPortfolioData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (!rows || rows.length === 0) {
       throw new EmptyDataError(

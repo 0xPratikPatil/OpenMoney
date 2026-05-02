@@ -32,21 +32,21 @@ export class AVEconomicIndicatorsFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof AVEconomicIndicatorsQueryParams>,
-  ): Promise<z.input<typeof AVEconomicIndicatorsQueryParams>> {
+  ) {
     return { indicator: params.indicator };
   }
 
   async extractData(
     query: z.infer<typeof AVEconomicIndicatorsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["alphavantage_api_key"] ?? "";
     return avFetch(query.indicator, apiKey);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<AVEconomicIndicatorsData[]> {
+  ) {
     const data = raw as Record<string, unknown>;
     const rows = data.data as Array<Record<string, unknown>> | undefined;
     if (!rows || rows.length === 0) throw new EmptyDataError("No economic indicator data returned");

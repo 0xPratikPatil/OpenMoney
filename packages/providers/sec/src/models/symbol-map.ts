@@ -32,7 +32,7 @@ export class SECSymbolMapFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof SECSymbolMapQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const xml = await secXmlFetch("/cgi-bin/browse-edgar", {
       CIK: query.symbol,
       action: "getcompany",
@@ -44,7 +44,7 @@ export class SECSymbolMapFetcher extends AbstractFetcher<
     return xml;
   }
 
-  async transformData(raw: unknown): Promise<SECSymbolMapData[]> {
+  async transformData(raw: unknown) {
     const xml = raw as string;
 
     const extract = (tag: string): string | null => {

@@ -32,7 +32,7 @@ export class NasdaqCalendarDividendFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof NasdaqCalendarDividendQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["nasdaq_api_key"];
     const raw = await nasdaqFetch<unknown>(
       "/datatables/NDAQ/DIVCAL",
@@ -42,7 +42,7 @@ export class NasdaqCalendarDividendFetcher extends AbstractFetcher<
     return raw;
   }
 
-  async transformData(raw: unknown): Promise<NasdaqCalendarDividendData[]> {
+  async transformData(raw: unknown) {
     const rows = extractDatatable(raw);
     if (rows.length === 0) throw new EmptyDataError("No dividend calendar data found");
 

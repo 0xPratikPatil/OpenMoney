@@ -45,18 +45,18 @@ export class TmxEquityQuoteFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TmxEquityQuoteQueryParams>,
-  ): Promise<z.input<typeof TmxEquityQuoteQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase() };
   }
 
   async extractData(
     query: z.infer<typeof TmxEquityQuoteQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchQuote(query.symbol);
   }
 
-  async transformData(raw: unknown): Promise<TmxEquityQuoteData[]> {
+  async transformData(raw: unknown) {
     const quote = raw as Record<string, unknown>;
     if (!quote || !quote.symbol) return [];
 

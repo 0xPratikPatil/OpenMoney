@@ -46,11 +46,11 @@ export class TradierOptionsChainsFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TradierOptionsChainsQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchOptionsChains(query.symbol, credentials, query.expiration);
   }
 
-  async transformData(raw: unknown): Promise<TradierOptionsChainData[]> {
+  async transformData(raw: unknown) {
     const options = raw as Array<Record<string, unknown>>;
     if (options.length === 0) throw new EmptyDataError();
 

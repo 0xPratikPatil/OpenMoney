@@ -34,20 +34,20 @@ export class CboeEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof CboeEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof CboeEquityHistoricalQueryParams>> {
+  ) {
     return { symbol: params.symbol.toUpperCase().replace("^", "") };
   }
 
   async extractData(
     query: z.infer<typeof CboeEquityHistoricalQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     return fetchHistorical(query.symbol);
   }
 
   async transformData(
     raw: unknown,
-  ): Promise<CboeEquityHistoricalData[]> {
+  ) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError("No historical data returned from CBOE");
     return rows.map((row) =>

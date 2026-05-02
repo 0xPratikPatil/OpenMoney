@@ -45,7 +45,7 @@ export class FMPCashFlowFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FMPCashFlowQueryParams>,
-  ): Promise<z.input<typeof FMPCashFlowQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       limit: params.limit ?? 4,
@@ -55,7 +55,7 @@ export class FMPCashFlowFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FMPCashFlowQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials["fmp_api_key"];
     if (!apiKey) throw new Error("FMP API key is required");
     const data = await fmpFetch<FmpFinancialStatement[]>(
@@ -67,7 +67,7 @@ export class FMPCashFlowFetcher extends AbstractFetcher<
     return data;
   }
 
-  async transformData(raw: unknown): Promise<FMPCashFlowData[]> {
+  async transformData(raw: unknown) {
     const statements = raw as FmpFinancialStatement[];
     return statements
       .filter((s) => s.symbol)

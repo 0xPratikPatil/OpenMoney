@@ -38,7 +38,7 @@ export class WSJMarketDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof WSJMarketDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = query.symbol
       ? `/api/market-data/${encodeURIComponent(query.symbol)}`
       : `/api/market-data/${query.type}`;
@@ -46,7 +46,7 @@ export class WSJMarketDataFetcher extends AbstractFetcher<
     return items.slice(0, query.limit);
   }
 
-  async transformData(raw: unknown): Promise<WSJMarketDataData[]> {
+  async transformData(raw: unknown) {
     const items = raw as WSJMarketDataItem[];
     return items.map((item) =>
       WSJMarketDataData.parse({

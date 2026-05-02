@@ -36,7 +36,7 @@ export class IMFIfsDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof IMFIfsDataQueryParams>,
-  ): Promise<z.input<typeof IMFIfsDataQueryParams>> {
+  ) {
     return {
       refArea: params.refArea,
       indicator: params.indicator ?? "FILR_PCH",
@@ -48,7 +48,7 @@ export class IMFIfsDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof IMFIfsDataQueryParams>,
     _credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const path = `/CompactData/IFS/M.${query.refArea}.${query.indicator}`;
     return imfFetch<{ CompactData: { DataSet: { Series: IMFDataRow } } }>(
       path,
@@ -62,7 +62,7 @@ export class IMFIfsDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof IMFIfsDataQueryParams>,
-  ): Promise<IMFIfsDataData[]> {
+  ) {
     const response = raw as { CompactData: { DataSet: { Series: IMFDataRow } } };
     const series = response?.CompactData?.DataSet?.Series;
     if (!series?.Obs || series.Obs.length === 0) {

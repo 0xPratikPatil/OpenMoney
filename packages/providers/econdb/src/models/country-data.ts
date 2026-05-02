@@ -36,7 +36,7 @@ export class EconDBCountryDataFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EconDBCountryDataQueryParams>,
-  ): Promise<z.input<typeof EconDBCountryDataQueryParams>> {
+  ) {
     return {
       country: params.country,
       indicator: params.indicator,
@@ -49,7 +49,7 @@ export class EconDBCountryDataFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof EconDBCountryDataQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.econdb_api_key;
     const path = `/api/series/${query.country}/${query.indicator}`;
     return econdbFetch<EconDBCountryDataResponse>(
@@ -66,7 +66,7 @@ export class EconDBCountryDataFetcher extends AbstractFetcher<
   async transformData(
     raw: unknown,
     query?: z.infer<typeof EconDBCountryDataQueryParams>,
-  ): Promise<EconDBCountryDataData[]> {
+  ) {
     const response = raw as EconDBCountryDataResponse;
     if (!response.data || response.data.length === 0) {
       throw new EmptyDataError("No EconDB country data returned");

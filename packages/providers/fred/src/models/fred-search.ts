@@ -34,7 +34,7 @@ export class FredSearchFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof FredSearchQueryParams>,
-  ): Promise<z.input<typeof FredSearchQueryParams>> {
+  ) {
     return {
       text: params.text,
       limit: params.limit ?? 50,
@@ -46,7 +46,7 @@ export class FredSearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof FredSearchQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.fred_api_key;
     return fredFetch<FredSearchResponse>(
       "/series/search",
@@ -62,7 +62,7 @@ export class FredSearchFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<FredSearchData[]> {
+  ) {
     const response = raw as FredSearchResponse;
     if (!response.seriess || response.seriess.length === 0) {
       throw new EmptyDataError("No FRED search results returned");

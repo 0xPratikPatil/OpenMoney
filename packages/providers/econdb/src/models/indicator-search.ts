@@ -33,7 +33,7 @@ export class EconDBIndicatorSearchFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof EconDBIndicatorSearchQueryParams>,
-  ): Promise<z.input<typeof EconDBIndicatorSearchQueryParams>> {
+  ) {
     return {
       query: params.query,
       limit: params.limit ?? 50,
@@ -43,7 +43,7 @@ export class EconDBIndicatorSearchFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof EconDBIndicatorSearchQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const apiKey = credentials.econdb_api_key;
     return econdbFetch<EconDBSearchResult[]>(
       "/api/search",
@@ -54,7 +54,7 @@ export class EconDBIndicatorSearchFetcher extends AbstractFetcher<
 
   async transformData(
     raw: unknown,
-  ): Promise<EconDBIndicatorSearchData[]> {
+  ) {
     const results = raw as EconDBSearchResult[];
     if (!results || results.length === 0) {
       throw new EmptyDataError("No EconDB indicator search results returned");

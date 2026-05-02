@@ -44,7 +44,7 @@ export class TiingoEquityHistoricalFetcher extends AbstractFetcher<
 
   async transformQuery(
     params: z.input<typeof TiingoEquityHistoricalQueryParams>,
-  ): Promise<z.input<typeof TiingoEquityHistoricalQueryParams>> {
+  ) {
     return {
       symbol: params.symbol.toUpperCase(),
       startDate: params.startDate,
@@ -55,7 +55,7 @@ export class TiingoEquityHistoricalFetcher extends AbstractFetcher<
   async extractData(
     query: z.infer<typeof TiingoEquityHistoricalQueryParams>,
     credentials: Record<string, string>,
-  ): Promise<unknown> {
+  ) {
     const startStr = query.startDate
       ? (query.startDate as Date).toISOString().split("T")[0]
       : undefined;
@@ -66,7 +66,7 @@ export class TiingoEquityHistoricalFetcher extends AbstractFetcher<
     return fetchDailyPrices(query.symbol, credentials, startStr, endStr);
   }
 
-  async transformData(raw: unknown): Promise<TiingoEquityHistoricalData[]> {
+  async transformData(raw: unknown) {
     const rows = raw as Array<Record<string, unknown>>;
     if (rows.length === 0) throw new EmptyDataError();
     return rows.map((row) =>
