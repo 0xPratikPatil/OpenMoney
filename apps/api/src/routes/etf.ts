@@ -1,0 +1,84 @@
+/**
+ * ETF Domain Router
+ *
+ * Routes for ETF-related data:
+ *   historical, info
+ *
+ * Uses the standardized createProviderQueryHandler helper.
+ */
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import { globalRegistry, QueryExecutor } from "@openmoney/provider-core";
+import { requestContext } from "../middleware/request-context";
+import { createProviderQueryHandler, DEFAULT_PROVIDER } from "./helpers";
+
+const executor = new QueryExecutor(globalRegistry);
+
+const router = new Hono();
+
+router.use("*", requestContext);
+
+// ---------------------------------------------------------------------------
+// Schema definitions
+// ---------------------------------------------------------------------------
+
+const SymbolQuerySchema = z.object({
+  symbol: z.string().min(1).transform((s) => s.toUpperCase()),
+  provider: z.string().default(DEFAULT_PROVIDER),
+});
+
+const HistoricalQuerySchema = z.object({
+  symbol: z.string().min(1).transform((s) => s.toUpperCase()),
+  interval: z
+    .enum(["1m", "2m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "5d", "1wk", "1mo", "3mo"])
+    .default("1d"),
+  period: z
+    .enum(["1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "ytd", "max"])
+    .default("1y"),
+  provider: z.string().default(DEFAULT_PROVIDER),
+});
+
+// ---------------------------------------------------------------------------
+// Routes
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /api/etf/historical
+ * Get historical ETF prices for a symbol.
+ *
+ * Query params:
+ *   symbol   - Ticker symbol (required)
+ *   interval - Data interval (default: "1d")
+ *   period   - Time period (default: "1y")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/historical",
+  zValidator("query", HistoricalQuerySchema),
+  async (c) => {
+    const { symbol, interval, period, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "etf/historical", {
+      symbol, interval, period,
+    });
+  },
+);
+
+/**
+ * GET /api/etf/info
+ * Get ETF profile/information for a symbol.
+ *
+ * Query params:
+ *   symbol   - Ticker symbol (required)
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/info",
+  zValidator("query", SymbolQuerySchema),
+  async (c) => {
+    const { symbol, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "etf/info", { symbol });
+  },
+);
+
+export { router as etfRouter };
