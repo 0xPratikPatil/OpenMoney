@@ -487,6 +487,67 @@ All assumptions made for each phase are documented inline.
 | 10.5 | Create monitoring setup | Sentry (error tracking) + basic health check endpoints |
 | 10.6 | Verify end-to-end | `docker compose up --build` → all services healthy → smoke test |
 
+## Provider implementation plan
+
+### Provider matrix
+
+| Provider | Package | API Key | Rate Limit | Focus |
+|----------|---------|---------|------------|-------|
+| **Yahoo Finance** | `@openmoney/provider-yfinance` | ❌ Free | 2s between calls | Equities, ETFs, screeners, fundamentals — ✅ BUILT |
+| **Polygon.io** | `@openmoney/provider-polygon` | ✅ Required | 5 req/min (free) | Real-time + historical equities, forex, crypto, options |
+| **Alpha Vantage** | `@openmoney/provider-alphavantage` | ✅ Free tier | 5 req/min | Equities, forex, crypto, economic indicators |
+| **Financial Modeling Prep** | `@openmoney/provider-fmp` | ✅ Required | 300 req/day (free) | Fundamentals: financial statements, ratios, profiles |
+| **FRED** | `@openmoney/provider-fred` | ✅ Free | 120 req/min | Economic data: series, treasury, GDP, yield curve |
+
+### Package structure (each provider follows same pattern)
+
+```
+packages/providers/<name>/
+├── package.json              # name: "@openmoney/provider-<name>"
+├── tsconfig.json
+└── src/
+    ├── index.ts              # re-exports provider + models + utils
+    ├── <name>-provider.ts    # AbstractProvider config with fetcherMap
+    ├── models/
+    │   ├── index.ts          # re-exports all models
+    │   ├── equity-quote.ts   # extends standard schemas from @openmoney/shared
+    │   ├── equity-historical.ts
+    │   └── ...               # provider-specific models
+    └── utils/
+        ├── index.ts
+        └── api.ts            # HTTP helpers, provider-specific types, rate-limit handling
+```
+
+### Implementation order (per provider)
+
+1. **Polygon.io** — equity quote, equity historical, forex historical, crypto historical, options chains
+2. **Alpha Vantage** — equity quote, equity historical, forex, crypto, economic indicators
+3. **FMP** — equity quote, equity historical, equity profile, income statement, balance sheet, cash flow, financial ratios, key metrics
+4. **FRED** — FRED series, FRED search, treasury rates, yield curve, GDP
+
+### Schema extension pattern
+
+Each provider's fetcher imports standard schemas from `@openmoney/shared` and extends them:
+
+```typescript
+import { EquityQuoteQueryParams, EquityQuoteData } from "@openmoney/shared";
+import { z } from "zod";
+
+// Provider extends standard schema (adds provider-specific fields)
+export const PolygonEquityQuoteData = EquityQuoteData.extend({
+  // Polygon-specific fields
+  bidExchange: z.string().nullish(),
+  askExchange: z.string().nullish(),
+  conditions: z.array(z.string()).nullish(),
+  provider: z.literal("polygon").default("polygon"),
+});
+
+export class PolygonEquityQuoteFetcher extends AbstractFetcher<
+  typeof EquityQuoteQueryParams,
+  typeof PolygonEquityQuoteData
+> { ... }
+```
+
 ## Summary of user decisions (from Q&A)
 
 | Question | Decision |
