@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { AbstractFetcher, EmptyDataError } from "@openmoney/provider-core";
+import { fetchIncomeStatements } from "../utils/api";
 
 export const YFinanceIncomeStatementQueryParams = z.object({
   symbol: z.string().transform((s) => s.toUpperCase()),
@@ -39,11 +40,7 @@ export class YFinanceIncomeStatementFetcher extends AbstractFetcher<
     query: z.infer<typeof YFinanceIncomeStatementQueryParams>,
     _credentials: Record<string, string>,
   ): Promise<unknown> {
-    const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(query.symbol)}?modules=incomeStatementHistory`;
-    const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
-    if (!response.ok) throw new Error(`Yahoo Finance error: ${response.status}`);
-    const data = (await response.json()) as any;
-    const statements = data?.quoteSummary?.result?.[0]?.incomeStatementHistory?.incomeStatementHistory ?? [];
+    const statements = await fetchIncomeStatements(query.symbol);
     if (statements.length === 0) throw new EmptyDataError();
     return statements;
   }

@@ -1,8 +1,55 @@
-import { UnauthorizedError, RateLimitError, EmptyDataError } from "@openmoney/provider-core";
+/**
+ * Yahoo Finance API utilities.
+ *
+ * Provides a clean, typed interface for all Yahoo Finance REST endpoints.
+ * All HTTP calls go through the shared {@link ProviderHttpClient} which
+ * handles retries, rate-limit detection, caching, and error mapping.
+ *
+ * @module api
+ */
 
-const YAHOO_FINANCE_BASE = "https://query1.finance.yahoo.com";
-const YAHOO_BASE_QUERY2 = "https://query2.finance.yahoo.com";
+import { ProviderHttpClient } from "@openmoney/shared";
+import { EmptyDataError } from "@openmoney/provider-core";
 
+// ---------------------------------------------------------------------------
+// Client instances
+// ---------------------------------------------------------------------------
+// We use separate clients for different cache profiles:
+//   - yfClient:        30s TTL — real-time quotes, search, options, news
+//   - yfHistoricalClient:  5min TTL — historical OHLCV, chart data
+//   - yfQuery2Client:  30s TTL — screener endpoint (query2 host)
+
+const YF_CLIENT_CONFIG = {
+  baseUrl: "https://query1.finance.yahoo.com",
+  userAgent: "Mozilla/5.0",
+  retry: { maxRetries: 3, baseDelayMs: 1000 },
+} as const;
+
+const yfClient = new ProviderHttpClient({
+  ...YF_CLIENT_CONFIG,
+  cache: { enabled: true, ttlMs: 30_000 },
+});
+
+const yfHistoricalClient = new ProviderHttpClient({
+  ...YF_CLIENT_CONFIG,
+  cache: { enabled: true, ttlMs: 300_000 }, // 5 minutes
+});
+
+const yfQuery2Client = new ProviderHttpClient({
+  baseUrl: "https://query2.finance.yahoo.com",
+  userAgent: "Mozilla/5.0",
+  retry: { maxRetries: 3, baseDelayMs: 1000 },
+  cache: { enabled: true, ttlMs: 30_000 },
+});
+
+// ---------------------------------------------------------------------------
+// Shared TypeScript interfaces (consumed by fetcher models)
+// ---------------------------------------------------------------------------
+
+/**
+ * Raw quote object returned by Yahoo Finance `/v7/finance/quote`.
+ * Each element in `quoteResponse.result` has this shape.
+ */
 export interface YahooFinanceQuote {
   symbol: string;
   regularMarketPrice?: number;
@@ -47,6 +94,9 @@ export interface YahooFinanceQuote {
   institutionsCount?: number;
 }
 
+/**
+ * A single historical OHLCV row from Yahoo Finance chart endpoints.
+ */
 export interface YahooFinanceHistoricalRow {
   date: string;
   open: number;
@@ -57,59 +107,97 @@ export interface YahooFinanceHistoricalRow {
   adjClose?: number;
 }
 
+// ---------------------------------------------------------------------------
+// Internal response shapes (not exported)
+// ---------------------------------------------------------------------------
+
+interface QuoteResponse {
+  quoteResponse: {
+    result: YahooFinanceQuote[];
+  };
+}
+
+interface ChartResponse {
+  chart: {
+    result?: Array<{
+      timestamp?: number[];
+      indicators?: {
+        quote?: Array<{
+          open?: number[];
+          high?: number[];
+          low?: number[];
+          close?: number[];
+          volume?: number[];
+        }>;
+        adjclose?: Array<{
+          adjclose?: number[];
+        }>;
+      };
+      events?: {
+        dividends?: Record<string, { amount: number; date: number }>;
+      };
+    }>;
+  };
+}
+
+interface SearchResponse {
+  quotes?: any[];
+  news?: any[];
+}
+
+interface QuoteSummaryResponse {
+  quoteSummary: {
+    result?: Array<Record<string, any>>;
+  };
+}
+
+interface ScreenerResponse {
+  finance: {
+    result?: Array<{
+      quotes?: any[];
+      total?: number;
+    }>;
+  };
+}
+
+interface OptionChainResponse {
+  optionChain: {
+    result?: any[];
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Quotes
+// ---------------------------------------------------------------------------
+
 /**
- * Fetch quotes from Yahoo Finance for one or more symbols.
+ * Fetch real-time quotes from Yahoo Finance for one or more symbols.
+ *
+ * Endpoint: `GET /v7/finance/quote?symbols=...`
  */
 export async function fetchQuotes(symbols: string[]): Promise<Record<string, YahooFinanceQuote>> {
   const symbolStr = symbols.join(",");
-  const url = `${YAHOO_FINANCE_BASE}/v7/finance/quote?symbols=${encodeURIComponent(symbolStr)}`;
-
-  const response = await fetch(url, {
-    headers: { "User-Agent": "Mozilla/5.0" },
+  const data = await yfClient.get<QuoteResponse>("/v7/finance/quote", {
+    symbols: symbolStr,
   });
 
-  if (!response.ok) {
-    if (response.status === 429) throw new RateLimitError("Yahoo Finance rate limit exceeded");
-    if (response.status === 401 || response.status === 403) throw new UnauthorizedError();
-    throw new Error(`Yahoo Finance API error: ${response.status} ${response.statusText}`);
-  }
-
-  const data = (await response.json()) as any;
   const result: Record<string, YahooFinanceQuote> = {};
-
   if (data?.quoteResponse?.result) {
     for (const quote of data.quoteResponse.result) {
-      result[quote.symbol] = quote as YahooFinanceQuote;
+      result[quote.symbol] = quote;
     }
   }
-
   return result;
 }
 
+// ---------------------------------------------------------------------------
+// Historical / Chart data
+// ---------------------------------------------------------------------------
+
 /**
- * Fetch historical OHLCV data from Yahoo Finance.
+ * Parse chart result timestamps + indicators into structured rows.
  */
-export async function fetchHistorical(
-  symbol: string,
-  interval: "1d" | "1wk" | "1mo" = "1d",
-  range: "1mo" | "3mo" | "6mo" | "1y" | "5y" | "max" = "1y",
-): Promise<YahooFinanceHistoricalRow[]> {
-  const url = `${YAHOO_FINANCE_BASE}/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${range}`;
-
-  const response = await fetch(url, {
-    headers: { "User-Agent": "Mozilla/5.0" },
-  });
-
-  if (!response.ok) {
-    if (response.status === 429) throw new RateLimitError("Yahoo Finance rate limit exceeded");
-    throw new Error(`Yahoo Finance API error: ${response.status} ${response.statusText}`);
-  }
-
-  const data = (await response.json()) as any;
-  const result = data?.chart?.result?.[0];
-
-  if (!result) return [];
-
+function parseChartResult(result: NonNullable<ChartResponse["chart"]["result"]>[number]): YahooFinanceHistoricalRow[] {
   const timestamps: number[] = result.timestamp ?? [];
   const quotes = result.indicators?.quote?.[0] ?? {};
   const adjclose = result.indicators?.adjclose?.[0]?.adjclose ?? [];
@@ -133,105 +221,35 @@ export async function fetchHistorical(
 }
 
 /**
- * Search symbols on Yahoo Finance.
+ * Fetch historical OHLCV data from Yahoo Finance.
+ *
+ * Endpoint: `GET /v8/finance/chart/{symbol}?interval=...&range=...`
+ *
+ * @param symbol   - Yahoo Finance ticker (e.g. `"AAPL"`, `"^GSPC"`)
+ * @param interval - Bar size: `"1d"`, `"1wk"`, or `"1mo"`
+ * @param range    - Look-back window
  */
-export async function searchSymbols(query: string): Promise<any[]> {
-  const url = `${YAHOO_FINANCE_BASE}/v1/finance/search?q=${encodeURIComponent(query)}`;
-
-  const response = await fetch(url, {
-    headers: { "User-Agent": "Mozilla/5.0" },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Yahoo Finance search error: ${response.status}`);
-  }
-
-  const data = (await response.json()) as any;
-  return data?.quotes ?? [];
+export async function fetchHistorical(
+  symbol: string,
+  interval: "1d" | "1wk" | "1mo" = "1d",
+  range: "1mo" | "3mo" | "6mo" | "1y" | "5y" | "max" = "1y",
+): Promise<YahooFinanceHistoricalRow[]> {
+  const data = await yfHistoricalClient.get<ChartResponse>(
+    `/v8/finance/chart/${encodeURIComponent(symbol)}`,
+    { interval, range },
+  );
+  const result = data?.chart?.result?.[0];
+  if (!result) return [];
+  return parseChartResult(result);
 }
 
 /**
- * Execute a Yahoo Finance screener POST request.
- * Used by: active, gainers, losers, aggressive_small_caps, growth_tech,
- * undervalued_growth, undervalued_large_caps, equity_screener
- */
-export async function fetchScreener(
-  body: Record<string, unknown>,
-  limit = 200,
-): Promise<any[]> {
-  const url = `${YAHOO_BASE_QUERY2}/v1/finance/screener`;
-  const params = new URLSearchParams({
-    corsDomain: "finance.yahoo.com",
-    formatted: "false",
-    lang: "en-US",
-    region: "US",
-  });
-
-  const results: any[] = [];
-  let offset = 0;
-
-  while (results.length < limit) {
-    const response = await fetch(`${url}?${params}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0",
-      },
-      body: JSON.stringify({ ...body, offset }),
-    });
-
-    if (!response.ok) {
-      if (response.status === 429) throw new RateLimitError("Yahoo Finance rate limit exceeded");
-      throw new Error(`Yahoo Finance screener error: ${response.status}`);
-    }
-
-    const data = (await response.json()) as any;
-    const result = data?.finance?.result?.[0];
-    const quotes: any[] = result?.quotes ?? [];
-    const total = result?.total ?? 0;
-
-    if (quotes.length === 0) break;
-
-    // Process earnings date
-    for (const quote of quotes) {
-      if (quote.earningsTimestamp) {
-        quote.earnings_date = new Date(quote.earningsTimestamp * 1000).toISOString();
-      }
-    }
-
-    results.push(...quotes);
-    if (results.length >= total || quotes.length < (body.size as number ?? 250)) break;
-  }
-
-  return results.slice(0, limit);
-}
-
-/**
- * Fetch key executives for a company from assetProfile.
- */
-export async function fetchKeyExecutives(symbol: string): Promise<any[]> {
-  const url = `${YAHOO_FINANCE_BASE}/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=assetProfile`;
-  const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
-  if (!response.ok) throw new Error(`Yahoo Finance error: ${response.status}`);
-  const data = (await response.json()) as any;
-  return data?.quoteSummary?.result?.[0]?.assetProfile?.companyOfficers ?? [];
-}
-
-/**
- * Fetch quoteSummary modules from Yahoo Finance.
- */
-export async function fetchQuoteSummary(symbol: string, modules: string): Promise<any> {
-  const url = `${YAHOO_FINANCE_BASE}/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=${modules}`;
-  const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
-  if (!response.ok) throw new Error(`Yahoo Finance error: ${response.status}`);
-  const data = (await response.json()) as any;
-  const result = data?.quoteSummary?.result?.[0];
-  if (!result) throw new EmptyDataError(`No data returned for ${symbol}`);
-  return result;
-}
-
-/**
- * Fetch chart data with custom period parameters.
+ * Fetch chart data with custom Unix-timestamp period bounds.
+ *
+ * Endpoint: `GET /v8/finance/chart/{symbol}?interval=...&period1=...&period2=...`
+ *
+ * Unlike {@link fetchHistorical} which uses a named range, this function
+ * accepts arbitrary start / end timestamps.
  */
 export async function fetchChartData(
   symbol: string,
@@ -239,36 +257,263 @@ export async function fetchChartData(
   period1?: number,
   period2?: number,
 ): Promise<YahooFinanceHistoricalRow[]> {
-  const params = new URLSearchParams({ interval });
-  if (period1) params.set("period1", String(period1));
-  if (period2) params.set("period2", String(period2));
+  const params: Record<string, string | number | undefined> = { interval };
+  if (period1 !== undefined) params.period1 = period1;
+  if (period2 !== undefined) params.period2 = period2;
 
-  const url = `${YAHOO_FINANCE_BASE}/v8/finance/chart/${encodeURIComponent(symbol)}?${params}`;
-  const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
-  if (!response.ok) throw new Error(`Yahoo Finance chart error: ${response.status}`);
-
-  const data = (await response.json()) as any;
+  const data = await yfHistoricalClient.get<ChartResponse>(
+    `/v8/finance/chart/${encodeURIComponent(symbol)}`,
+    params,
+  );
   const result = data?.chart?.result?.[0];
   if (!result) return [];
+  return parseChartResult(result);
+}
 
-  const timestamps: number[] = result.timestamp ?? [];
-  const quotes = result.indicators?.quote?.[0] ?? {};
-  const adjclose = result.indicators?.adjclose?.[0]?.adjclose ?? [];
-  const opens: number[] = quotes.open ?? [];
-  const highs: number[] = quotes.high ?? [];
-  const lows: number[] = quotes.low ?? [];
-  const closes: number[] = quotes.close ?? [];
-  const volumes: number[] = quotes.volume ?? [];
+// ---------------------------------------------------------------------------
+// Dividends (from chart events)
+// ---------------------------------------------------------------------------
 
-  return timestamps
-    .map((ts, i) => ({
-      date: new Date(ts * 1000).toISOString(),
-      open: opens[i] ?? 0,
-      high: highs[i] ?? 0,
-      low: lows[i] ?? 0,
-      close: closes[i] ?? 0,
-      volume: volumes[i] ?? 0,
-      adjClose: adjclose[i],
-    }))
-    .filter((row) => row.open > 0);
+/**
+ * Fetch historical dividends for a symbol via the chart endpoint.
+ *
+ * Endpoint: `GET /v8/finance/chart/{symbol}?interval=1d&range=max`
+ *
+ * Yahoo returns dividend events inside `chart.result[0].events.dividends`.
+ */
+export async function fetchDividends(
+  symbol: string,
+): Promise<Array<{ date: Date; dividend: number }>> {
+  const data = await yfHistoricalClient.get<ChartResponse>(
+    `/v8/finance/chart/${encodeURIComponent(symbol)}`,
+    { interval: "1d", range: "max" },
+  );
+  const events = data?.chart?.result?.[0]?.events?.dividends;
+  if (!events) return [];
+
+  const dividends: Array<{ date: Date; dividend: number }> = [];
+  for (const key of Object.keys(events)) {
+    const ev = events[key]!;
+    if (ev.amount && ev.date) {
+      dividends.push({
+        date: new Date(ev.date * 1000),
+        dividend: ev.amount,
+      });
+    }
+  }
+  return dividends;
+}
+
+// ---------------------------------------------------------------------------
+// Search
+// ---------------------------------------------------------------------------
+
+/**
+ * Search symbols on Yahoo Finance.
+ *
+ * Endpoint: `GET /v1/finance/search?q=...`
+ */
+export async function searchSymbols(query: string): Promise<any[]> {
+  const data = await yfClient.get<SearchResponse>("/v1/finance/search", {
+    q: query,
+  });
+  return data?.quotes ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// News
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch news articles for a symbol via the search endpoint.
+ *
+ * Endpoint: `GET /v1/finance/search?q=...` (same endpoint, but reads `news`)
+ */
+export async function fetchNews(symbol: string): Promise<any[]> {
+  const data = await yfClient.get<SearchResponse>("/v1/finance/search", {
+    q: symbol,
+  });
+  return data?.news ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// Screener
+// ---------------------------------------------------------------------------
+
+/**
+ * Execute a Yahoo Finance screener POST request.
+ *
+ * Endpoint: `POST https://query2.finance.yahoo.com/v1/finance/screener`
+ *
+ * Used by most predefined screener fetchers (active, gainers, losers, etc.)
+ * and the custom equity-screener.  Handles pagination internally.
+ */
+export async function fetchScreener(
+  body: Record<string, unknown>,
+  limit = 200,
+): Promise<any[]> {
+  const results: any[] = [];
+  let offset = 0;
+
+  while (results.length < limit) {
+    const data = await yfQuery2Client.request<ScreenerResponse>({
+      method: "POST",
+      path: "/v1/finance/screener",
+      queryParams: {
+        corsDomain: "finance.yahoo.com",
+        formatted: "false",
+        lang: "en-US",
+        region: "US",
+      },
+      body: { ...body, offset },
+    });
+
+    const result = data?.finance?.result?.[0];
+    const quotes: any[] = result?.quotes ?? [];
+    const total = result?.total ?? 0;
+
+    if (quotes.length === 0) break;
+
+    // Normalise earnings date
+    for (const quote of quotes) {
+      if (quote.earningsTimestamp) {
+        quote.earnings_date = new Date(quote.earningsTimestamp * 1000).toISOString();
+      }
+    }
+
+    results.push(...quotes);
+    if (results.length >= total || quotes.length < ((body.size as number) ?? 250)) break;
+    offset += quotes.length;
+  }
+
+  return results.slice(0, limit);
+}
+
+// ---------------------------------------------------------------------------
+// Key Executives
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch key executives for a company.
+ *
+ * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=assetProfile`
+ */
+export async function fetchKeyExecutives(symbol: string): Promise<any[]> {
+  const data = await yfClient.get<QuoteSummaryResponse>(
+    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    { modules: "assetProfile" },
+  );
+  return data?.quoteSummary?.result?.[0]?.assetProfile?.companyOfficers ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// Quote Summary (generic)
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch one or more quoteSummary modules from Yahoo Finance.
+ *
+ * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=...`
+ *
+ * @param symbol  - Ticker symbol
+ * @param modules - Comma-separated module names (e.g. `"assetProfile"`,
+ *                  `"defaultKeyStatistics,financialData"`)
+ * @returns The `result[0]` object containing all requested modules.
+ * @throws {@link EmptyDataError} when no data is returned.
+ */
+export async function fetchQuoteSummary(symbol: string, modules: string): Promise<any> {
+  const data = await yfClient.get<QuoteSummaryResponse>(
+    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    { modules },
+  );
+  const result = data?.quoteSummary?.result?.[0];
+  if (!result) throw new EmptyDataError(`No data returned for ${symbol}`);
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Options
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch options chain for a symbol.
+ *
+ * Endpoint: `GET /v7/finance/options/{symbol}?date={expiration}`
+ */
+export async function fetchOptions(symbol: string, expiration?: string): Promise<any[]> {
+  const path = `/v7/finance/options/${encodeURIComponent(symbol)}`;
+  const params = expiration ? { date: expiration } : undefined;
+
+  const data = await yfClient.get<OptionChainResponse>(path, params);
+  return data?.optionChain?.result ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// Income Statement
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch income statement history for a symbol.
+ *
+ * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=incomeStatementHistory`
+ */
+export async function fetchIncomeStatements(symbol: string): Promise<any[]> {
+  const data = await yfClient.get<QuoteSummaryResponse>(
+    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    { modules: "incomeStatementHistory" },
+  );
+  return data?.quoteSummary?.result?.[0]?.incomeStatementHistory?.incomeStatementHistory ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// Balance Sheet
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch balance sheet history for a symbol.
+ *
+ * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=balanceSheetHistory`
+ */
+export async function fetchBalanceSheets(symbol: string): Promise<any[]> {
+  const data = await yfClient.get<QuoteSummaryResponse>(
+    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    { modules: "balanceSheetHistory" },
+  );
+  return data?.quoteSummary?.result?.[0]?.balanceSheetHistory?.balanceSheetStatements ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// Cash Flow
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch cash flow statement history for a symbol.
+ *
+ * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=cashflowStatementHistory`
+ */
+export async function fetchCashFlowStatements(symbol: string): Promise<any[]> {
+  const data = await yfClient.get<QuoteSummaryResponse>(
+    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    { modules: "cashflowStatementHistory" },
+  );
+  return data?.quoteSummary?.result?.[0]?.cashflowStatementHistory?.cashflowStatements ?? [];
+}
+
+// ---------------------------------------------------------------------------
+// Futures Chain
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch futures chain for a symbol.
+ *
+ * Endpoint: `GET /v10/finance/quoteSummary/{symbol}=F?modules=futuresChain`
+ *
+ * Returns an array of futures contract ticker symbols.
+ */
+export async function fetchFuturesChain(symbol: string): Promise<string[]> {
+  const data = await yfClient.get<QuoteSummaryResponse>(
+    `/v10/finance/quoteSummary/${encodeURIComponent(symbol + "=F")}`,
+    { modules: "futuresChain" },
+  );
+  return data?.quoteSummary?.result?.[0]?.futuresChain?.futures ?? [];
 }
