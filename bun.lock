@@ -505,6 +505,7 @@
       "name": "@openmoney/shared",
       "version": "0.1.0",
       "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
         "zod": "^3.24.0",
       },
       "devDependencies": {
