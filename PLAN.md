@@ -489,41 +489,55 @@ All assumptions made for each phase are documented inline.
 
 ## Provider implementation plan
 
-### Provider matrix
+### Provider matrix — current status (updated)
 
-| Provider | Package | API Key | Rate Limit | Focus |
-|----------|---------|---------|------------|-------|
-| **Yahoo Finance** | `@openmoney/provider-yfinance` | ❌ Free | 2s between calls | Equities, ETFs, screeners, fundamentals — ✅ BUILT |
-| **Polygon.io** | `@openmoney/provider-polygon` | ✅ Required | 5 req/min (free) | Real-time + historical equities, forex, crypto, options |
-| **Alpha Vantage** | `@openmoney/provider-alphavantage` | ✅ Free tier | 5 req/min | Equities, forex, crypto, economic indicators |
-| **Financial Modeling Prep** | `@openmoney/provider-fmp` | ✅ Required | 300 req/day (free) | Fundamentals: financial statements, ratios, profiles |
-| **FRED** | `@openmoney/provider-fred` | ✅ Free | 120 req/min | Economic data: series, treasury, GDP, yield curve |
+| Provider | Package | Status | API Key | Focus Models |
+|----------|---------|--------|---------|--------------|
+| **Yahoo Finance** | `@openmoney/provider-yfinance` | ✅ **FULL** 29 models | ❌ Free | Equities, ETFs, screeners, forex, crypto, futures, indices |
+| **Alpha Vantage** | `@openmoney/provider-alphavantage` | ✅ **FULL** 7 models | ✅ Free tier | Equities, forex, crypto, economic indicators |
+| **Financial Modeling Prep** | `@openmoney/provider-fmp` | ✅ **FULL** 8 models | ✅ Required | Fundamentals: statements, ratios, profiles |
+| **FRED** | `@openmoney/provider-fred` | ✅ **FULL** 5 models | ✅ Free | Economic series, treasury, yield curve |
+| **SEC** | `@openmoney/provider-sec` | ✅ **FULL** 17 models | ❌ Free | Filings, insider trading, CIK map, FTD, institutions |
+| **TMX** | `@openmoney/provider-tmx` | ✅ **FULL** 23 models | ❌ Free | Canadian equities, ETFs, bonds, dividends |
+| **CBOE** | `@openmoney/provider-cboe` | ✅ **FULL** 10 models | ❌ Free | Options chains, futures, indices |
+| **Deribit** | `@openmoney/provider-deribit` | ✅ **FULL** 5 models | ❌ Free | Crypto options, futures |
+| **ECB** | `@openmoney/provider-ecb` | ✅ **FULL** 3 models | ❌ Free | Currency rates, yield curve, balance of payments |
+| **Finviz** | `@openmoney/provider-finviz` | ✅ **FULL** 6 models | ❌ Free | Screeners, profiles, key metrics, price targets |
+| **Government US** | `@openmoney/provider-government_us` | ✅ **FULL** 6 models | ❌ Free | Treasury prices, auctions, commodities, weather |
+| **NASDAQ** | `@openmoney/provider-nasdaq` | ✅ **FULL** 9 models | ❌ Free | Dividends, earnings, IPOs, screeners, retail |
+| **Polygon.io** | `@openmoney/provider-polygon` | ❌ **NOT STARTED** | ✅ Required | Real-time + historical equities, forex, crypto, options |
+| **Benzinga** | `@openmoney/provider-benzinga` | ⬜ **STUB** | ✅ Required | News, analyst ratings |
+| **BizToc** | `@openmoney/provider-biztoc` | ⬜ **STUB** | ❌ Free | Business news aggregation |
+| **BLS** | `@openmoney/provider-bls` | ⬜ **STUB** | ✅ Free | Labor statistics, employment, CPI |
+| **CFTC** | `@openmoney/provider-cftc` | ⬜ **STUB** | ❌ Free | COT reports, commitments of traders |
+| **Congress Gov** | `@openmoney/provider-congress_gov` | ⬜ **STUB** | ❌ Free | Congressional data, bills |
+| **EconDB** | `@openmoney/provider-econdb` | ⬜ **STUB** | ✅ Required | Global economic indicators |
+| **EIA** | `@openmoney/provider-eia` | ⬜ **STUB** | ✅ Free | Energy data, petroleum, natural gas |
+| **Fama-French** | `@openmoney/provider-famafrench` | ⬜ **STUB** | ❌ Free | Factor returns, portfolios |
+| **Federal Reserve** | `@openmoney/provider-federal_reserve` | ⬜ **STUB** | ❌ Free | Fed data, H.8, assets, liabilities |
+| **FINRA** | `@openmoney/provider-finra` | ⬜ **STUB** | ❌ Free | Short interest, trade reporting |
+| **IMF** | `@openmoney/provider-imf` | ⬜ **STUB** | ❌ Free | IMF data, DOTS, IFS |
+| **Intrinio** | `@openmoney/provider-intrinio` | ⬜ **STUB** | ✅ Required | Financial data, fundamentals |
+| **Multpl** | `@openmoney/provider-multpl` | ⬜ **STUB** | ❌ Free | Macro trends, Shiller PE |
+| **OECD** | `@openmoney/provider-oecd` | ⬜ **STUB** | ❌ Free | OECD economic data |
+| **Seeking Alpha** | `@openmoney/provider-seeking_alpha` | ⬜ **STUB** | ❌ Free | Earnings transcripts, ratings |
+| **Stockgrid** | `@openmoney/provider-stockgrid` | ⬜ **STUB** | ❌ Free | Dark pool, short volume |
+| **Tiingo** | `@openmoney/provider-tiingo` | ⬜ **STUB** | ✅ Required | Historical prices, fundamentals |
+| **Tradier** | `@openmoney/provider-tradier` | ⬜ **STUB** | ✅ Required | Options, equities, streaming |
+| **Trading Economics** | `@openmoney/provider-tradingeconomics` | ⬜ **STUB** | ✅ Required | Economic indicators, calendars |
+| **WSJ** | `@openmoney/provider-wsj` | ⬜ **STUB** | ❌ Free | News, markets data |
+
+### Summary
+
+| Category | Count |
+|----------|-------|
+| **TOTAL providers** | 33 |
+| **FULL (implemented)** | 12 |
+| **STUB (scaffold only)** | 20 |
+| **NOT STARTED** | 1 (Polygon.io) |
+| **REMAINING to build** | **21** |
 
 ### Package structure (each provider follows same pattern)
-
-```
-packages/providers/<name>/
-├── package.json              # name: "@openmoney/provider-<name>"
-├── tsconfig.json
-└── src/
-    ├── index.ts              # re-exports provider + models + utils
-    ├── <name>-provider.ts    # AbstractProvider config with fetcherMap
-    ├── models/
-    │   ├── index.ts          # re-exports all models
-    │   ├── equity-quote.ts   # extends standard schemas from @openmoney/shared
-    │   ├── equity-historical.ts
-    │   └── ...               # provider-specific models
-    └── utils/
-        ├── index.ts
-        └── api.ts            # HTTP helpers, provider-specific types, rate-limit handling
-```
-
-### Implementation order (per provider)
-
-1. **Polygon.io** — equity quote, equity historical, forex historical, crypto historical, options chains
-2. **Alpha Vantage** — equity quote, equity historical, forex, crypto, economic indicators
-3. **FMP** — equity quote, equity historical, equity profile, income statement, balance sheet, cash flow, financial ratios, key metrics
-4. **FRED** — FRED series, FRED search, treasury rates, yield curve, GDP
 
 ### Schema extension pattern
 

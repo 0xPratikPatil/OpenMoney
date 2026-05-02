@@ -1,1 +1,4 @@
-// Model barrel - filled in as models are implemented
+export * from "./economic-outlook";
+export * from "./gdp-data";
+export * from "./employment-data";
+export * from "./inflation-data";

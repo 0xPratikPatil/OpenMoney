@@ -1,1 +1,3 @@
-// Model barrel - filled in as models are implemented
+export * from "./news-search";
+export * from "./news-latest";
+export * from "./news-ticker";

@@ -1,1 +1,4 @@
-// Model barrel - filled in as models are implemented
+export * from "./bills";
+export * from "./hearings";
+export * from "./members";
+export * from "./nominations";

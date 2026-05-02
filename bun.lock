@@ -105,6 +105,390 @@
         "typescript": "^5.7.0",
       },
     },
+    "packages/providers/alphavantage": {
+      "name": "@openmoney/provider-alphavantage",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/benzinga": {
+      "name": "@openmoney/provider-benzinga",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/biztoc": {
+      "name": "@openmoney/provider-biztoc",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/bls": {
+      "name": "@openmoney/provider-bls",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/cboe": {
+      "name": "@openmoney/provider-cboe",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/cftc": {
+      "name": "@openmoney/provider-cftc",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/congress_gov": {
+      "name": "@openmoney/provider-congress_gov",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/deribit": {
+      "name": "@openmoney/provider-deribit",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/ecb": {
+      "name": "@openmoney/provider-ecb",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/econdb": {
+      "name": "@openmoney/provider-econdb",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/eia": {
+      "name": "@openmoney/provider-eia",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/famafrench": {
+      "name": "@openmoney/provider-famafrench",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/federal_reserve": {
+      "name": "@openmoney/provider-federal_reserve",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/finra": {
+      "name": "@openmoney/provider-finra",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/finviz": {
+      "name": "@openmoney/provider-finviz",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/fmp": {
+      "name": "@openmoney/provider-fmp",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/fred": {
+      "name": "@openmoney/provider-fred",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/government_us": {
+      "name": "@openmoney/provider-government_us",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/imf": {
+      "name": "@openmoney/provider-imf",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/intrinio": {
+      "name": "@openmoney/provider-intrinio",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/multpl": {
+      "name": "@openmoney/provider-multpl",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/nasdaq": {
+      "name": "@openmoney/provider-nasdaq",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/oecd": {
+      "name": "@openmoney/provider-oecd",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/polygon": {
+      "name": "@openmoney/provider-polygon",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/sec": {
+      "name": "@openmoney/provider-sec",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/seeking_alpha": {
+      "name": "@openmoney/provider-seeking_alpha",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/stockgrid": {
+      "name": "@openmoney/provider-stockgrid",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/tiingo": {
+      "name": "@openmoney/provider-tiingo",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/tmx": {
+      "name": "@openmoney/provider-tmx",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/tradier": {
+      "name": "@openmoney/provider-tradier",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/tradingeconomics": {
+      "name": "@openmoney/provider-tradingeconomics",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
+    "packages/providers/wsj": {
+      "name": "@openmoney/provider-wsj",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/provider-core": "workspace:*",
+        "@openmoney/shared": "workspace:*",
+        "zod": "^3.24.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.7.0",
+      },
+    },
     "packages/providers/yfinance": {
       "name": "@openmoney/provider-yfinance",
       "version": "0.0.1",
@@ -271,7 +655,71 @@
 
     "@openmoney/ingestion": ["@openmoney/ingestion@workspace:apps/ingestion"],
 
+    "@openmoney/provider-alphavantage": ["@openmoney/provider-alphavantage@workspace:packages/providers/alphavantage"],
+
+    "@openmoney/provider-benzinga": ["@openmoney/provider-benzinga@workspace:packages/providers/benzinga"],
+
+    "@openmoney/provider-biztoc": ["@openmoney/provider-biztoc@workspace:packages/providers/biztoc"],
+
+    "@openmoney/provider-bls": ["@openmoney/provider-bls@workspace:packages/providers/bls"],
+
+    "@openmoney/provider-cboe": ["@openmoney/provider-cboe@workspace:packages/providers/cboe"],
+
+    "@openmoney/provider-cftc": ["@openmoney/provider-cftc@workspace:packages/providers/cftc"],
+
+    "@openmoney/provider-congress_gov": ["@openmoney/provider-congress_gov@workspace:packages/providers/congress_gov"],
+
     "@openmoney/provider-core": ["@openmoney/provider-core@workspace:packages/provider-core"],
+
+    "@openmoney/provider-deribit": ["@openmoney/provider-deribit@workspace:packages/providers/deribit"],
+
+    "@openmoney/provider-ecb": ["@openmoney/provider-ecb@workspace:packages/providers/ecb"],
+
+    "@openmoney/provider-econdb": ["@openmoney/provider-econdb@workspace:packages/providers/econdb"],
+
+    "@openmoney/provider-eia": ["@openmoney/provider-eia@workspace:packages/providers/eia"],
+
+    "@openmoney/provider-famafrench": ["@openmoney/provider-famafrench@workspace:packages/providers/famafrench"],
+
+    "@openmoney/provider-federal_reserve": ["@openmoney/provider-federal_reserve@workspace:packages/providers/federal_reserve"],
+
+    "@openmoney/provider-finra": ["@openmoney/provider-finra@workspace:packages/providers/finra"],
+
+    "@openmoney/provider-finviz": ["@openmoney/provider-finviz@workspace:packages/providers/finviz"],
+
+    "@openmoney/provider-fmp": ["@openmoney/provider-fmp@workspace:packages/providers/fmp"],
+
+    "@openmoney/provider-fred": ["@openmoney/provider-fred@workspace:packages/providers/fred"],
+
+    "@openmoney/provider-government_us": ["@openmoney/provider-government_us@workspace:packages/providers/government_us"],
+
+    "@openmoney/provider-imf": ["@openmoney/provider-imf@workspace:packages/providers/imf"],
+
+    "@openmoney/provider-intrinio": ["@openmoney/provider-intrinio@workspace:packages/providers/intrinio"],
+
+    "@openmoney/provider-multpl": ["@openmoney/provider-multpl@workspace:packages/providers/multpl"],
+
+    "@openmoney/provider-nasdaq": ["@openmoney/provider-nasdaq@workspace:packages/providers/nasdaq"],
+
+    "@openmoney/provider-oecd": ["@openmoney/provider-oecd@workspace:packages/providers/oecd"],
+
+    "@openmoney/provider-polygon": ["@openmoney/provider-polygon@workspace:packages/providers/polygon"],
+
+    "@openmoney/provider-sec": ["@openmoney/provider-sec@workspace:packages/providers/sec"],
+
+    "@openmoney/provider-seeking_alpha": ["@openmoney/provider-seeking_alpha@workspace:packages/providers/seeking_alpha"],
+
+    "@openmoney/provider-stockgrid": ["@openmoney/provider-stockgrid@workspace:packages/providers/stockgrid"],
+
+    "@openmoney/provider-tiingo": ["@openmoney/provider-tiingo@workspace:packages/providers/tiingo"],
+
+    "@openmoney/provider-tmx": ["@openmoney/provider-tmx@workspace:packages/providers/tmx"],
+
+    "@openmoney/provider-tradier": ["@openmoney/provider-tradier@workspace:packages/providers/tradier"],
+
+    "@openmoney/provider-tradingeconomics": ["@openmoney/provider-tradingeconomics@workspace:packages/providers/tradingeconomics"],
+
+    "@openmoney/provider-wsj": ["@openmoney/provider-wsj@workspace:packages/providers/wsj"],
 
     "@openmoney/provider-yfinance": ["@openmoney/provider-yfinance@workspace:packages/providers/yfinance"],
 

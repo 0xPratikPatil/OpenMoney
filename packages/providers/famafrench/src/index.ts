@@ -1,1 +1,3 @@
-// Provider entry point - implemented per provider
+export { famafrenchProvider } from "./famafrench-provider";
+export * from "./models";
+export * from "./utils";

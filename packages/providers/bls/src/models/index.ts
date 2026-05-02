@@ -1,1 +1,4 @@
-// Model barrel - filled in as models are implemented
+export * from "./cpi";
+export * from "./employment";
+export * from "./ppi";
+export * from "./unemployment";

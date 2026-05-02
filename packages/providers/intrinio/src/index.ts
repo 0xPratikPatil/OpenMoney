@@ -1,1 +1,3 @@
-// Provider entry point - implemented per provider
+export { intrinioProvider } from "./intrinio-provider";
+export * from "./models";
+export * from "./utils";
