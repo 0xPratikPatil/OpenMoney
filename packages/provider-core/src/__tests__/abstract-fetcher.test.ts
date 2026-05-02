@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import { z } from "zod";
-import { AbstractFetcher, UnauthorizedError, ProviderError } from "../abstract/abstract-fetcher";
+import {
+  AbstractFetcher,
+  UnauthorizedError,
+  ProviderError,
+} from "../abstract/abstract-fetcher";
 import { AbstractProvider } from "../abstract/abstract-provider";
 import { ProviderRegistry } from "../registry";
 import { QueryExecutor } from "../query-executor";
@@ -31,7 +35,7 @@ class TestFetcher extends AbstractFetcher<typeof TestQueryParams, typeof TestDat
   async extractData(query: z.infer<typeof TestQueryParams>) {
     return [
       { s: query.symbol, p: 150.25, v: 1000000 },
-      { s: query.symbol, p: 151.00, v: 1200000 },
+      { s: query.symbol, p: 151.0, v: 1200000 },
     ];
   }
 
@@ -46,10 +50,12 @@ class TestFetcher extends AbstractFetcher<typeof TestQueryParams, typeof TestDat
     );
   }
 }
+TestFetcher.initTypeMetadata(TestQueryParams, z.array(TestData), TestData);
 
 class AuthRequiredFetcher extends TestFetcher {
   requireCredentials = true;
 }
+AuthRequiredFetcher.initTypeMetadata(TestQueryParams, z.array(TestData), TestData);
 
 describe("AbstractFetcher", () => {
   it("should execute TET pipeline and return typed data", async () => {
@@ -70,6 +76,55 @@ describe("AbstractFetcher", () => {
     const fetcher = new TestFetcher();
     const query = await fetcher.transformQuery({ symbol: "goog" });
     expect(query.limit).toBe(100);
+  });
+});
+
+describe("AbstractFetcher.test()", () => {
+  it("should pass test() on a valid fetcher", async () => {
+    const fetcher = new TestFetcher();
+    await expect(
+      fetcher.test({ symbol: "aapl", limit: 50 }),
+    ).resolves.toBeUndefined();
+  });
+
+  it("should fail test() when require_credentials is not boolean", async () => {
+    const fetcher = new TestFetcher();
+    Object.defineProperty(fetcher, "requireCredentials", { value: "yes" });
+    await expect(
+      fetcher.test({ symbol: "aapl" }),
+    ).rejects.toThrow(ProviderError);
+  });
+
+  it("should fail test() when extractData returns null", async () => {
+    const fetcher = new (class extends AbstractFetcher<typeof TestQueryParams, typeof TestData> {
+      requireCredentials = false;
+      async transformQuery(params: z.input<typeof TestQueryParams>) {
+        return { symbol: params.symbol.toUpperCase(), limit: params.limit ?? 100 };
+      }
+      async extractData() {
+        return null;
+      }
+      async transformData(_raw: unknown) {
+        return [];
+      }
+    })();
+    await expect(fetcher.test({ symbol: "aapl" })).rejects.toThrow(ProviderError);
+  });
+
+  it("should fail test() when transformData returns empty array", async () => {
+    const fetcher = new (class extends AbstractFetcher<typeof TestQueryParams, typeof TestData> {
+      requireCredentials = false;
+      async transformQuery(params: z.input<typeof TestQueryParams>) {
+        return { symbol: params.symbol.toUpperCase(), limit: params.limit ?? 100 };
+      }
+      async extractData() {
+        return [{ s: "AAPL", p: 150.0, v: 1000 }];
+      }
+      async transformData() {
+        return [];
+      }
+    })();
+    await expect(fetcher.test({ symbol: "aapl" })).rejects.toThrow(ProviderError);
   });
 });
 
