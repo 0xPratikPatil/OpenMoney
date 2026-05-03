@@ -1,0 +1,16 @@
+{
+  "name": "openmoney",
+  "homepage": "https://github.com/0xPratikPatil/OpenMoney",
+  "items": [
+    { "name": "metric-block", "type": "registry:component", "files": [{ "path": "src/components/openmoney/metric-block.tsx", "type": "registry:component" }] },
+    { "name": "position-table", "type": "registry:component", "files": [{ "path": "src/components/openmoney/position-table.tsx", "type": "registry:component" }] },
+    { "name": "risk-gauge", "type": "registry:component", "files": [{ "path": "src/components/openmoney/risk-gauge.tsx", "type": "registry:component" }] },
+    { "name": "signal-card", "type": "registry:component", "files": [{ "path": "src/components/openmoney/signal-card.tsx", "type": "registry:component" }] },
+    { "name": "price-chart", "type": "registry:component", "files": [{ "path": "src/components/openmoney/price-chart.tsx", "type": "registry:component" }] },
+    { "name": "allocation-pie", "type": "registry:component", "files": [{ "path": "src/components/openmoney/allocation-pie.tsx", "type": "registry:component" }] },
+    { "name": "sidebar", "type": "registry:component", "files": [{ "path": "src/components/openmoney/sidebar.tsx", "type": "registry:component" }] },
+    { "name": "topbar", "type": "registry:component", "files": [{ "path": "src/components/openmoney/topbar.tsx", "type": "registry:component" }] },
+    { "name": "app-shell", "type": "registry:component", "files": [{ "path": "src/components/openmoney/layout.tsx", "type": "registry:component" }] },
+    { "name": "slide-in-panel", "type": "registry:component", "files": [{ "path": "src/components/openmoney/slide-in-panel.tsx", "type": "registry:component" }] }
+  ]
+}
