@@ -1,0 +1,16 @@
+FROM oven/bun:1.2 AS base
+WORKDIR /app
+
+COPY package.json bun.lock tsconfig.base.json ./
+COPY packages/shared/package.json packages/shared/
+COPY packages/config/package.json packages/config/
+COPY packages/database/package.json packages/database/
+COPY apps/quant-engine/package.json apps/quant-engine/
+
+RUN bun install --frozen-lockfile
+
+COPY packages packages
+COPY apps/quant-engine apps/quant-engine
+
+EXPOSE 4002
+CMD ["bun", "run", "--cwd", "apps/quant-engine", "dev"]

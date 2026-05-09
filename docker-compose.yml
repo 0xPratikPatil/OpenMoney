@@ -1,8 +1,10 @@
 version: "3.9"
 
+name: openmoney
+
 services:
   db:
-    image: timescale/timescaledb:latest-pg15
+    image: timescaledb/timescaledb:latest-pg15
     container_name: openmoney-db
     restart: unless-stopped
     environment:
@@ -12,9 +14,10 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - openmoney-db-data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init-timescaledb.sql:/docker-entrypoint-initdb.d/init-timescaledb.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d openmoney"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -25,14 +28,138 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-    volumes:
-      - openmoney-redis-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 5
 
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.api
+    container_name: openmoney-api
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/openmoney
+      REDIS_URL: redis://redis:6379
+      BETTER_AUTH_SECRET: dev-secret-do-not-use-in-production
+      BETTER_AUTH_URL: http://localhost:4000
+      PORT: "4000"
+      QUANT_PYTHON_URL: http://python-quant:5000
+      YFINANCE_ENABLED: "true"
+      YFINANCE_RATE_LIMIT_MS: "2000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+      - ./packages:/app/packages
+
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.web
+    container_name: openmoney-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_WS_URL: ws://localhost:4000
+      DATABASE_URL: postgres://postgres:postgres@db:5432/openmoney
+      REDIS_URL: redis://redis:6379
+      BETTER_AUTH_SECRET: dev-secret-do-not-use-in-production
+      BETTER_AUTH_URL: http://localhost:4000
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+      - ./packages:/app/packages
+
+  ingestion:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.ingestion
+    container_name: openmoney-ingestion
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/openmoney
+      REDIS_URL: redis://redis:6379
+      YFINANCE_ENABLED: "true"
+      YFINANCE_RATE_LIMIT_MS: "2000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/ingestion/src:/app/apps/ingestion/src
+      - ./packages:/app/packages
+
+  quant-engine:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.quant-engine
+    container_name: openmoney-quant-engine
+    restart: unless-stopped
+    ports:
+      - "4002:4002"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/openmoney
+      REDIS_URL: redis://redis:6379
+      PORT: "4002"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/quant-engine/src:/app/apps/quant-engine/src
+      - ./packages:/app/packages
+
+  notification:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.notification
+    container_name: openmoney-notification
+    restart: unless-stopped
+    ports:
+      - "4003:4003"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/openmoney
+      REDIS_URL: redis://redis:6379
+      PORT: "4003"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/notification/src:/app/apps/notification/src
+      - ./packages:/app/packages
+
+  python-quant:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.quant-python
+    container_name: openmoney-python-quant
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./apps/quant-python:/app/apps/quant-python
+
 volumes:
-  openmoney-db-data:
-  openmoney-redis-data:
+  pgdata:

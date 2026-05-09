@@ -1,0 +1,16 @@
+FROM oven/bun:1.2 AS base
+WORKDIR /app
+
+COPY package.json bun.lock tsconfig.base.json ./
+COPY packages/shared/package.json packages/shared/
+COPY packages/config/package.json packages/config/
+COPY packages/database/package.json packages/database/
+COPY apps/notification/package.json apps/notification/
+
+RUN bun install --frozen-lockfile
+
+COPY packages packages
+COPY apps/notification apps/notification
+
+EXPOSE 4003
+CMD ["bun", "run", "--cwd", "apps/notification", "dev"]

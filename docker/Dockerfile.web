@@ -1,14 +1,62 @@
 FROM oven/bun:1.2 AS base
 WORKDIR /app
 
+# Copy root package files
 COPY package.json bun.lock tsconfig.base.json ./
+
+# Copy all workspace package.json files for dependency resolution
 COPY packages/shared/package.json packages/shared/
 COPY packages/config/package.json packages/config/
 COPY packages/database/package.json packages/database/
+COPY packages/provider-core/package.json packages/provider-core/
+COPY packages/openmoney-ui/package.json packages/openmoney-ui/
+
+# Copy all app package.json files
+COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
+COPY apps/ingestion/package.json apps/ingestion/
+COPY apps/quant-engine/package.json apps/quant-engine/
+COPY apps/notification/package.json apps/notification/
+COPY apps/docs/package.json apps/docs/
+
+# Copy provider package.json files
+COPY packages/providers/alphavantage/package.json packages/providers/alphavantage/
+COPY packages/providers/benzinga/package.json packages/providers/benzinga/
+COPY packages/providers/biztoc/package.json packages/providers/biztoc/
+COPY packages/providers/bls/package.json packages/providers/bls/
+COPY packages/providers/cboe/package.json packages/providers/cboe/
+COPY packages/providers/cftc/package.json packages/providers/cftc/
+COPY packages/providers/congress_gov/package.json packages/providers/congress_gov/
+COPY packages/providers/deribit/package.json packages/providers/deribit/
+COPY packages/providers/ecb/package.json packages/providers/ecb/
+COPY packages/providers/econdb/package.json packages/providers/econdb/
+COPY packages/providers/eia/package.json packages/providers/eia/
+COPY packages/providers/famafrench/package.json packages/providers/famafrench/
+COPY packages/providers/federal_reserve/package.json packages/providers/federal_reserve/
+COPY packages/providers/finra/package.json packages/providers/finra/
+COPY packages/providers/finviz/package.json packages/providers/finviz/
+COPY packages/providers/fmp/package.json packages/providers/fmp/
+COPY packages/providers/fred/package.json packages/providers/fred/
+COPY packages/providers/government_us/package.json packages/providers/government_us/
+COPY packages/providers/imf/package.json packages/providers/imf/
+COPY packages/providers/intrinio/package.json packages/providers/intrinio/
+COPY packages/providers/multpl/package.json packages/providers/multpl/
+COPY packages/providers/nasdaq/package.json packages/providers/nasdaq/
+COPY packages/providers/oecd/package.json packages/providers/oecd/
+COPY packages/providers/polygon/package.json packages/providers/polygon/
+COPY packages/providers/sec/package.json packages/providers/sec/
+COPY packages/providers/seeking_alpha/package.json packages/providers/seeking_alpha/
+COPY packages/providers/stockgrid/package.json packages/providers/stockgrid/
+COPY packages/providers/tiingo/package.json packages/providers/tiingo/
+COPY packages/providers/tmx/package.json packages/providers/tmx/
+COPY packages/providers/tradier/package.json packages/providers/tradier/
+COPY packages/providers/tradingeconomics/package.json packages/providers/tradingeconomics/
+COPY packages/providers/wsj/package.json packages/providers/wsj/
+COPY packages/providers/yfinance/package.json packages/providers/yfinance/
 
 RUN bun install --frozen-lockfile
 
+# Copy source
 COPY packages packages
 COPY apps/web apps/web
 

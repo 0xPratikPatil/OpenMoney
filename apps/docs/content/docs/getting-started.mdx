@@ -1,0 +1,18 @@
+# Getting Started
+
+## Prerequisites
+
+- Bun 1.2+
+- Docker (for PostgreSQL + TimescaleDB + Redis)
+
+## Quick Start
+
+1. Clone the repo
+2. Run `bun install`
+3. Start infrastructure: `docker compose up -d db redis`
+4. Run migrations: `bun run db:migrate`
+5. Start dev: `bun run dev`
+
+## Architecture
+
+OpenMoney follows a microservices architecture with a shared package layer.
