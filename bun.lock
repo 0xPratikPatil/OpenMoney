@@ -41,6 +41,19 @@
         "typescript": "^5.7.0",
       },
     },
+    "apps/docs": {
+      "name": "@openmoney/docs",
+      "version": "0.0.1",
+      "dependencies": {
+        "next": "^15.0.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+      },
+      "devDependencies": {
+        "@types/react": "^19.0.0",
+        "typescript": "^5.7.0",
+      },
+    },
     "apps/ingestion": {
       "name": "@openmoney/ingestion",
       "version": "0.1.0",
@@ -53,6 +66,15 @@
       },
       "devDependencies": {
         "typescript": "^5.7.0",
+      },
+    },
+    "apps/notification": {
+      "name": "@openmoney/notification",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/config": "workspace:*",
+        "@openmoney/database": "workspace:*",
+        "hono": "^4.0.0",
       },
     },
     "apps/quant-engine": {
@@ -834,7 +856,11 @@
 
     "@openmoney/database": ["@openmoney/database@workspace:packages/database"],
 
+    "@openmoney/docs": ["@openmoney/docs@workspace:apps/docs"],
+
     "@openmoney/ingestion": ["@openmoney/ingestion@workspace:apps/ingestion"],
+
+    "@openmoney/notification": ["@openmoney/notification@workspace:apps/notification"],
 
     "@openmoney/provider-alphavantage": ["@openmoney/provider-alphavantage@workspace:packages/providers/alphavantage"],
 
