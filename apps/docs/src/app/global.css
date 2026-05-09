@@ -1,46 +1,162 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
-@import 'fumadocs-ui/css/preset.css';
-
-/* Dark mode — match OpenMoney brand */
-.dark {
-  --color-fd-background: hsl(0, 0%, 95%);
-  --color-fd-foreground: hsl(0, 0%, 4%);
-  --color-fd-muted: hsl(0, 0%, 96%);
-  --color-fd-muted-foreground: hsl(0, 0%, 45%);
-  --color-fd-badge: hsl(0, 0%, 93%);
-  --color-fd-badge-foreground: hsl(0, 0%, 30%);
-  --color-fd-card: hsl(0, 0%, 97%);
-  --color-fd-card-foreground: hsl(0, 0%, 4%);
-  --color-fd-popover: hsl(0, 0%, 98%);
-  --color-fd-popover-foreground: hsl(0, 0%, 4%);
-  --color-fd-secondary: hsl(0, 0%, 93%);
-  --color-fd-secondary-foreground: hsl(0, 0%, 9%);
-  --color-fd-primary: hsl(0, 0%, 9%);
-  --color-fd-primary-foreground: hsl(0, 0%, 98%);
-  --color-fd-accent: hsl(0, 0%, 93%);
-  --color-fd-accent-foreground: hsl(0, 0%, 9%);
-  --color-fd-ring: hsl(0, 0%, 63%);
-  --color-fd-border: hsl(0, 0%, 85%);
+* {
+  box-sizing: border-box;
 }
 
-:root {
-  --color-fd-background: hsl(0, 0%, 4%);
-  --color-fd-foreground: hsl(0, 0%, 92%);
-  --color-fd-muted: hsl(0, 0%, 10%);
-  --color-fd-muted-foreground: hsl(0, 0%, 60%);
-  --color-fd-badge: hsl(0, 0%, 10%);
-  --color-fd-badge-foreground: hsl(0, 0%, 70%);
-  --color-fd-card: hsl(0, 0%, 6%);
-  --color-fd-card-foreground: hsl(0, 0%, 92%);
-  --color-fd-popover: hsl(0, 0%, 6%);
-  --color-fd-popover-foreground: hsl(0, 0%, 92%);
-  --color-fd-secondary: hsl(0, 0%, 14%);
-  --color-fd-secondary-foreground: hsl(0, 0%, 92%);
-  --color-fd-primary: hsl(0, 0%, 92%);
-  --color-fd-primary-foreground: hsl(0, 0%, 4%);
-  --color-fd-accent: hsl(0, 0%, 14%);
-  --color-fd-accent-foreground: hsl(0, 0%, 92%);
-  --color-fd-ring: hsl(0, 0%, 40%);
-  --color-fd-border: hsl(0, 0%, 18%);
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sidebar */
+.docs-sidebar {
+  width: 260px;
+  border-right: 1px solid #26262E;
+  padding: 1.5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: #0C0C0F;
+}
+
+.docs-sidebar h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.docs-sidebar a {
+  display: block;
+  padding: 0.35rem 0;
+  color: #8E8D96;
+  text-decoration: none;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.docs-sidebar a:hover {
+  color: #F0EFED;
+}
+
+.docs-sidebar a.active {
+  color: #F0EFED;
+  font-weight: 500;
+}
+
+/* Main content */
+.docs-main {
+  margin-left: 260px;
+  padding: 3rem 4rem;
+  max-width: 800px;
+}
+
+.docs-main h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.docs-main h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 2.5rem 0 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #26262E;
+}
+
+.docs-main h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.docs-main p {
+  line-height: 1.7;
+  color: #D0CFCE;
+  margin: 0 0 1rem;
+}
+
+.docs-main code {
+  background: #1E1E26;
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  color: #E8E8F0;
+}
+
+.docs-main pre {
+  background: #1E1E26;
+  padding: 1.25rem;
+  border-radius: 6px;
+  border: 1px solid #26262E;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 1rem 0;
+}
+
+.docs-main pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.docs-main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.docs-main th {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #26262E;
+  font-weight: 600;
+  color: #8E8D96;
+}
+
+.docs-main td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #1E1E26;
+}
+
+.docs-main a {
+  color: #059669;
+  text-decoration: none;
+}
+
+.docs-main a:hover {
+  text-decoration: underline;
+}
+
+.docs-main ul, .docs-main ol {
+  line-height: 1.7;
+  color: #D0CFCE;
+  padding-left: 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.docs-main li {
+  margin-bottom: 0.3rem;
+}
+
+.docs-main blockquote {
+  border-left: 3px solid #059669;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background: rgba(5, 150, 105, 0.05);
+  border-radius: 0 4px 4px 0;
+  font-style: italic;
+  color: #D0CFCE;
+}
+
+.docs-main hr {
+  border: none;
+  border-top: 1px solid #26262E;
+  margin: 2rem 0;
 }
