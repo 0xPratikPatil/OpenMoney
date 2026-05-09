@@ -1,0 +1,15 @@
+{
+  "name": "@openmoney/notification",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.0.0",
+    "@openmoney/config": "workspace:*",
+    "@openmoney/database": "workspace:*"
+  }
+}

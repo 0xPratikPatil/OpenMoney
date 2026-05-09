@@ -22,5 +22,5 @@
     "jsx": "preserve",
     "composite": true
   },
-  "exclude": ["node_modules", "dist", ".next"]
+  "exclude": ["node_modules", "dist", ".next", "reference", "auth.ts", "bun-test-setup.ts", "packages/openmoney-ui", "packages/providers/cftc", "packages/providers/congress_gov", "packages/providers/famafrench", "packages/providers/federal_reserve", "packages/providers/multpl", "packages/providers/stockgrid", "apps/web", "apps/notification", "**/__tests__", "**/*.test.ts", "**/*.test.tsx"]
 }

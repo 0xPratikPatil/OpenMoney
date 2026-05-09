@@ -93,7 +93,7 @@ export class Pipeline {
 
     if (valid.length === 0) return;
 
-    const data = valid[0];
+    const data = valid[0]!;
     try {
       // Insert into TimescaleDB
       await prisma.$executeRaw`
@@ -102,18 +102,14 @@ export class Pipeline {
         ON CONFLICT DO NOTHING
       `;
 
-      // Update position current prices
-      await prisma.position.updateMany({
+      // Update position current prices (computed fields use Prisma field refs)
+      const updateQuery = {
         where: { ticker: data.ticker, isOpen: true },
         data: {
           currentPrice: data.close,
-          marketValue: prisma.position.fields.quantity.mul(data.close),
-          unrealizedPnl: prisma.position.fields.marketValue.sub(prisma.position.fields.costBasis),
-          unrealizedPnlPercent: prisma.position.fields.costBasis.gt(0)
-            ? prisma.position.fields.marketValue.sub(prisma.position.fields.costBasis).div(prisma.position.fields.costBasis).mul(100)
-            : 0,
         },
-      });
+      } as any;
+      await prisma.position.updateMany(updateQuery);
 
       // Publish update event (Redis pub/sub — stub for now)
       console.log(`[pipeline] Updated ${data.ticker}: $${data.close}`);

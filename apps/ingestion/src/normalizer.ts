@@ -30,7 +30,7 @@ export class Normalizer {
 
       // Anomaly detection: price move > 50% in one period
       if (valid.length > 0) {
-        const prev = valid[valid.length - 1];
+        const prev = valid[valid.length - 1]!;
         const change = Math.abs((row.close - prev.close) / prev.close);
         if (change > 0.5) {
           issues.push(`Anomaly: ${(change * 100).toFixed(1)}% price move`);

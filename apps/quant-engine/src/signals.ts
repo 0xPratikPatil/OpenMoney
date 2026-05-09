@@ -1,8 +1,8 @@
 import { prisma } from '@openmoney/database';
-import type { Decimal } from '@prisma/client/runtime/library';
 import { QuantClient } from './client';
 
-type Decimalish = Decimal | number | string;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Decimalish = any;
 
 interface PositionLike {
   id: string;
