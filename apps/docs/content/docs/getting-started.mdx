@@ -1,18 +1,46 @@
-# Getting Started
+---
+title: Getting Started
+description: Install and run OpenMoney on your machine.
+---
 
 ## Prerequisites
 
-- Bun 1.2+
-- Docker (for PostgreSQL + TimescaleDB + Redis)
+- **Bun** 1.2+ — JavaScript runtime and package manager
+- **Docker** — for PostgreSQL (with TimescaleDB) and Redis
 
 ## Quick Start
 
-1. Clone the repo
-2. Run `bun install`
-3. Start infrastructure: `docker compose up -d db redis`
-4. Run migrations: `bun run db:migrate`
-5. Start dev: `bun run dev`
+```bash
+# Clone the repository
+git clone https://github.com/0xPratikPatil/OpenMoney.git
+cd openmoney
 
-## Architecture
+# Install dependencies
+bun install
 
-OpenMoney follows a microservices architecture with a shared package layer.
+# Start infrastructure
+docker compose up -d db redis
+
+# Run database migrations
+bun run db:migrate
+
+# Start development
+bun run dev
+```
+
+The API starts on **port 4000**, the web app on **port 3000**.
+
+## Running Individual Services
+
+```bash
+bun run dev:api           # Hono API server (port 4000)
+bun run dev:web           # Next.js frontend (port 3000)
+bun run dev:docs          # Documentation site (port 3001)
+bun run dev:ingestion     # Market data ingestion worker
+bun run dev:quant         # Quant engine
+bun run dev:notification  # Notification service (port 4003)
+```
+
+## Environment Variables
+
+See `.env.example` for all environment variables. The defaults work for local development.

@@ -1,0 +1,52 @@
+---
+title: Architecture
+description: System architecture and service boundaries.
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 15 (App Router), TypeScript, Tailwind CSS |
+| Backend API | Hono 4 (Bun runtime) |
+| Database | PostgreSQL + TimescaleDB |
+| Auth | better-auth with Prisma |
+| Cache / Real-time | Redis |
+| Quant Engine | TypeScript + Python bridge |
+
+## Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| `openmoney-api` | 4000 | Main Hono API server: routes, auth middleware, rate limiting |
+| `openmoney-web` | 3000 | Next.js frontend: dashboard, portfolio, risk views, journal |
+| `openmoney-ingestion` | — | Market data pipeline: WebSocket, REST pollers, normalization |
+| `openmoney-quant` | 4002 | Risk metrics, indicators, signal generation, recommendations |
+| `openmoney-notify` | 4003 | Email, web push, WebSocket alerts |
+| `openmoney-docs` | 3001 | Documentation site |
+
+## Monorepo Structure
+
+```
+apps/          — Deployable applications
+packages/      — Shared libraries
+  shared/      — Zod schemas, TypeScript types
+  database/    — Prisma schema and client
+  config/      — Shared configuration
+  provider-core/ — Data provider infrastructure
+  openmoney-ui/ — Design system and UI components
+docker/        — Dockerfiles and Compose
+```
+
+## Provider Architecture
+
+OpenMoney uses an **OpenBB-inspired provider adapter pattern**:
+- Every data source implements a common interface
+- Multiple providers can serve the same data type
+- Users configure provider priority per data type
+- Adding a new provider means writing one adapter class
+
+```typescript
+// Example: Fetch historical equity data
+GET /api/equity/historical?symbol=AAPL&provider=polygon
+```

@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/* Dark mode — match OpenMoney brand */
+.dark {
+  --color-fd-background: hsl(0, 0%, 95%);
+  --color-fd-foreground: hsl(0, 0%, 4%);
+  --color-fd-muted: hsl(0, 0%, 96%);
+  --color-fd-muted-foreground: hsl(0, 0%, 45%);
+  --color-fd-badge: hsl(0, 0%, 93%);
+  --color-fd-badge-foreground: hsl(0, 0%, 30%);
+  --color-fd-card: hsl(0, 0%, 97%);
+  --color-fd-card-foreground: hsl(0, 0%, 4%);
+  --color-fd-popover: hsl(0, 0%, 98%);
+  --color-fd-popover-foreground: hsl(0, 0%, 4%);
+  --color-fd-secondary: hsl(0, 0%, 93%);
+  --color-fd-secondary-foreground: hsl(0, 0%, 9%);
+  --color-fd-primary: hsl(0, 0%, 9%);
+  --color-fd-primary-foreground: hsl(0, 0%, 98%);
+  --color-fd-accent: hsl(0, 0%, 93%);
+  --color-fd-accent-foreground: hsl(0, 0%, 9%);
+  --color-fd-ring: hsl(0, 0%, 63%);
+  --color-fd-border: hsl(0, 0%, 85%);
+}
+
+:root {
+  --color-fd-background: hsl(0, 0%, 4%);
+  --color-fd-foreground: hsl(0, 0%, 92%);
+  --color-fd-muted: hsl(0, 0%, 10%);
+  --color-fd-muted-foreground: hsl(0, 0%, 60%);
+  --color-fd-badge: hsl(0, 0%, 10%);
+  --color-fd-badge-foreground: hsl(0, 0%, 70%);
+  --color-fd-card: hsl(0, 0%, 6%);
+  --color-fd-card-foreground: hsl(0, 0%, 92%);
+  --color-fd-popover: hsl(0, 0%, 6%);
+  --color-fd-popover-foreground: hsl(0, 0%, 92%);
+  --color-fd-secondary: hsl(0, 0%, 14%);
+  --color-fd-secondary-foreground: hsl(0, 0%, 92%);
+  --color-fd-primary: hsl(0, 0%, 92%);
+  --color-fd-primary-foreground: hsl(0, 0%, 4%);
+  --color-fd-accent: hsl(0, 0%, 14%);
+  --color-fd-accent-foreground: hsl(0, 0%, 92%);
+  --color-fd-ring: hsl(0, 0%, 40%);
+  --color-fd-border: hsl(0, 0%, 18%);
+}

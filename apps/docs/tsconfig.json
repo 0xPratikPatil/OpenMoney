@@ -8,22 +8,27 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "collections/*": [
+        "./.source/*"
       ]
     },
+    "allowJs": true,
+    "incremental": true,
+    "composite": false,
+    "noEmit": true,
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "allowJs": true,
-    "incremental": true,
-    "noEmit": true
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".source/**/*"
   ],
   "exclude": [
     "node_modules"

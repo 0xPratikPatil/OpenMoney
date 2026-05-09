@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import { RootProvider } from 'fumadocs-ui/provider/next';
+import type { ReactNode } from 'react';
+import './global.css';
 
-export const metadata: Metadata = {
-  title: "OpenMoney Docs",
-  description: "Documentation for the OpenMoney platform",
-};
-
-export default function Layout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body style={{ fontFamily: "system-ui, sans-serif", margin: 0, padding: "2rem", maxWidth: "800px", marginInline: "auto", lineHeight: 1.6 }}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <RootProvider>{children}</RootProvider>
       </body>
     </html>
   );

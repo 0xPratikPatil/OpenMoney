@@ -1,0 +1,33 @@
+---
+title: Data Providers
+description: Configure market data sources for real-time prices and historical data.
+---
+
+## Bring Your Own API Key
+
+OpenMoney follows a **bring-your-own-API-key** model. Each data provider requires its own credentials.
+
+## Available Providers
+
+| Provider | Data Types | Free? |
+|----------|-----------|-------|
+| **Yahoo Finance** | Equity, ETF, Forex, Crypto quotes and history | Yes |
+| **Polygon.io** | Real-time equities, forex, crypto, options | Paid |
+| **FMP** | Fundamentals, financial statements, ratios | Paid |
+| **FRED** | Economic data, treasury rates, yield curve | Free |
+| **ECB** | Currency rates, yield curves | Free |
+| **SEC** | Filings, insider trading, CIK data | Free |
+
+## Configuring a Provider
+
+1. Navigate to **Settings → Providers**
+2. Click **Add Credential** on the provider
+3. Enter your API key
+4. Set priority order per data type
+
+## Fallback Behavior
+
+When multiple providers serve the same data type:
+- The system tries your preferred provider first
+- On failure, it tries the next configured provider
+- All data is normalized to standard schemas regardless of source

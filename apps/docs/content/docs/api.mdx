@@ -1,0 +1,84 @@
+---
+title: API Reference
+description: Complete REST API documentation for the OpenMoney platform.
+---
+
+## Authentication
+
+All API endpoints (except auth routes and docs) require authentication via **better-auth** session cookies.
+
+## Response Format
+
+All responses follow a consistent envelope:
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "meta": {
+    "timestamp": "2025-01-01T00:00:00Z",
+    "provider": "yfinance"
+  }
+}
+```
+
+## Portfolio API
+
+### List Portfolios
+```
+GET /api/portfolio
+```
+
+### Create Portfolio
+```
+POST /api/portfolio
+Content-Type: application/json
+
+{
+  "name": "My Portfolio",
+  "description": "Long-term equity holdings"
+}
+```
+
+### Get Portfolio
+```
+GET /api/portfolio/:id
+```
+
+### Get Risk Metrics
+```
+GET /api/portfolio/:id/risk
+```
+
+### Get Recommendations
+```
+GET /api/portfolio/:id/recommendation
+```
+
+## Market Data API
+
+All market data routes accept a `provider` query parameter.
+
+```
+# Get historical OHLCV data
+GET /api/equity/historical?symbol=AAPL&startDate=2024-01-01&provider=yfinance
+
+# Get real-time quote
+GET /api/equity/quote?symbol=AAPL
+
+# Search for tickers
+GET /api/equity/search?query=apple
+```
+
+## Journal API
+
+```
+# List journal entries
+GET /api/journal
+
+# Create prediction
+POST /api/journal
+
+# Get accuracy stats
+GET /api/journal/stats
+```
