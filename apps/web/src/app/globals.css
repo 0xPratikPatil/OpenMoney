@@ -18,7 +18,31 @@
   --color-info: #3b82f6;
 }
 
+/* =========================================================================
+   Design Tokens — aligned with @openmoney/ui component library
+   ========================================================================= */
 :root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --primary: #6366f1;
+  --primary-fg: #ffffff;
+  --secondary: #f3f4f6;
+  --secondary-fg: #374151;
+  --muted: #f9fafb;
+  --muted-fg: #6b7280;
+  --accent: #eef2ff;
+  --accent-fg: #4338ca;
+  --border: #e5e7eb;
+  --input: #d1d5db;
+  --ring: #6366f1;
+  --destructive: #ef4444;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --accent-brand: #4f46e5;
+  --accent-brand-hover: #4338ca;
+
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --text-primary: #111827;
@@ -26,6 +50,27 @@
 }
 
 .dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --primary: #6366f1;
+  --primary-fg: #ffffff;
+  --secondary: #1e293b;
+  --secondary-fg: #cbd5e1;
+  --muted: #1e293b;
+  --muted-fg: #94a3b8;
+  --accent: #1e1b4b;
+  --accent-fg: #a5b4fc;
+  --border: #1e293b;
+  --input: #334155;
+  --ring: #6366f1;
+  --destructive: #ef4444;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --accent-brand: #818cf8;
+  --accent-brand-hover: #6366f1;
+
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --text-primary: #f1f5f9;
@@ -36,4 +81,21 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--muted-fg);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-fg);
 }
