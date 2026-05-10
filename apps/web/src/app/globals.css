@@ -1,101 +1,87 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
-
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-info: #3b82f6;
-}
-
 /* =========================================================================
-   Design Tokens — aligned with @openmoney/ui component library
+   OpenMoney Design Tokens — aligned with BRAND.md + @openmoney/ui
+   Dark-first. Emerald accent. Inter UI, JetBrains Mono for data.
    ========================================================================= */
-:root {
-  --background: #ffffff;
-  --foreground: #111827;
-  --primary: #6366f1;
-  --primary-fg: #ffffff;
-  --secondary: #f3f4f6;
-  --secondary-fg: #374151;
-  --muted: #f9fafb;
-  --muted-fg: #6b7280;
-  --accent: #eef2ff;
-  --accent-fg: #4338ca;
-  --border: #e5e7eb;
-  --input: #d1d5db;
-  --ring: #6366f1;
-  --destructive: #ef4444;
-  --positive: #22c55e;
-  --negative: #ef4444;
-  --warning: #f59e0b;
-  --info: #3b82f6;
-  --accent-brand: #4f46e5;
-  --accent-brand-hover: #4338ca;
 
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
+:root {
+  --background: #0C0C0F;
+  --foreground: #F0EFED;
+  --primary: #F0EFED;
+  --primary-fg: #0C0C0F;
+  --secondary: #1E1E26;
+  --secondary-fg: #F0EFED;
+  --muted: #1E1E26;
+  --muted-fg: #8E8D96;
+  --accent: #1E1E26;
+  --accent-fg: #F0EFED;
+  --border: #26262E;
+  --input: #26262E;
+  --ring: #6B6A78;
+  --destructive: #7F1D1D;
+  --positive: #16A34A;
+  --negative: #DC2626;
+  --warning: #D97706;
+  --info: #2563EB;
+  --accent-brand: #059669;
+  --accent-brand-hover: #047857;
+  --radius: 0.375rem;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Shadcn-compatible aliases */
+  --primary-foreground: var(--primary-fg);
+  --secondary-foreground: var(--secondary-fg);
+  --muted-foreground: var(--muted-fg);
+  --accent-foreground: var(--accent-fg);
+  --destructive-foreground: white;
+  --card: var(--secondary);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+
+  /* Legacy aliases for existing pages */
+  --bg-primary: var(--background);
+  --bg-secondary: var(--secondary);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-fg);
 }
 
-.dark {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
-  --primary: #6366f1;
-  --primary-fg: #ffffff;
-  --secondary: #1e293b;
-  --secondary-fg: #cbd5e1;
-  --muted: #1e293b;
-  --muted-fg: #94a3b8;
-  --accent: #1e1b4b;
-  --accent-fg: #a5b4fc;
-  --border: #1e293b;
-  --input: #334155;
-  --ring: #6366f1;
-  --destructive: #ef4444;
-  --positive: #22c55e;
-  --negative: #ef4444;
-  --warning: #f59e0b;
-  --info: #3b82f6;
-  --accent-brand: #818cf8;
-  --accent-brand-hover: #6366f1;
-
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
+/* Light mode override */
+.light {
+  --background: #F8F8FA;
+  --foreground: #1C1B1A;
+  --primary: #1C1B1A;
+  --primary-fg: #F8F8FA;
+  --secondary: #E8E8EE;
+  --secondary-fg: #1C1B1A;
+  --muted: #E8E8EE;
+  --muted-fg: #6B6A72;
+  --accent: #E8E8EE;
+  --accent-fg: #1C1B1A;
+  --border: #D6D6DE;
+  --input: #D6D6DE;
+  --ring: #8E8D96;
+  --destructive: #DC2626;
+  --accent-brand: #059669;
+  --accent-brand-hover: #047857;
+  --bg-primary: var(--background);
+  --bg-secondary: var(--secondary);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-fg);
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--muted-fg);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-fg);
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--muted-fg); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--secondary-fg); }
