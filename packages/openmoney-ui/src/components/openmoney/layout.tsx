@@ -21,7 +21,7 @@ function AppShell({
   ...props
 }: AppShellProps) {
   return (
-    <div className={cn("flex h-screen bg-background text-foreground", className)} {...props}>
+    <div className={cn("flex min-h-screen bg-background text-foreground", className)} {...props}>
       {sidebar}
       <div className="flex flex-1 flex-col overflow-hidden">
         {topbar}

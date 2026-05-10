@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
+@theme {
+  --color-background: #0A0A0F;
+  --color-foreground: #F0EFED;
+  --color-primary: #F0EFED;
+  --color-primary-fg: #0C0C0F;
+  --color-secondary: #1E1E26;
+  --color-secondary-fg: #F0EFED;
+  --color-muted: #1E1E26;
+  --color-muted-fg: #8E8D96;
+  --color-accent: #262632;
+  --color-accent-fg: #F0EFED;
+  --color-border: #26262E;
+  --color-input: #26262E;
+  --color-ring: #6B6A78;
+  --color-destructive: #7F1D1D;
+  --color-positive: #16A34A;
+  --color-negative: #DC2626;
+  --color-warning: #D97706;
+  --color-info: #2563EB;
+  --color-accent-brand: #059669;
+  --color-accent-brand-hover: #047857;
+  --color-card: #1E1E26;
+  --color-card-foreground: #F0EFED;
+  --color-popover: #0C0C0F;
+  --color-popover-foreground: #F0EFED;
+}
+
 /* =========================================================================
    OpenMoney Design Tokens — aligned with BRAND.md + @openmoney/ui
    Dark-first. Emerald accent. Inter UI, JetBrains Mono for data.
    ========================================================================= */
 
 :root {
-  --background: #0C0C0F;
+  --background: #0A0A0F;
   --foreground: #F0EFED;
   --primary: #F0EFED;
   --primary-fg: #0C0C0F;
@@ -14,7 +41,7 @@
   --secondary-fg: #F0EFED;
   --muted: #1E1E26;
   --muted-fg: #8E8D96;
-  --accent: #1E1E26;
+  --accent: #262632;
   --accent-fg: #F0EFED;
   --border: #26262E;
   --input: #26262E;
@@ -58,7 +85,7 @@
   --secondary-fg: #1C1B1A;
   --muted: #E8E8EE;
   --muted-fg: #6B6A72;
-  --accent: #E8E8EE;
+  --accent: #DCDCEC;
   --accent-fg: #1C1B1A;
   --border: #D6D6DE;
   --input: #D6D6DE;
