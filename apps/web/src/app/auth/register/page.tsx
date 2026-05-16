@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,27 +26,27 @@ export default function RegisterPage() {
       setError(result.error.message ?? 'Registration failed');
       setLoading(false);
     } else {
-      window.location.href = '/dashboard';
+      router.push('/dashboard');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md p-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)]">OpenMoney</h1>
-          <p className="mt-2 text-[var(--text-secondary)]">Create your account</p>
+          <h1 className="text-3xl font-bold text-foreground">OpenMoney</h1>
+          <p className="mt-2 text-muted-foreground">Create your account</p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-lg">
+            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-[var(--text-primary)]">
+            <label htmlFor="name" className="block text-sm font-medium text-foreground">
               Name
             </label>
             <input
@@ -52,14 +54,14 @@ export default function RegisterPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-[var(--bg-secondary)] border border-gray-300 dark:border-gray-600 rounded-lg text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="mt-1 block w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               placeholder="Your name"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-[var(--text-primary)]">
+            <label htmlFor="email" className="block text-sm font-medium text-foreground">
               Email
             </label>
             <input
@@ -67,14 +69,14 @@ export default function RegisterPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-[var(--bg-secondary)] border border-gray-300 dark:border-gray-600 rounded-lg text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="mt-1 block w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               placeholder="you@example.com"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-[var(--text-primary)]">
+            <label htmlFor="password" className="block text-sm font-medium text-foreground">
               Password
             </label>
             <input
@@ -82,7 +84,7 @@ export default function RegisterPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-[var(--bg-secondary)] border border-gray-300 dark:border-gray-600 rounded-lg text-[var(--text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="mt-1 block w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               placeholder="At least 8 characters"
               minLength={8}
               required
@@ -92,15 +94,15 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+            className="w-full py-2 px-4 bg-primary text-primary-foreground font-medium rounded-lg transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-[var(--text-secondary)]">
+        <p className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}
-          <a href="/auth/login" className="text-primary-600 hover:text-primary-500 font-medium">
+          <a href="/auth/login" className="text-primary hover:text-primary/90 font-medium">
             Sign in
           </a>
         </p>

@@ -1,114 +1,192 @@
 @import "tailwindcss";
+@source "../";
+@source "../../../../packages/openmoney-ui/src";
 
+/* ========================================================================= */
+/*  Theme tokens (Tailwind v4)                                                */
+/*  All semantic colors, shade scales, fonts, and radius tokens.             */
+/*  Components use `bg-background`, `text-primary`, etc.                     */
+/*  Marketing uses `bg-primary-600`, `text-primary-500`, etc. (shade scale). */
+/* ========================================================================= */
 @theme {
   --color-background: #0A0A0F;
-  --color-foreground: #F0EFED;
-  --color-primary: #F0EFED;
-  --color-primary-fg: #0C0C0F;
-  --color-secondary: #1E1E26;
-  --color-secondary-fg: #F0EFED;
-  --color-muted: #1E1E26;
-  --color-muted-fg: #8E8D96;
-  --color-accent: #262632;
-  --color-accent-fg: #F0EFED;
-  --color-border: #26262E;
-  --color-input: #26262E;
-  --color-ring: #6B6A78;
-  --color-destructive: #7F1D1D;
-  --color-positive: #16A34A;
-  --color-negative: #DC2626;
-  --color-warning: #D97706;
-  --color-info: #2563EB;
-  --color-accent-brand: #059669;
-  --color-accent-brand-hover: #047857;
-  --color-card: #1E1E26;
-  --color-card-foreground: #F0EFED;
-  --color-popover: #0C0C0F;
-  --color-popover-foreground: #F0EFED;
+  --color-foreground: #E2E8F0;
+
+  --color-muted: #1A1A23;
+  --color-muted-foreground: #94A3B8;
+
+  --color-border: #2A2A35;
+  --color-input: #1A1A23;
+  --color-ring: #10B981;
+
+  --color-primary: #10B981;
+  --color-primary-foreground: #0A0A0F;
+  --color-primary-50: #ECFDF5;
+  --color-primary-100: #D1FAE5;
+  --color-primary-200: #A7F3D0;
+  --color-primary-300: #6EE7B7;
+  --color-primary-400: #34D399;
+  --color-primary-500: #10B981;
+  --color-primary-600: #059669;
+  --color-primary-700: #047857;
+  --color-primary-800: #065F46;
+  --color-primary-900: #064E3B;
+  --color-primary-950: #022C22;
+
+  --color-secondary: #1A1A23;
+  --color-secondary-foreground: #E2E8F0;
+
+  --color-accent: #2A2A35;
+  --color-accent-foreground: #E2E8F0;
+
+  --color-destructive: #EF4444;
+  --color-destructive-foreground: #0A0A0F;
+
+  --color-success: #10B981;
+  --color-success-foreground: #0A0A0F;
+  --color-positive: #10B981;
+  --color-negative: #EF4444;
+  --color-warning: #F59E0B;
+  --color-warning-foreground: #0A0A0F;
+  --color-info: #3B82F6;
+  --color-info-foreground: #0A0A0F;
+
+  /* Legacy brand aliases (used via var() in authenticated pages) */
+  --color-accent-brand: #10B981;
+  --color-accent-brand-hover: #059669;
+
+  --color-card: #0F0F16;
+  --color-card-foreground: #E2E8F0;
+  --color-popover: #0F0F16;
+  --color-popover-foreground: #E2E8F0;
+
+  --color-sidebar-bg: #0F0F16;
+  --color-sidebar-fg: #E2E8F0;
+  --color-sidebar-background: #0F0F16;
+  --color-sidebar-foreground: #E2E8F0;
+  --color-sidebar-primary: #10B981;
+  --color-sidebar-primary-foreground: #0A0A0F;
+  --color-sidebar-border: #2A2A35;
+  --color-sidebar-accent: #1A1A23;
+  --color-sidebar-accent-fg: #E2E8F0;
+  --color-sidebar-accent-foreground: #E2E8F0;
+  --color-sidebar-ring: #10B981;
+
+  --color-topbar-bg: #0A0A0F;
+  --color-topbar-fg: #E2E8F0;
+  --color-topbar-border: #2A2A35;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 }
 
-/* =========================================================================
-   OpenMoney Design Tokens — aligned with BRAND.md + @openmoney/ui
-   Dark-first. Emerald accent. Inter UI, JetBrains Mono for data.
-   ========================================================================= */
-
+/* ========================================================================= */
+/*  Legacy CSS custom properties (for var() references in components)        */
+/*  Components use `text-[var(--negative)]`, `bg-[var(--accent-brand)]`, etc.*/
+/*  These unprefixed aliases point to the @theme color tokens above.         */
+/* ========================================================================= */
 :root {
-  --background: #0A0A0F;
-  --foreground: #F0EFED;
-  --primary: #F0EFED;
-  --primary-fg: #0C0C0F;
-  --secondary: #1E1E26;
-  --secondary-fg: #F0EFED;
-  --muted: #1E1E26;
-  --muted-fg: #8E8D96;
-  --accent: #262632;
-  --accent-fg: #F0EFED;
-  --border: #26262E;
-  --input: #26262E;
-  --ring: #6B6A78;
-  --destructive: #7F1D1D;
-  --positive: #16A34A;
-  --negative: #DC2626;
-  --warning: #D97706;
-  --info: #2563EB;
-  --accent-brand: #059669;
-  --accent-brand-hover: #047857;
-  --radius: 0.375rem;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-  /* Shadcn-compatible aliases */
-  --primary-foreground: var(--primary-fg);
-  --secondary-foreground: var(--secondary-fg);
-  --muted-foreground: var(--muted-fg);
-  --accent-foreground: var(--accent-fg);
-  --destructive-foreground: white;
-  --card: var(--secondary);
-  --card-foreground: var(--foreground);
-  --popover: var(--background);
-  --popover-foreground: var(--foreground);
-
-  /* Legacy aliases for existing pages */
-  --bg-primary: var(--background);
-  --bg-secondary: var(--secondary);
-  --text-primary: var(--foreground);
-  --text-secondary: var(--muted-fg);
+  --positive: var(--color-positive);
+  --negative: var(--color-negative);
+  --accent-brand: var(--color-accent-brand);
+  --accent-brand-hover: var(--color-accent-brand-hover);
+  --text-secondary: var(--color-muted-foreground);
+  --bg-primary: var(--color-background);
+  --bg-secondary: var(--color-secondary);
+  --text-primary: var(--color-foreground);
 }
 
-/* Light mode override */
-.light {
-  --background: #F8F8FA;
-  --foreground: #1C1B1A;
-  --primary: #1C1B1A;
-  --primary-fg: #F8F8FA;
-  --secondary: #E8E8EE;
-  --secondary-fg: #1C1B1A;
-  --muted: #E8E8EE;
-  --muted-fg: #6B6A72;
-  --accent: #DCDCEC;
-  --accent-fg: #1C1B1A;
-  --border: #D6D6DE;
-  --input: #D6D6DE;
-  --ring: #8E8D96;
-  --destructive: #DC2626;
-  --accent-brand: #059669;
-  --accent-brand-hover: #047857;
-  --bg-primary: var(--background);
-  --bg-secondary: var(--secondary);
-  --text-primary: var(--foreground);
-  --text-secondary: var(--muted-fg);
+/* ========================================================================= */
+/*  Base styles                                                              */
+/* ========================================================================= */
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--muted-fg); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--secondary-fg); }
+.metric-number,
+.font-mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ========================================================================= */
+/*  Utility classes                                                          */
+/* ========================================================================= */
+.text-balance {
+  text-wrap: balance;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Background patterns */
+.bg-grid-fine {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.bg-grid-finance {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 23px,
+    rgba(255, 255, 255, 0.04) 23px,
+    rgba(255, 255, 255, 0.04) 24px
+  );
+}
+
+/* Data containers */
+.data-card {
+  background: var(--color-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+/* Callout variants */
+.callout-info {
+  border-left-color: #3B82F6;
+}
+.callout-warn {
+  border-left-color: #F59E0B;
+}
+.callout-error {
+  border-left-color: #EF4444;
+}
+.callout-success {
+  border-left-color: #10B981;
+}
+
+/* ========================================================================= */
+/*  Scrollbar                                                                */
+/* ========================================================================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #4A4A56;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6B6A78;
+}

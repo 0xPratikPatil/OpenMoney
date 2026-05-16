@@ -2,20 +2,20 @@ import Link from 'next/link';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)]">
-      <header className="border-b border-gray-200 dark:border-gray-800">
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-[var(--text-primary)]">OpenMoney</span>
+          <span className="text-xl font-bold text-foreground">OpenMoney</span>
           <div className="flex items-center gap-4">
             <Link
               href="/auth/login"
-              className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Sign in
             </Link>
             <Link
               href="/auth/register"
-              className="text-sm px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              className="text-sm px-4 py-2 bg-primary-600 hover:bg-primary-700 text-primary-foreground rounded-lg transition-colors"
             >
               Get started
             </Link>
@@ -25,24 +25,24 @@ export default function LandingPage() {
 
       <main className="max-w-7xl mx-auto px-6 py-24">
         <div className="text-center max-w-3xl mx-auto">
-          <h1 className="text-5xl font-bold text-[var(--text-primary)] tracking-tight">
+          <h1 className="text-5xl font-bold text-foreground tracking-tight">
             Investment research.{' '}
             <span className="text-primary-500">Quantified.</span>
           </h1>
-          <p className="mt-6 text-lg text-[var(--text-secondary)] leading-relaxed">
+          <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
             Track your portfolio in real-time. Quantify risk with institutional-grade metrics.
             Get actionable recommendations. Log your investment theses and measure your prediction accuracy.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <Link
               href="/auth/register"
-              className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
+              className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-primary-foreground font-medium rounded-lg transition-colors"
             >
               Start tracking &mdash; free
             </Link>
             <a
               href="/docs"
-              className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-[var(--text-primary)] font-medium rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
+              className="px-6 py-3 border border-border text-foreground font-medium rounded-lg hover:bg-muted transition-colors"
             >
               Documentation
             </a>
@@ -53,11 +53,11 @@ export default function LandingPage() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="p-6 bg-[var(--bg-secondary)] rounded-xl border border-gray-200 dark:border-gray-700"
+              className="p-6 bg-muted rounded-xl border border-border"
             >
               <div className="text-2xl mb-4">{feature.icon}</div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{feature.title}</h3>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">{feature.description}</p>
+              <h3 className="text-lg font-semibold text-foreground">{feature.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{feature.description}</p>
             </div>
           ))}
         </div>

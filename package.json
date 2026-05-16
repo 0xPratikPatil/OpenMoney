@@ -25,7 +25,14 @@
     "db:migrate": "bun run --cwd packages/database migrate",
     "db:push": "bun run --cwd packages/database push",
     "db:studio": "bun run --cwd packages/database studio",
-    "clean": "rm -rf apps/*/.next apps/*/dist packages/*/dist packages/providers/*/dist node_modules"
+    "start": "concurrently -n api,web -c blue,green \"bun run start:api\" \"bun run start:web\"",
+    "start:api": "bun run --cwd apps/api start",
+    "start:web": "bun run --cwd apps/web start",
+    "start:ingestion": "bun run --cwd apps/ingestion start",
+    "start:quant": "bun run --cwd apps/quant-engine start",
+    "start:notification": "bun run --cwd apps/notification start",
+    "start:db": "bun run --cwd packages/database studio",
+    "clean": "bunx rimraf apps/*/.next apps/*/dist packages/*/dist packages/providers/*/dist node_modules"
   },
   "devDependencies": {
     "@types/bun": "latest",
