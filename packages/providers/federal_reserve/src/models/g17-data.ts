@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { AbstractFetcher, EmptyDataError } from "@openmoney/provider-core";
+import type { FRBObservation } from "../utils/api";
 import { frbFetch, extractFRBObservations, parseFRBValue } from "../utils/api";
 
 export const FRBG17QueryParams = z.object({

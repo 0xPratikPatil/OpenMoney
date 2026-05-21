@@ -63,7 +63,7 @@ export class CongressNominationsFetcher extends AbstractFetcher<
 
     return nominations.map((n: Record<string, unknown>) => {
       const latestAction = (n.latestAction ?? {}) as Record<string, unknown> | undefined;
-      const nominee = (n.nominees ?? [])?.[0] as Record<string, unknown> | undefined;
+      const nominee = ((n.nominees as unknown[]) ?? [])?.[0] as Record<string, unknown> | undefined;
 
       return CongressNominationsData.parse({
         nominationId: (n.nominationId ?? n.number ?? null) as string | null,
@@ -76,7 +76,7 @@ export class CongressNominationsFetcher extends AbstractFetcher<
             : null,
         position: (n.position ?? null) as string | null,
         agency: nominee?.agency ?? (n as any).agency ?? null,
-        committeeName: (n.committeeName ?? n.committee?.name ?? null) as string | null,
+        committeeName: (n.committeeName ?? (n.committee as Record<string, unknown>)?.name ?? null) as string | null,
         latestActionDate: latestAction?.actionDate
           ? (latestAction.actionDate as string)
           : null,

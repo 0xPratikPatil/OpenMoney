@@ -48,7 +48,7 @@ export class MultplShillerPeFetcher extends AbstractFetcher<
   }
 
   async extractData(
-    query: z.infer<typeof MultplShillerPeQueryParams>,
+    _query: z.infer<typeof MultplShillerPeQueryParams>,
     _credentials: Record<string, string>,
   ) {
     return fetchMultplTableCsv(MultplEndpoint.SHILLER_PE);

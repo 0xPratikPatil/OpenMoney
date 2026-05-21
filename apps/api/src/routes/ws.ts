@@ -79,11 +79,13 @@ export const wsHandler = {
  * Broadcast a price update to all subscribed clients.
  * Called by the ingestion pipeline after storing new data.
  */
-export function broadcastPriceUpdate(ticker: string, price: number, timestamp: string) {
+export function broadcastPriceUpdate(ticker: string, price: number, change: number, changePercent: number, timestamp: string) {
   const message = JSON.stringify({
     type: 'price_update',
     ticker: ticker.toUpperCase(),
     price,
+    change,
+    changePercent,
     timestamp,
   });
 
@@ -95,5 +97,63 @@ export function broadcastPriceUpdate(ticker: string, price: number, timestamp: s
         // Client may have disconnected
       }
     }
+  }
+}
+
+/**
+ * Live quote poller — fetches quotes from yfinance every 30s
+ * for all tickers with active subscribers. Runs as a background
+ * interval until the ingestion pipeline replaces it.
+ */
+let pollerInterval: ReturnType<typeof setInterval> | null = null;
+
+export function startLiveQuotePoller(): void {
+  if (pollerInterval) return;
+
+  pollerInterval = setInterval(async () => {
+    const allTickers = new Set<string>();
+    for (const client of clients.values()) {
+      for (const t of client.subscriptions) {
+        allTickers.add(t);
+      }
+    }
+    if (allTickers.size === 0) return;
+
+    const tickers = Array.from(allTickers);
+    try {
+      const { globalRegistry, QueryExecutor } = await import("@openmoney/provider-core");
+      const executor = new QueryExecutor(globalRegistry);
+
+      for (const ticker of tickers) {
+        try {
+          const result = await executor.execute<Array<Record<string, unknown>>>(
+            "yfinance", "equity/quote", { symbol: ticker },
+          );
+          if (Array.isArray(result) && result.length > 0) {
+            const quote = result[0]!;
+            broadcastPriceUpdate(
+              ticker,
+              quote.price as number,
+              (quote.change ?? 0) as number,
+              (quote.changePercent ?? 0) as number,
+              new Date().toISOString(),
+            );
+          }
+        } catch {
+          // Skip failed fetches silently
+        }
+        // Rate-limit: 1 quote per 200ms to avoid overwhelming yfinance
+        await new Promise((r) => setTimeout(r, 200));
+      }
+    } catch {
+      // Provider system unavailable
+    }
+  }, 30_000);
+}
+
+export function stopLiveQuotePoller(): void {
+  if (pollerInterval) {
+    clearInterval(pollerInterval);
+    pollerInterval = null;
   }
 }

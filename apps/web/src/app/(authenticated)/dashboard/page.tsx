@@ -37,13 +37,20 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 /* -------------------------------------------------------------------------- */
-/*  Mock market indices for MVP                                                */
+/*  Live market indices (fetched from provider API)                             */
 /* -------------------------------------------------------------------------- */
-const MOCK_INDICES = [
-  { name: 'S&P 500', ticker: 'SPY', value: 5_234.18, change: 0.72 },
-  { name: 'NASDAQ', ticker: 'QQQ', value: 18_345.62, change: 1.14 },
-  { name: 'DOW JONES', ticker: 'DIA', value: 39_876.34, change: -0.23 },
+const INDEX_SYMBOLS = [
+  { name: 'S&P 500', ticker: '^GSPC', altTicker: 'SPY' },
+  { name: 'NASDAQ', ticker: '^IXIC', altTicker: 'QQQ' },
+  { name: 'DOW JONES', ticker: '^DJI', altTicker: 'DIA' },
 ];
+
+interface MarketIndex {
+  name: string;
+  ticker: string;
+  value: number;
+  change: number;
+}
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                    */
@@ -71,6 +78,7 @@ export default function DashboardPage() {
 
   const [portfolios, setPortfolios] = React.useState<Portfolio[]>([]);
   const [signals, setSignals] = React.useState<Signal[]>([]);
+  const [indices, setIndices] = React.useState<MarketIndex[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -96,14 +104,28 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const [portfolioRes, signalsRes] = await Promise.all([
+      const [portfolioRes, signalsRes, ...quoteResults] = await Promise.all([
         api.portfolios.list(),
         api.signals.list(),
+        ...INDEX_SYMBOLS.map((idx) =>
+          api.market.quote(idx.altTicker).catch(() => api.market.quote(idx.ticker).catch(() => null)),
+        ),
       ]);
       if (!portfolioRes.success) throw new Error(portfolioRes.error ?? 'Failed to load portfolios');
       if (!signalsRes.success) throw new Error(signalsRes.error ?? 'Failed to load signals');
       setPortfolios(portfolioRes.data);
       setSignals(signalsRes.data);
+
+      const marketIndices: MarketIndex[] = INDEX_SYMBOLS.map((idx, i) => {
+        const quote = quoteResults[i]?.success ? quoteResults[i]!.data : null;
+        return {
+          name: idx.name,
+          ticker: idx.ticker,
+          value: quote?.price ?? 0,
+          change: quote?.changePercent ?? 0,
+        };
+      });
+      setIndices(marketIndices);
     } catch (err: any) {
       setError(err.message ?? 'Something went wrong');
       toast.error(err.message ?? 'Failed to load dashboard data');
@@ -202,21 +224,26 @@ export default function DashboardPage() {
             Market Snapshot
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {MOCK_INDICES.map((idx) => (
-              <div
-                key={idx.ticker}
-                className="rounded-xl border border-border bg-muted p-4"
-              >
-                <p className="text-xs text-muted-foreground">{idx.name}</p>
-                <p className="mt-1 text-lg font-semibold text-foreground">
-                  {idx.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                </p>
-                <div className={`mt-1 flex items-center gap-1 text-sm font-medium ${idx.change >= 0 ? 'text-success' : 'text-destructive'}`}>
-                  {idx.change >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                  {formatPercent(idx.change)}
+            {(indices.length > 0 ? indices : INDEX_SYMBOLS).map((idx, i) => {
+              const data = indices[i] as MarketIndex | undefined;
+              return (
+                <div
+                  key={idx.ticker}
+                  className="rounded-xl border border-border bg-muted p-4"
+                >
+                  <p className="text-xs text-muted-foreground">{idx.name}</p>
+                  <p className="mt-1 text-lg font-semibold text-foreground">
+                    {data?.value ? data.value.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}
+                  </p>
+                  {data?.change != null && (
+                    <div className={`mt-1 flex items-center gap-1 text-sm font-medium ${data.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+                      {data.change >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                      {formatPercent(data.change)}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -312,19 +339,21 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {MOCK_INDICES.map((idx) => (
+              {indices.map((idx) => (
                 <div
                   key={idx.ticker}
                   className="rounded-lg border border-border bg-background p-3"
                 >
                   <p className="text-xs text-muted-foreground">{idx.name}</p>
                   <p className="mt-1 text-base font-semibold text-foreground">
-                    {idx.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {idx.value ? idx.value.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}
                   </p>
-                  <div className={`mt-1 flex items-center gap-1 text-xs font-medium ${idx.change >= 0 ? 'text-success' : 'text-destructive'}`}>
-                    {idx.change >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                    {formatPercent(idx.change)}
-                  </div>
+                  {idx.change !== 0 && (
+                    <div className={`mt-1 flex items-center gap-1 text-xs font-medium ${idx.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+                      {idx.change >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                      {formatPercent(idx.change)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

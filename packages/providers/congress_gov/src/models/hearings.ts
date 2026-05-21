@@ -67,7 +67,7 @@ export class CongressHearingsFetcher extends AbstractFetcher<
         hearingId: (h.hearingNumber ?? null) as string | null,
         title: (h.title ?? null) as string | null,
         chamber: (h.chamber ?? null) as string | null,
-        committeeName: (h.committeeName ?? h.committee?.name ?? null) as string | null,
+        committeeName: (h.committeeName ?? (h.committee as Record<string, unknown>)?.name ?? null) as string | null,
         date: (h.date ?? h.hearingDate ?? null) as string | null,
         time: (h.time ?? null) as string | null,
         location: (h.location ?? null) as string | null,

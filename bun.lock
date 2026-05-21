@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "openmoney",
@@ -20,18 +19,38 @@
         "@openmoney/config": "workspace:*",
         "@openmoney/database": "workspace:*",
         "@openmoney/provider-alphavantage": "workspace:*",
+        "@openmoney/provider-benzinga": "workspace:*",
+        "@openmoney/provider-biztoc": "workspace:*",
+        "@openmoney/provider-bls": "workspace:*",
         "@openmoney/provider-cboe": "workspace:*",
+        "@openmoney/provider-cftc": "workspace:*",
+        "@openmoney/provider-congress_gov": "workspace:*",
         "@openmoney/provider-core": "workspace:*",
         "@openmoney/provider-deribit": "workspace:*",
         "@openmoney/provider-ecb": "workspace:*",
+        "@openmoney/provider-econdb": "workspace:*",
+        "@openmoney/provider-eia": "workspace:*",
+        "@openmoney/provider-famafrench": "workspace:*",
+        "@openmoney/provider-federal_reserve": "workspace:*",
+        "@openmoney/provider-finra": "workspace:*",
         "@openmoney/provider-finviz": "workspace:*",
         "@openmoney/provider-fmp": "workspace:*",
         "@openmoney/provider-fred": "workspace:*",
         "@openmoney/provider-government_us": "workspace:*",
+        "@openmoney/provider-imf": "workspace:*",
+        "@openmoney/provider-intrinio": "workspace:*",
+        "@openmoney/provider-multpl": "workspace:*",
         "@openmoney/provider-nasdaq": "workspace:*",
+        "@openmoney/provider-oecd": "workspace:*",
         "@openmoney/provider-polygon": "workspace:*",
         "@openmoney/provider-sec": "workspace:*",
+        "@openmoney/provider-seeking_alpha": "workspace:*",
+        "@openmoney/provider-stockgrid": "workspace:*",
+        "@openmoney/provider-tiingo": "workspace:*",
         "@openmoney/provider-tmx": "workspace:*",
+        "@openmoney/provider-tradier": "workspace:*",
+        "@openmoney/provider-tradingeconomics": "workspace:*",
+        "@openmoney/provider-wsj": "workspace:*",
         "@openmoney/provider-yfinance": "workspace:*",
         "@openmoney/shared": "workspace:*",
         "better-auth": "^1.6.0",
@@ -96,6 +115,30 @@
         "typescript": "^5.7.0",
       },
     },
+    "apps/showcase": {
+      "name": "@openmoney/showcase",
+      "version": "0.0.1",
+      "dependencies": {
+        "@openmoney/ui": "workspace:*",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.468.0",
+        "next": "^15.2.0",
+        "next-themes": "^0.4.6",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "recharts": "3.8.0",
+        "tailwind-merge": "^3.5.0",
+      },
+      "devDependencies": {
+        "@tailwindcss/postcss": "^4.0.0",
+        "@types/node": "^22.0.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "tailwindcss": "^4.0.0",
+        "typescript": "^5.7.0",
+      },
+    },
     "apps/web": {
       "name": "@openmoney/web",
       "version": "0.1.0",
@@ -117,7 +160,6 @@
         "recharts": "3.8.0",
         "sonner": "^2.0.7",
         "tailwind-merge": "^3.5.0",
-        "tailwindcss-animate": "^1.0.7",
         "zod": "^3.24.0",
       },
       "devDependencies": {
@@ -993,6 +1035,8 @@
 
     "@openmoney/shared": ["@openmoney/shared@workspace:packages/shared"],
 
+    "@openmoney/showcase": ["@openmoney/showcase@workspace:apps/showcase"],
+
     "@openmoney/ui": ["@openmoney/ui@workspace:packages/openmoney-ui"],
 
     "@openmoney/web": ["@openmoney/web@workspace:apps/web"],
@@ -1797,7 +1841,7 @@
 
     "lru-cache": ["lru-cache@5.1.1", "", { "dependencies": { "yallist": "^3.0.2" } }, "sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w=="],
 
-    "lucide-react": ["lucide-react@1.14.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-+1mdWcfSJVUsaTIjN9zoezmUhfXo5l0vP7ekBMPo3jcS/aIkxHnXqAPsByszMZx/Y8oQBRJxJx5xg+RH3urzxA=="],
+    "lucide-react": ["lucide-react@0.468.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0-rc" } }, "sha512-6koYRhnM2N0GGZIdXzSeiNwguv1gt/FAjZOiPl76roBi3xKEXa4WmfpxgQwTTL4KipXjefrnf3oV4IsYhi4JFA=="],
 
     "magic-string": ["magic-string@0.30.21", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.5" } }, "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ=="],
 
@@ -2363,9 +2407,9 @@
 
     "@noble/curves/@noble/hashes": ["@noble/hashes@1.8.0", "", {}, "sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A=="],
 
-    "@openmoney/ui/zod": ["zod@4.4.2", "", {}, "sha512-IynmDyxsEsb9RKzO3J9+4SxXnl2FTFSzNBaKKaMV6tsSk0rw9gYw9gs+JFCq/qk2LCZ78KDwyj+Z289TijSkUw=="],
+    "@openmoney/ui/lucide-react": ["lucide-react@1.14.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-+1mdWcfSJVUsaTIjN9zoezmUhfXo5l0vP7ekBMPo3jcS/aIkxHnXqAPsByszMZx/Y8oQBRJxJx5xg+RH3urzxA=="],
 
-    "@openmoney/web/lucide-react": ["lucide-react@0.468.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0-rc" } }, "sha512-6koYRhnM2N0GGZIdXzSeiNwguv1gt/FAjZOiPl76roBi3xKEXa4WmfpxgQwTTL4KipXjefrnf3oV4IsYhi4JFA=="],
+    "@openmoney/ui/zod": ["zod@4.4.2", "", {}, "sha512-IynmDyxsEsb9RKzO3J9+4SxXnl2FTFSzNBaKKaMV6tsSk0rw9gYw9gs+JFCq/qk2LCZ78KDwyj+Z289TijSkUw=="],
 
     "@radix-ui/react-accordion/@radix-ui/react-context": ["@radix-ui/react-context@1.1.2", "", { "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-jCi/QKUM2r1Ju5a3J64TH2A5SpKAgh0LpknyqdQ4m6DCV0xJ2HG1xARRwNGPQfi1SLdLWZ1OJz6F4OMBBNiGJA=="],
 

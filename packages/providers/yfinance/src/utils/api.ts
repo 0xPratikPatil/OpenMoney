@@ -9,7 +9,11 @@
  */
 
 import { ProviderHttpClient } from "@openmoney/shared";
-import { EmptyDataError } from "@openmoney/provider-core";
+import { EmptyDataError, UnauthorizedError } from "@openmoney/provider-core";
+import {
+  getCookieAndCrumb,
+  invalidateCookieCache,
+} from "./cookie-crumb";
 
 // ---------------------------------------------------------------------------
 // Client instances
@@ -41,6 +45,54 @@ const yfQuery2Client = new ProviderHttpClient({
   retry: { maxRetries: 3, baseDelayMs: 1000 },
   cache: { enabled: true, ttlMs: 30_000 },
 });
+
+// ---------------------------------------------------------------------------
+// Cookie/Crumb auth helper
+// ---------------------------------------------------------------------------
+// Yahoo v7/v10/v1(Query2) endpoints require:
+//   1. A valid Cookie header with session cookies (A1, A3, GUC)
+//   2. The crumb value sent as a query parameter (?crumb=xxx)
+// The yfinance Python library sends crumb as a query param (not in headers),
+// and toggles between "basic" and "csrf" cookie strategies on failure.
+//
+// v8 chart endpoints do NOT require auth.
+
+async function withAuth(): Promise<{ cookie: string; crumb: string }> {
+  return getCookieAndCrumb();
+}
+
+/**
+ * Execute a request with cookie+crumble auth, retrying once on 401.
+ * Both the Cookie header and crumb query param are injected.
+ */
+async function authRequest<T>(
+  client: ProviderHttpClient,
+  options: Omit<Parameters<typeof client.request>[0], "headersOverride" | "queryParams"> & {
+    queryParams?: Record<string, string | number | undefined>;
+  },
+): Promise<T> {
+  const exec = async () => {
+    const { cookie, crumb } = await withAuth();
+    return client.request<T>({
+      ...options,
+      headersOverride: { Cookie: cookie },
+      queryParams: {
+        ...(options.queryParams ?? {}),
+        crumb,
+      },
+    });
+  };
+
+  try {
+    return await exec();
+  } catch (err) {
+    if (err instanceof UnauthorizedError || (err as any)?.status === 401) {
+      invalidateCookieCache();
+      return exec();
+    }
+    throw err;
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Shared TypeScript interfaces (consumed by fetcher models)
@@ -177,8 +229,10 @@ interface OptionChainResponse {
  */
 export async function fetchQuotes(symbols: string[]): Promise<Record<string, YahooFinanceQuote>> {
   const symbolStr = symbols.join(",");
-  const data = await yfClient.get<QuoteResponse>("/v7/finance/quote", {
-    symbols: symbolStr,
+  const data = await authRequest<QuoteResponse>(yfClient, {
+    method: "GET",
+    path: "/v7/finance/quote",
+    queryParams: { symbols: symbolStr },
   });
 
   const result: Record<string, YahooFinanceQuote> = {};
@@ -356,7 +410,7 @@ export async function fetchScreener(
   let offset = 0;
 
   while (results.length < limit) {
-    const data = await yfQuery2Client.request<ScreenerResponse>({
+    const data = await authRequest<ScreenerResponse>(yfQuery2Client, {
       method: "POST",
       path: "/v1/finance/screener",
       queryParams: {
@@ -399,10 +453,11 @@ export async function fetchScreener(
  * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=assetProfile`
  */
 export async function fetchKeyExecutives(symbol: string): Promise<any[]> {
-  const data = await yfClient.get<QuoteSummaryResponse>(
-    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
-    { modules: "assetProfile" },
-  );
+  const data = await authRequest<QuoteSummaryResponse>(yfClient, {
+    method: "GET",
+    path: `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    queryParams: { modules: "assetProfile" },
+  });
   return data?.quoteSummary?.result?.[0]?.assetProfile?.companyOfficers ?? [];
 }
 
@@ -422,10 +477,11 @@ export async function fetchKeyExecutives(symbol: string): Promise<any[]> {
  * @throws {@link EmptyDataError} when no data is returned.
  */
 export async function fetchQuoteSummary(symbol: string, modules: string): Promise<any> {
-  const data = await yfClient.get<QuoteSummaryResponse>(
-    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
-    { modules },
-  );
+  const data = await authRequest<QuoteSummaryResponse>(yfClient, {
+    method: "GET",
+    path: `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    queryParams: { modules },
+  });
   const result = data?.quoteSummary?.result?.[0];
   if (!result) throw new EmptyDataError(`No data returned for ${symbol}`);
   return result;
@@ -442,9 +498,12 @@ export async function fetchQuoteSummary(symbol: string, modules: string): Promis
  */
 export async function fetchOptions(symbol: string, expiration?: string): Promise<any[]> {
   const path = `/v7/finance/options/${encodeURIComponent(symbol)}`;
-  const params = expiration ? { date: expiration } : undefined;
 
-  const data = await yfClient.get<OptionChainResponse>(path, params);
+  const data = await authRequest<OptionChainResponse>(yfClient, {
+    method: "GET",
+    path,
+    queryParams: expiration ? { date: expiration } : undefined,
+  });
   return data?.optionChain?.result ?? [];
 }
 
@@ -458,10 +517,11 @@ export async function fetchOptions(symbol: string, expiration?: string): Promise
  * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=incomeStatementHistory`
  */
 export async function fetchIncomeStatements(symbol: string): Promise<any[]> {
-  const data = await yfClient.get<QuoteSummaryResponse>(
-    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
-    { modules: "incomeStatementHistory" },
-  );
+  const data = await authRequest<QuoteSummaryResponse>(yfClient, {
+    method: "GET",
+    path: `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    queryParams: { modules: "incomeStatementHistory" },
+  });
   return data?.quoteSummary?.result?.[0]?.incomeStatementHistory?.incomeStatementHistory ?? [];
 }
 
@@ -475,10 +535,11 @@ export async function fetchIncomeStatements(symbol: string): Promise<any[]> {
  * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=balanceSheetHistory`
  */
 export async function fetchBalanceSheets(symbol: string): Promise<any[]> {
-  const data = await yfClient.get<QuoteSummaryResponse>(
-    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
-    { modules: "balanceSheetHistory" },
-  );
+  const data = await authRequest<QuoteSummaryResponse>(yfClient, {
+    method: "GET",
+    path: `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    queryParams: { modules: "balanceSheetHistory" },
+  });
   return data?.quoteSummary?.result?.[0]?.balanceSheetHistory?.balanceSheetStatements ?? [];
 }
 
@@ -492,10 +553,11 @@ export async function fetchBalanceSheets(symbol: string): Promise<any[]> {
  * Endpoint: `GET /v10/finance/quoteSummary/{symbol}?modules=cashflowStatementHistory`
  */
 export async function fetchCashFlowStatements(symbol: string): Promise<any[]> {
-  const data = await yfClient.get<QuoteSummaryResponse>(
-    `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
-    { modules: "cashflowStatementHistory" },
-  );
+  const data = await authRequest<QuoteSummaryResponse>(yfClient, {
+    method: "GET",
+    path: `/v10/finance/quoteSummary/${encodeURIComponent(symbol)}`,
+    queryParams: { modules: "cashflowStatementHistory" },
+  });
   return data?.quoteSummary?.result?.[0]?.cashflowStatementHistory?.cashflowStatements ?? [];
 }
 
@@ -511,9 +573,10 @@ export async function fetchCashFlowStatements(symbol: string): Promise<any[]> {
  * Returns an array of futures contract ticker symbols.
  */
 export async function fetchFuturesChain(symbol: string): Promise<string[]> {
-  const data = await yfClient.get<QuoteSummaryResponse>(
-    `/v10/finance/quoteSummary/${encodeURIComponent(symbol + "=F")}`,
-    { modules: "futuresChain" },
-  );
+  const data = await authRequest<QuoteSummaryResponse>(yfClient, {
+    method: "GET",
+    path: `/v10/finance/quoteSummary/${encodeURIComponent(symbol + "=F")}`,
+    queryParams: { modules: "futuresChain" },
+  });
   return data?.quoteSummary?.result?.[0]?.futuresChain?.futures ?? [];
 }

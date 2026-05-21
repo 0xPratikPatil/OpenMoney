@@ -1,6 +1,7 @@
 /**
  * API client for OpenMoney backend.
- * Provides typed fetch helpers for all authenticated API calls.
+ * Type-safe fetch helpers for all API calls.
+ * No version prefixes in URL paths.
  */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
@@ -30,9 +31,10 @@ async function request<T>(
   return res.json();
 }
 
-// ---------------------------------------------------------------------------
-// Portfolios
-// ---------------------------------------------------------------------------
+// ═══════════════════════════════════════════════════════════
+// Types
+// ═══════════════════════════════════════════════════════════
+
 export interface Portfolio {
   id: string;
   name: string;
@@ -161,88 +163,145 @@ export interface Signal {
   createdAt: string;
 }
 
-// ---------------------------------------------------------------------------
-// API methods
-// ---------------------------------------------------------------------------
+export interface ProviderInfo {
+  name: string;
+  description: string;
+  website: string;
+  credentials: string[];
+  models: string[];
+  status: string;
+}
+
+export interface TickerQuote {
+  symbol: string;
+  name?: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  volume?: number;
+  marketCap?: number;
+  provider: string;
+  timestamp: string;
+}
+
+export interface TickerSearchResult {
+  symbol: string;
+  name: string;
+  exchange: string;
+  type: string;
+}
+
+export interface HistoricalDataPoint {
+  date: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+// ═══════════════════════════════════════════════════════════
+// API Methods
+// ═══════════════════════════════════════════════════════════
+
 export const api = {
-  // Portfolios
+  // ── Portfolios ──────────────────────────────────────────
   portfolios: {
-    list: () => request<Portfolio[]>('/api/v1/portfolios'),
-    get: (id: string) => request<PortfolioDetail>(`/api/v1/portfolios/${id}`),
+    list: () => request<Portfolio[]>('/api/portfolios'),
+    get: (id: string) => request<PortfolioDetail>(`/api/portfolios/${id}`),
     create: (data: { name: string; description?: string; currency?: string; isDefault?: boolean }) =>
-      request<Portfolio>('/api/v1/portfolios', { method: 'POST', body: JSON.stringify(data) }),
+      request<Portfolio>('/api/portfolios', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: Partial<Portfolio>) =>
-      request<Portfolio>(`/api/v1/portfolios/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+      request<Portfolio>(`/api/portfolios/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     delete: (id: string) =>
-      request<void>(`/api/v1/portfolios/${id}`, { method: 'DELETE' }),
-    risk: (id: string) => request<RiskMetrics>(`/api/v1/portfolios/${id}/risk`),
-    recommendations: (id: string) => request<ActionRecommendation[]>(`/api/v1/portfolios/${id}/recommendations`),
-    history: (id: string) => request<{ date: string; value: number }[]>(`/api/v1/portfolios/${id}/history`),
+      request<void>(`/api/portfolios/${id}`, { method: 'DELETE' }),
+    risk: (id: string) => request<RiskMetrics>(`/api/portfolios/${id}/risk`),
+    recommendations: (id: string) => request<ActionRecommendation[]>(`/api/portfolios/${id}/recommendations`),
+    history: (id: string) => request<{ date: string; value: number }[]>(`/api/portfolios/${id}/history`),
   },
 
-  // Positions
+  // ── Positions ───────────────────────────────────────────
   positions: {
     create: (portfolioId: string, data: { ticker: string; quantity: number; avgEntryPrice: number; name?: string; notes?: string }) =>
-      request<Position>(`/api/v1/portfolios/${portfolioId}/positions`, { method: 'POST', body: JSON.stringify(data) }),
+      request<Position>(`/api/portfolios/${portfolioId}/positions`, { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: Partial<Position>) =>
-      request<Position>(`/api/v1/positions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+      request<Position>(`/api/positions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     close: (id: string) =>
-      request<Position>(`/api/v1/positions/${id}`, { method: 'PUT', body: JSON.stringify({ isOpen: false }) }),
+      request<Position>(`/api/positions/${id}`, { method: 'PUT', body: JSON.stringify({ isOpen: false }) }),
     delete: (id: string) =>
-      request<void>(`/api/v1/positions/${id}`, { method: 'DELETE' }),
+      request<void>(`/api/positions/${id}`, { method: 'DELETE' }),
   },
 
-  // Watchlists
+  // ── Watchlists ──────────────────────────────────────────
   watchlists: {
-    list: () => request<Watchlist[]>('/api/v1/watchlists'),
-    get: (id: string) => request<Watchlist>(`/api/v1/watchlists/${id}`),
+    list: () => request<Watchlist[]>('/api/watchlists'),
+    get: (id: string) => request<Watchlist>(`/api/watchlists/${id}`),
     create: (data: { name: string; isDefault?: boolean }) =>
-      request<Watchlist>('/api/v1/watchlists', { method: 'POST', body: JSON.stringify(data) }),
+      request<Watchlist>('/api/watchlists', { method: 'POST', body: JSON.stringify(data) }),
     delete: (id: string) =>
-      request<void>(`/api/v1/watchlists/${id}`, { method: 'DELETE' }),
+      request<void>(`/api/watchlists/${id}`, { method: 'DELETE' }),
     addItem: (watchlistId: string, ticker: string) =>
-      request<WatchlistItem>(`/api/v1/watchlists/${watchlistId}/items`, { method: 'POST', body: JSON.stringify({ ticker }) }),
+      request<WatchlistItem>(`/api/watchlists/${watchlistId}/items`, { method: 'POST', body: JSON.stringify({ ticker }) }),
     removeItem: (watchlistId: string, itemId: string) =>
-      request<void>(`/api/v1/watchlists/${watchlistId}/items/${itemId}`, { method: 'DELETE' }),
+      request<void>(`/api/watchlists/${watchlistId}/items/${itemId}`, { method: 'DELETE' }),
   },
 
-  // Journal
+  // ── Journal ─────────────────────────────────────────────
   journal: {
-    list: () => request<JournalEntry[]>('/api/v1/journal'),
-    get: (id: string) => request<JournalEntry>(`/api/v1/journal/${id}`),
+    list: () => request<JournalEntry[]>('/api/journal'),
+    get: (id: string) => request<JournalEntry>(`/api/journal/${id}`),
     create: (data: Partial<JournalEntry>) =>
-      request<JournalEntry>('/api/v1/journal', { method: 'POST', body: JSON.stringify(data) }),
+      request<JournalEntry>('/api/journal', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: Partial<JournalEntry>) =>
-      request<JournalEntry>(`/api/v1/journal/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+      request<JournalEntry>(`/api/journal/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     delete: (id: string) =>
-      request<void>(`/api/v1/journal/${id}`, { method: 'DELETE' }),
-    stats: () => request<JournalStats>('/api/v1/journal/stats'),
+      request<void>(`/api/journal/${id}`, { method: 'DELETE' }),
+    stats: () => request<JournalStats>('/api/journal/stats'),
   },
 
-  // Market data
-  marketData: {
-    quote: (symbol: string, provider?: string) =>
-      request<unknown>(`/api/v1/market-data/quote?symbol=${symbol}${provider ? `&provider=${provider}` : ''}`),
-    historical: (symbol: string, startDate?: string, endDate?: string, interval?: string) =>
-      request<unknown>(`/api/v1/market-data/historical?symbol=${symbol}${startDate ? `&startDate=${startDate}` : ''}${endDate ? `&endDate=${endDate}` : ''}${interval ? `&interval=${interval}` : ''}`),
+  // ── Market Data (public, provider-backed) ───────────────
+  market: {
+    quote: (symbol: string, provider = 'yfinance') =>
+      request<TickerQuote>(`/api/equity/quote?symbol=${encodeURIComponent(symbol.toUpperCase())}&provider=${provider}`),
+
+    historical: (symbol: string, opts?: { startDate?: string; endDate?: string; interval?: string; provider?: string }) =>
+      request<HistoricalDataPoint[]>(
+        `/api/equity/historical?symbol=${encodeURIComponent(symbol.toUpperCase())}` +
+        (opts?.startDate ? `&startDate=${opts.startDate}` : '') +
+        (opts?.endDate ? `&endDate=${opts.endDate}` : '') +
+        (opts?.interval ? `&interval=${opts.interval}` : '') +
+        `&provider=${opts?.provider ?? 'yfinance'}`
+      ),
+
+    profile: (symbol: string, provider = 'yfinance') =>
+      request<Record<string, unknown>>(`/api/equity/profile?symbol=${encodeURIComponent(symbol.toUpperCase())}&provider=${provider}`),
+
+    keyMetrics: (symbol: string, provider = 'yfinance') =>
+      request<Record<string, unknown>>(`/api/equity/key-metrics?symbol=${encodeURIComponent(symbol.toUpperCase())}&provider=${provider}`),
+
+    search: (query: string, limit = 20, provider = 'yfinance') =>
+      request<TickerSearchResult[]>(`/api/search?query=${encodeURIComponent(query)}&limit=${limit}&provider=${provider}`),
+
+    providers: {
+      list: () => request<ProviderInfo[]>('/api/providers'),
+      get: (name: string) => request<ProviderInfo>(`/api/providers/${name}`),
+      query: (provider: string, model: string, params: Record<string, unknown>) =>
+        request<unknown>('/api/query', {
+          method: 'POST',
+          body: JSON.stringify({ provider, model, params }),
+        }),
+    },
   },
 
-  // Signals
+  // ── Signals ─────────────────────────────────────────────
   signals: {
-    list: () => request<Signal[]>('/api/v1/signals'),
+    list: () => request<Signal[]>('/api/signals'),
   },
 
-  // Search
-  search: {
-    ticker: (query: string) => request<{ symbol: string; name: string; exchange: string; type: string }[]>(
-      `/api/v1/search?q=${encodeURIComponent(query)}`,
-    ),
-  },
-
-  // Provider management
-  providers: {
-    list: () => request<{ name: string; description: string; status: string }[]>('/api/v1/providers'),
-    setCredential: (provider: string, apiKey: string) =>
-      request<void>(`/api/v1/providers/${provider}/credentials`, { method: 'PUT', body: JSON.stringify({ apiKey }) }),
+  // ── User ────────────────────────────────────────────────
+  user: {
+    get: () => request<Record<string, unknown>>('/api/user'),
   },
 };
+
+(End of file - total 262 lines)

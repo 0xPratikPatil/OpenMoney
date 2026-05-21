@@ -74,10 +74,10 @@ export class FamaFrenchFactorFetcher extends AbstractFetcher<
     return rows.map((row) =>
       FamaFrenchFactorData.parse({
         date: row.date,
-        mktMinusRf: parseFFValue(row["Mkt-RF"] ?? row.mktrf),
-        smb: parseFFValue(row["SMB"] ?? row.smb),
-        hml: parseFFValue(row["HML"] ?? row.hml),
-        rf: parseFFValue(row["RF"] ?? row.rf),
+        mktMinusRf: parseFFValue((row["Mkt-RF"] ?? row.mktrf) as string | number | undefined | null),
+        smb: parseFFValue((row["SMB"] ?? row.smb) as string | number | undefined | null),
+        hml: parseFFValue((row["HML"] ?? row.hml) as string | number | undefined | null),
+        rf: parseFFValue((row["RF"] ?? row.rf) as string | number | undefined | null),
       }),
     );
   }

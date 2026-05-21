@@ -72,7 +72,7 @@ export class FamaFrenchMomentumFetcher extends AbstractFetcher<
     return rows.map((row) =>
       FamaFrenchMomentumData.parse({
         date: row.date,
-        mom: parseFFValue(row["Mom"] ?? row["MOM"] ?? row.mom),
+        mom: parseFFValue((row["Mom"] ?? row["MOM"] ?? row.mom) as string | number | null | undefined),
       }),
     );
   }

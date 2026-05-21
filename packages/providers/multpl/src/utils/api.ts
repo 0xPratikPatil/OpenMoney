@@ -67,10 +67,10 @@ export async function fetchMultplData(
       return rawData
         .filter(([ts, val]) => ts != null && val != null)
         .map(([ts, val]) => ({
-          date: new Date(ts).toISOString().split("T")[0],
+          date: new Date(ts).toISOString().split("T")[0] ?? "",
           value: val,
         }))
-        .sort((a, b) => a.date.localeCompare(b.date));
+        .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""));
     } catch {
       // Fall through to table parsing
     }
@@ -96,8 +96,8 @@ function parseMultplTable(html: string): MultplDataRow[] {
 
     if (!cells || cells.length < 2) continue;
 
-    const dateText = cells[0].replace(/<[^>]+>/g, "").trim();
-    const valueText = cells[1].replace(/<[^>]+>/g, "").trim();
+    const dateText = cells[0]!.replace(/<[^>]+>/g, "").trim();
+    const valueText = cells[1]!.replace(/<[^>]+>/g, "").trim();
 
     // Validate date format
     const parsedDate = new Date(dateText);
@@ -107,7 +107,7 @@ function parseMultplTable(html: string): MultplDataRow[] {
     if (isNaN(value)) continue;
 
     rows.push({
-      date: parsedDate.toISOString().split("T")[0],
+      date: parsedDate.toISOString().split("T")[0]!,
       value,
     });
   }
@@ -144,17 +144,18 @@ export async function fetchMultplTableCsv(
 
   // Skip header row
   for (let i = 1; i < lines.length; i++) {
-    const parts = lines[i].split(",");
+    const line = lines[i]!;
+    const parts = line.split(",");
     if (parts.length < 2) continue;
-    const dateStr = parts[0].trim();
-    const value = parseFloat(parts[1].trim());
+    const dateStr = parts[0]!.trim();
+    const value = parseFloat(parts[1]!.trim());
     if (isNaN(value)) continue;
 
     const parsedDate = new Date(dateStr);
     if (isNaN(parsedDate.getTime())) continue;
 
     rows.push({
-      date: parsedDate.toISOString().split("T")[0],
+      date: parsedDate.toISOString().split("T")[0]!,
       value,
     });
   }

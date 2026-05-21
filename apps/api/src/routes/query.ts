@@ -25,7 +25,7 @@ const queryRouter = new Hono();
  *   { success: false, error: { code, message }, meta: { ... } }
  */
 queryRouter.post(
-  "/api/query",
+  "/query",
   zValidator(
     "json",
     z.object({
@@ -59,7 +59,7 @@ queryRouter.post(
  * GET /api/providers
  * List available providers and their supported models.
  */
-queryRouter.get("/api/providers", (c) => {
+queryRouter.get("/providers", (c) => {
   const providers = globalRegistry.getAll();
   const data: Record<string, {
     description: string;
@@ -82,7 +82,7 @@ queryRouter.get("/api/providers", (c) => {
  * GET /api/providers/:name
  * Get details about a specific provider.
  */
-queryRouter.get("/api/providers/:name", (c) => {
+queryRouter.get("/providers/:name", (c) => {
   const name = c.req.param("name");
   const provider = globalRegistry.get(name);
 

@@ -43,8 +43,8 @@ export interface FRBObservation {
 export function extractFRBObservations(
   response: unknown,
 ): FRBObservation[] {
-  const resp = response as Record<string, unknown>;
-  const observations = (resp?.observations ?? resp?.data ?? resp?.series?.observations ?? []) as FRBObservation[];
+  const resp = (response ?? {}) as Record<string, unknown>;
+  const observations = ((resp.observations as FRBObservation[]) ?? (resp.data as FRBObservation[]) ?? []) as FRBObservation[];
 
   if (!Array.isArray(observations) || observations.length === 0) {
     return [];

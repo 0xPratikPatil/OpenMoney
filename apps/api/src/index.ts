@@ -7,6 +7,7 @@ import { globalRegistry } from '@openmoney/provider-core';
 import { auth } from './lib/auth';
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/error-handler';
+import { rateLimiter } from './middleware/rate-limiter';
 import { initializeProviders } from './lib/provider-init';
 import { ok } from './lib/response';
 
@@ -34,10 +35,13 @@ import { user } from './routes/v1/user';
 import { signals } from './routes/v1/signals';
 
 // WebSocket
-import { wsHandler } from './routes/ws';
+import { wsHandler, startLiveQuotePoller } from './routes/ws';
 
 // Initialize provider system at startup (registers all providers into globalRegistry)
 initializeProviders();
+
+// Start live quote poller for WebSocket subscribers
+startLiveQuotePoller();
 
 const app = new Hono();
 
@@ -48,6 +52,9 @@ app.use('/api/*', cors({
   origin: config.api.corsOrigins,
   credentials: true,
 }));
+
+// Rate limiting (anonymous: 60/min, authenticated: 300/min)
+app.use('/api/*', rateLimiter);
 
 // Global error handler
 app.onError(errorHandler);
@@ -86,22 +93,27 @@ app.route('/api/index', indexRouter);
 app.route('/api/economic', economicRouter);
 app.route('/api/search', searchRouter);
 
-// Unified provider query API
-app.route('/', queryRouter);
+// Unified provider query + discovery API
+app.route('/api', queryRouter);
 
 // ---------------------------------------------------------------------------
-// Protected API v1 routes (require authentication)
+// Protected routes (require authentication)
 // ---------------------------------------------------------------------------
-app.use('/api/v1/*', authMiddleware);
+app.use('/api/portfolios/*', authMiddleware);
+app.use('/api/positions/*', authMiddleware);
+app.use('/api/watchlists/*', authMiddleware);
+app.use('/api/journal/*', authMiddleware);
+app.use('/api/user/*', authMiddleware);
+app.use('/api/signals/*', authMiddleware);
 
-app.route('/api/v1', portfolios);
-app.route('/api/v1', positions);
-app.route('/api/v1', watchlists);
-app.route('/api/v1', journal);
-app.route('/api/v1', marketData);
-app.route('/api/v1', search);
-app.route('/api/v1', user);
-app.route('/api/v1', signals);
+app.route('/api', portfolios);
+app.route('/api', positions);
+app.route('/api', watchlists);
+app.route('/api', journal);
+app.route('/api', marketData);
+app.route('/api', search);
+app.route('/api', user);
+app.route('/api', signals);
 
 export default {
   port: config.api.port,

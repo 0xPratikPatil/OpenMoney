@@ -69,7 +69,7 @@ const NAV_SECTIONS = [
     title: 'System',
     items: [
       { id: 'settings', label: 'Settings', icon: <Settings size={16} />, href: '/settings' },
-      { id: 'providers', label: 'Data Providers', icon: <Plus size={16} />, href: '/settings/providers' },
+      { id: 'providers', label: 'Provider Registry', icon: <Plus size={16} />, href: '/providers' },
     ],
   },
 ];
@@ -84,7 +84,7 @@ function getActiveSection(pathname: string): string {
   if (pathname.startsWith('/watchlist')) return 'watchlists';
   if (pathname.startsWith('/screener')) return 'screener';
   if (pathname.startsWith('/journal')) return 'journal';
-  if (pathname.startsWith('/settings/providers')) return 'providers';
+  if (pathname.startsWith('/providers')) return 'providers';
   if (pathname.startsWith('/settings')) return 'settings';
   if (pathname.startsWith('/search')) return 'search';
   return 'dashboard';

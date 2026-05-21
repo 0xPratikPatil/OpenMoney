@@ -98,6 +98,7 @@ function extractJsonData(html: string): StockgridDataRow[] | null {
   let match;
 
   while ((match = scriptRegex.exec(html)) !== null) {
+    if (!match[1]) continue;
     try {
       const raw = JSON.parse(match[1]) as Array<Record<string, unknown>>;
       if (Array.isArray(raw) && raw.length > 0) {
@@ -141,13 +142,14 @@ function parseStockgridTable(html: string): StockgridDataRow[] {
 
     // First cell is typically symbol or date
     if (cellValues.length >= 2) {
-      row.symbol = cellValues[0];
-      row.date = cellValues[1];
+      row.symbol = cellValues[0] ?? "";
+      row.date = cellValues[1] ?? "";
 
       // Add remaining cells as numeric fields
       for (let i = 2; i < cellValues.length; i++) {
-        const val = parseFloat(cellValues[i].replace(/[$,%]/g, ""));
-        row[`field_${i}`] = isNaN(val) ? cellValues[i] : val;
+        const cellVal = cellValues[i] ?? "";
+        const val = parseFloat(cellVal.replace(/[$,%]/g, ""));
+        row[`field_${i}`] = isNaN(val) ? cellVal : val;
       }
 
       if (row.symbol && row.symbol.length <= 10) {

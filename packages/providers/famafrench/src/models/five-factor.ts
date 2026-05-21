@@ -82,12 +82,12 @@ export class FamaFrenchFiveFactorFetcher extends AbstractFetcher<
     return rows.map((row) =>
       FamaFrenchFiveFactorData.parse({
         date: row.date,
-        mktMinusRf: parseFFValue(row["Mkt-RF"] ?? row.mktrf),
-        smb: parseFFValue(row["SMB"] ?? row.smb),
-        hml: parseFFValue(row["HML"] ?? row.hml),
-        rmw: parseFFValue(row["RMW"] ?? row.rmw),
-        cma: parseFFValue(row["CMA"] ?? row.cma),
-        rf: parseFFValue(row["RF"] ?? row.rf),
+        mktMinusRf: parseFFValue((row["Mkt-RF"] ?? row.mktrf) as string | number | undefined | null),
+        smb: parseFFValue((row["SMB"] ?? row.smb) as string | number | undefined | null),
+        hml: parseFFValue((row["HML"] ?? row.hml) as string | number | undefined | null),
+        rmw: parseFFValue((row["RMW"] ?? row.rmw) as string | number | undefined | null),
+        cma: parseFFValue((row["CMA"] ?? row.cma) as string | number | undefined | null),
+        rf: parseFFValue((row["RF"] ?? row.rf) as string | number | undefined | null),
       }),
     );
   }

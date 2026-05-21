@@ -61,7 +61,6 @@ export async function fetchDataset(
 ): Promise<FamaFrenchRow[]> {
   const suffix = frequency === "daily" ? "_daily" : "";
   const datasetName = dataset + suffix;
-  const url = `${FF_BASE_URL}/${datasetName}_CSV.zip`;
 
   // FF data is published as zip files containing CSV files.
   // We attempt direct CSV download (some are available as .txt too)
@@ -116,7 +115,7 @@ function parseFamaFrenchLines(lines: string[]): FamaFrenchRow[] {
   // Skip copyright/description header lines (end with blank line or start of table)
   let dataStart = 0;
   for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim();
+    const trimmed = lines[i]!.trim();
     // Look for header row containing typical FF column names
     if (/^\s*\d{4}\s/.test(trimmed) || /^\s*\d{6}\s/.test(trimmed)) {
       dataStart = i;
@@ -128,7 +127,7 @@ function parseFamaFrenchLines(lines: string[]): FamaFrenchRow[] {
   // FF files have description, blank line, then column headers, then data
   let headerIndex = -1;
   for (let i = 0; i < Math.min(dataStart, lines.length); i++) {
-    const trimmed = lines[i].trim().toLowerCase();
+    const trimmed = lines[i]!.trim().toLowerCase();
     if (
       trimmed.includes("mkt-rf") ||
       trimmed.includes("smb") ||
@@ -144,7 +143,7 @@ function parseFamaFrenchLines(lines: string[]): FamaFrenchRow[] {
   const startRow = headerIndex >= 0 ? headerIndex + 1 : dataStart;
 
   // Parse header row
-  const headerRow = headerIndex >= 0 ? lines[headerIndex].trim() : "";
+  const headerRow = headerIndex >= 0 ? lines[headerIndex]!.trim() : "";
   // CSV: comma-separated, Text: whitespace-separated
   const isCsv = headerRow.includes(",") || lines[startRow]?.includes(",");
   const separators = isCsv ? /,/ : /\s+/;
@@ -163,7 +162,7 @@ function parseFamaFrenchLines(lines: string[]): FamaFrenchRow[] {
   const rows: FamaFrenchRow[] = [];
 
   for (let i = startRow; i < lines.length; i++) {
-    const line = lines[i].trim();
+    const line = lines[i]!.trim();
     if (line.length === 0) continue;
 
     const parts = line
@@ -173,11 +172,12 @@ function parseFamaFrenchLines(lines: string[]): FamaFrenchRow[] {
 
     // Skip footnote rows and non-data
     if (parts.length < 2) continue;
-    if (/^[a-z]/i.test(parts[0]) && parts[0].length > 6) continue; // Skip text rows
-    if (parts[0] === "Date" || parts[0] === "date") continue;
-    if (/^-+$/.test(parts[0])) continue;
+    const firstPart = parts[0]!;
+    if (/^[a-z]/i.test(firstPart) && firstPart.length > 6) continue; // Skip text rows
+    if (firstPart === "Date" || firstPart === "date") continue;
+    if (/^-+$/.test(firstPart)) continue;
 
-    const dateStr = parts[0];
+    const dateStr = firstPart;
     // Validate date format (YYYYMMDD or YYYYMM)
     if (!/^\d{4,6}$/.test(dateStr)) continue;
 
@@ -188,8 +188,9 @@ function parseFamaFrenchLines(lines: string[]): FamaFrenchRow[] {
 
     for (let j = 0; j < values.length; j++) {
       const key = valueKeys[j] ?? `field_${j}`;
-      const val = parseFloat(values[j]);
-      row[key] = isNaN(val) ? values[j] : val;
+      const valStr = values[j]!;
+      const val = parseFloat(valStr);
+      row[key] = isNaN(val) ? valStr : val;
     }
 
     rows.push(row);

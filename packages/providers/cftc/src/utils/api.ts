@@ -58,7 +58,7 @@ export function parseCFTCReportCsv(csv: string): CFTCReportRow[] {
     const values = parseCSVLine(line);
 
     // Skip summary/total lines
-    if (values.length === 0 || values[0]?.startsWith("TOTAL") ?? false || values.every((v) => v === "")) {
+    if (values.length === 0 || (values[0]?.startsWith("TOTAL") ?? false) || values.every((v) => v === "")) {
       continue;
     }
 

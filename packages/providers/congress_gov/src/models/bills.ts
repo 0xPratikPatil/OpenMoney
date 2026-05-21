@@ -68,6 +68,9 @@ export class CongressBillsFetcher extends AbstractFetcher<
 
     return bills.map((b: Record<string, unknown>) => {
       const latestAction = (b.latestAction ?? {}) as Record<string, unknown> | undefined;
+      const sponsor = (b.sponsor ?? {}) as Record<string, string>;
+      const sponsorName: string | null = sponsor.fullName
+        ?? ((sponsor.firstName != null) && (sponsor.lastName != null) ? `${sponsor.firstName} ${sponsor.lastName}` : null);
       return CongressBillsData.parse({
         billId: (b.number ?? null) as string | null,
         billNumber: (b.number ?? null) as string | null,
@@ -82,7 +85,7 @@ export class CongressBillsFetcher extends AbstractFetcher<
           ? (latestAction.text as string)
           : null,
         introducedDate: (b.introducedDate ?? null) as string | null,
-        sponsor: (b.sponsor?.fullName ?? b.sponsor?.firstName && `${b.sponsor.firstName} ${b.sponsor.lastName}` ?? null) as string | null,
+        sponsor: sponsorName,
         url: b.url ? (`https://api.congress.gov/v3${b.url}`) : null,
       });
     });

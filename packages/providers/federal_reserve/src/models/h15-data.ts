@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { AbstractFetcher, EmptyDataError } from "@openmoney/provider-core";
+import type { FRBObservation } from "../utils/api";
 import { frbFetch, extractFRBObservations, parseFRBValue } from "../utils/api";
 
 export const FRBH15QueryParams = z.object({
@@ -78,8 +79,8 @@ export class FRBH15DataFetcher extends AbstractFetcher<
 
         // Try to extract maturity pattern like "10-year", "30-year", "3-month", etc.
         const maturityMatch = seriesName.match(/(\d+[-\s]?(?:year|month|week|day))/i);
-        if (maturityMatch) {
-          maturity = maturityMatch[1].trim();
+        if (maturityMatch?.[1]) {
+          maturity = maturityMatch[1]!.trim();
         }
       }
 

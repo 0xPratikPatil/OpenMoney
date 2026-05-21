@@ -61,7 +61,7 @@ function datasetForIndustry(
       monthly: FamaFrenchDataset.INDUSTRIES_49_MONTHLY,
     },
   };
-  return map[count][frequency];
+  return map[count]![frequency]!;
 }
 
 // ── Fetcher ──────────────────────────────────────────────
@@ -88,7 +88,7 @@ export class FamaFrenchIndustryPortfolioFetcher extends AbstractFetcher<
     query: z.infer<typeof FamaFrenchIndustryPortfolioQueryParams>,
     _credentials: Record<string, string>,
   ) {
-    const dataset = datasetForIndustry(query.count as any, query.frequency);
+    const dataset = datasetForIndustry(query.count, query.frequency);
     return fetchDataset(dataset, query.frequency);
   }
 
@@ -108,7 +108,7 @@ export class FamaFrenchIndustryPortfolioFetcher extends AbstractFetcher<
 
       for (const [key, value] of Object.entries(row)) {
         if (key === "date") continue;
-        const parsed = parseFFValue(value);
+        const parsed = parseFFValue(value as string | number | null | undefined);
         if (parsed !== null) {
           industries[key] = parsed;
           industryCount++;
