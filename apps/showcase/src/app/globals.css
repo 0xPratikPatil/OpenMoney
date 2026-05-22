@@ -3,66 +3,62 @@
 @source "../../../../packages/openmoney-ui/src";
 
 @theme {
-  --color-background: #080808;
-  --color-foreground: #f0f0f0;
-  --color-surface: #0f0f0f;
-  --color-surface-elevated: #141414;
-  --color-surface-overlay: #1a1a1a;
-
-  --color-muted: #111111;
-  --color-muted-foreground: #555555;
-
-  --color-border: #242424;
-  --color-border-hover: #333333;
-  --color-ring: #b8f73a;
-
-  --color-primary: #f0f0f0;
-  --color-primary-foreground: #080808;
-
-  --color-secondary: #141414;
-  --color-secondary-foreground: #888888;
-
-  --color-accent: rgba(184, 247, 58, 0.1);
-  --color-accent-foreground: #b8f73a;
-
-  --color-destructive: #e05c5c;
-  --color-destructive-foreground: #f0f0f0;
-
-  --color-brand: #b8f73a;
-  --color-brand-dim: #1e2a0a;
-  --color-brand-border: #3d5a10;
-  --color-brand-muted: rgba(184, 247, 58, 0.1);
-
-  --color-positive: #4caf7d;
-  --color-positive-bg: #0a1f15;
-  --color-success: #4caf7d;
-  --color-success-muted: rgba(76, 175, 125, 0.12);
-  --color-warning: #e8a13a;
-  --color-info: #5b8def;
-
-  --color-card: #0f0f0f;
-  --color-card-foreground: #f0f0f0;
-  --color-popover: #141414;
-  --color-popover-foreground: #f0f0f0;
-
-  --color-sidebar-bg: #080808;
-  --color-sidebar-fg: #888888;
-  --color-sidebar-border: #242424;
-  --color-sidebar-accent: #141414;
-  --color-sidebar-accent-fg: #b8f73a;
-
-  --font-sans: var(--font-geist), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), 'JetBrains Mono', monospace;
-
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 10px;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --radius: 0.2rem;
 }
 
 :root {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.93 0 0);
+  --color-border: oklch(0.205 0 0);
+  --color-ring: oklch(0.708 0 0);
+  --color-input: oklch(0.205 0 0);
+  --color-background: oklch(0.145 0 0);
+  --color-foreground: oklch(0.93 0 0);
+  --color-primary: oklch(0.93 0 0);
+  --color-primary-foreground: oklch(0.205 0 0);
+  --color-secondary: oklch(0.269 0 0);
+  --color-secondary-foreground: oklch(0.93 0 0);
+  --color-muted: oklch(0.205 0 0);
+  --color-muted-foreground: oklch(0.708 0 0);
+  --color-accent: oklch(0.269 0 0);
+  --color-accent-foreground: oklch(0.93 0 0);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive-foreground: oklch(0.93 0 0);
+  --color-card: oklch(0.145 0 0);
+  --color-card-foreground: oklch(0.93 0 0);
+  --color-popover: oklch(0.145 0 0);
+  --color-popover-foreground: oklch(0.93 0 0);
+  --color-sidebar-bg: oklch(0.145 0 0);
+  --color-sidebar-fg: oklch(0.708 0 0);
+  --color-sidebar-border: oklch(0.205 0 0);
+  --color-sidebar-accent: oklch(0.269 0 0);
+  --color-sidebar-accent-fg: oklch(0.93 0 0);
+
   --ring: var(--color-ring);
-  --input: var(--color-border);
+  --input: var(--color-input);
+  --border: var(--color-border);
+
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  --positive: oklch(0.696 0.17 162.48);
+  --negative: oklch(0.577 0.245 27.325);
+  --warning: oklch(0.769 0.188 70.08);
+
+  --text-primary: var(--foreground);
+  --text-secondary: var(--color-muted-foreground);
+  --text-tertiary: oklch(0.556 0 0);
+  --background-panel: var(--background);
+  --background-elevated: var(--color-muted);
+  --brand: var(--foreground);
+  --brand-dim: var(--color-muted);
+  --brand-border: var(--color-border);
 }
 
 * { border-color: var(--color-border); }
@@ -72,5 +68,17 @@ body { margin: 0; padding: 0; line-height: 1.5; -webkit-font-smoothing: antialia
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+::-webkit-scrollbar-thumb { background: oklch(0.3 0 0); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: oklch(0.4 0 0); }
+
+.bg-grid {
+  background-image: linear-gradient(to right, oklch(1 0 0 / 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, oklch(1 0 0 / 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.bg-dot {
+  background-image: radial-gradient(circle, oklch(1 0 0 / 0.08) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.dashed-b { border-bottom: 1px dashed var(--color-border); }
+.dashed-t { border-top: 1px dashed var(--color-border); }

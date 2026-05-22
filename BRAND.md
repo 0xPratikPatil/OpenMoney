@@ -1,295 +1,112 @@
-# OpenMoney Brand Guidelines
+# OpenMoney Brand Identity
 
-> Design system and brand identity for OpenMoney — an open-source quantitative investment research and portfolio intelligence platform.
-> Inspired by the clarity of Better Auth, the precision of financial terminals, and the minimalism of modern developer tools.
+> Based on the [better-auth.com](https://better-auth.com/brand) design system — adapted for a quantitative finance platform.
+> Source: `https://better-auth.com/brand`
 
 ---
 
 ## Foundations
 
-### 01 — Color
+### Color
 
-The palette balances warmth (the human side of investing) with precision (the quantitative side). Dark mode is the default — financial professionals work in low-light environments.
-
-#### Base palette
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--background` | `#0C0C0F` | Page background |
-| `--foreground` | `#F0EFED` | Primary text |
-| `--primary` | `#F0EFED` | Primary interactive |
-| `--primary-fg` | `#0C0C0F` | Text on primary |
-| `--secondary` | `#1E1E26` | Secondary surfaces |
-| `--secondary-fg` | `#F0EFED` | Text on secondary |
-| `--muted` | `#1E1E26` | Muted backgrounds |
-| `--muted-fg` | `#8E8D96` | Muted text |
-| `--accent` | `#1E1E26` | Hover/active states |
-| `--accent-fg` | `#F0EFED` | Text on accent |
-| `--border` | `#26262E` | Borders, dividers |
-| `--input` | `#26262E` | Input borders |
-| `--ring` | `#6B6A78` | Focus rings |
-| `--destructive` | `#7F1D1D` | Destructive actions |
-
-#### Light mode overrides
-
-| Token | Light Hex |
-|-------|-----------|
-| `--background` | `#F8F8FA` |
-| `--foreground` | `#1C1B1A` |
-| `--primary` | `#1C1B1A` |
-| `--primary-fg` | `#F8F8FA` |
-| `--secondary` | `#E8E8EE` |
-| `--muted-fg` | `#6B6A72` |
-| `--border` | `#D6D6DE` |
-| `--destructive` | `#DC2626` |
-
-#### Financial semantics
-
-These are data colors — reserved for P&L, risk direction, and market movement.
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--positive` | `#16A34A` | Price up, gain, bull signal |
-| `--negative` | `#DC2626` | Price down, loss, bear signal |
-| `--warning` | `#D97706` | Drawdown alert, reduce signal |
-| `--info` | `#2563EB` | Neutral system message |
-
-#### Callout accents
-
-| Type | Hex |
-|------|-----|
-| Info | `#3B82F6` |
-| Warn | `#F59E0B` |
-| Error | `#EF4444` |
-| Success | `#10B981` |
-
-#### Accent color customization
-
-Default accent is Emerald (`#059669`). Users can switch to:
-
-- **Indigo** (`#4F46E5`) — analytical, professional
-- **Amber** (`#D97706`) — warm, trader-desk feel
-- **Rose** (`#E11D48`) — bold, distinctive
-- **Blue** (`#2563EB`) — classic financial
-
----
-
-### 02 — Typography
-
-**Inter** for UI, **JetBrains Mono** for data and code. Numbers in financial contexts are always set in mono.
-
-#### Font stack
-
-```
---font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif
---font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace
-```
-
-#### Scale
-
-| Token | Size | Weight | Usage |
-|-------|------|--------|-------|
-| `--text-xs` | 11px | 500 | Labels, metadata, captions |
-| `--text-sm` | 13px | 400 | Body text, table cells |
-| `--text-base` | 14px | 400 | Default body |
-| `--text-lg` | 16px | 500 | Section headings |
-| `--text-xl` | 20px | 600 | Card titles, panel headers |
-| `--text-2xl` | 24px | 600 | Page titles |
-| `--text-3xl` | 30px | 700 | Hero metrics |
-| `--text-4xl` | 36px | 700 | Display, empty states |
-
-#### Type examples
-
-```
-Display · text-3xl font-sans tracking-tight
-
-$284,530
-Portfolio Value
-
-Body · text-sm font-sans
-Your portfolio is within all risk thresholds.
-
-Data value · text-lg font-mono
-+$3,240 (+1.2%)
-
-Code · text-sm font-mono
-const portfolio = await prisma.portfolio.findFirst(...);
-```
-
----
-
-### 03 — Radius
-
-Deliberately tight. Sharp corners communicate precision.
+The palette that makes up every surface in the product. Dark-only.
 
 | Token | Value | Usage |
-|-------|-------|-------|
-| `--radius-none` | `0` | Code blocks, table headers |
-| `--radius-sm` | `calc(var(--radius) - 2px)` | Inputs, small buttons |
-| `--radius-md` | `calc(var(--radius) - 1px)` | Buttons, badges |
-| `--radius-lg` | `var(--radius) = 0.375rem` | Cards, dialogs |
-| `--radius-xl` | `calc(var(--radius) + 4px)` | Modals, panels |
+|---|---|---|
+| `--background` | `oklch(0.145 0 0)` | Page background |
+| `--foreground` | `oklch(0.93 0 0)` | Primary text |
+| `--primary` | `oklch(0.93 0 0)` | Primary interactive |
+| `--primary-foreground` | `oklch(0.205 0 0)` | Text on primary |
+| `--secondary` | `oklch(0.269 0 0)` | Secondary surfaces |
+| `--secondary-foreground` | `oklch(0.93 0 0)` | Text on secondary |
+| `--muted` | `oklch(0.205 0 0)` | Muted backgrounds |
+| `--muted-foreground` | `oklch(0.708 0 0)` | Muted text |
+| `--accent` | `oklch(0.269 0 0)` | Hover/active states |
+| `--accent-foreground` | `oklch(0.93 0 0)` | Text on accent |
+| `--border` | `oklch(0.205 0 0)` | Borders, dividers |
+| `--input` | `oklch(0.205 0 0)` | Input borders |
+| `--ring` | `oklch(0.708 0 0)` | Focus rings |
+| `--destructive` | `oklch(0.577 0.245 27.325)` | Errors, destructive actions |
 
----
+### Callout Accents
 
-### 04 — Shadow
+| Variant | Token | Usage |
+|---|---|---|
+| Info | `oklch(0.488 0.243 264.376)` | Informational callouts |
+| Warn | `oklch(0.769 0.188 70.08)` | Warning callouts |
+| Error | `oklch(0.577 0.245 27.325)` | Error callouts |
+| Success | `oklch(0.696 0.17 162.48)` | Success callouts |
 
-Shadows lift only interactive affordances. Data containers stay flat.
+### Typography
 
-| Level | Dark | Light |
-|-------|------|-------|
-| xs | `0 1px 2px rgba(0,0,0,0.3)` | `0 1px 2px rgba(0,0,0,0.05)` |
-| sm | `0 1px 3px rgba(0,0,0,0.35)` | `0 1px 3px rgba(0,0,0,0.08)` |
-| md | `0 4px 12px rgba(0,0,0,0.4)` | `0 4px 12px rgba(0,0,0,0.1)` |
-| lg | `0 8px 24px rgba(0,0,0,0.45)` | `0 8px 24px rgba(0,0,0,0.12)` |
+**Geist** for UI, **Geist Mono** for code and metadata.
+
+- **H1**: `text-4xl tracking-tight` — Page titles
+- **H2**: `text-xl tracking-tight` — Section headings
+- **Body**: `text-sm` — Default text
+- **Label**: `text-[11px] font-mono uppercase tracking-wider` — Mono labels
+- **Code**: `font-mono text-sm` — Code blocks, data values
+
+### Radius
+
+Base is `0.2rem` — deliberately tight.
+
+| Token | Value | Usage |
+|---|---|---|
+| `sharp` | `0` | Code blocks, inline callouts |
+| `sm` | `calc(var(--radius) - 2px)` | Inputs, small buttons |
+| `md` | `calc(var(--radius) - 1px)` | Buttons, badges |
+| `lg` | `var(--radius)` | Cards, default |
+| `xl` | `calc(var(--radius) + 4px)` | Modals, panels |
+
+### Shadow
+
+Shadows are used sparingly — only to lift interactive affordances. Code blocks and cards stay flat.
 
 ---
 
 ## Motifs
 
-### 05 — Background Patterns
-
-#### Grid — Fine
-16px dot grid. `rgba(255,255,255,0.03)` dark, `rgba(0,0,0,0.04)` light.
-
-#### Grid — Financial
-Horizontal lines mimicking a chart grid. `rgba(255,255,255,0.04)` dark.
-
-#### Noise
-Grain texture at 5% opacity on elevated surfaces.
+| Class | Grid Size | Usage |
+|---|---|---|
+| `.bg-grid` | 32px | Background grid pattern |
+| `.bg-grid-small` | 8px | Fine grid pattern |
+| `.bg-dot` | 16px | Dot pattern |
+| `.dashed-b` | — | Dashed bottom border |
+| `.dashed-t` | — | Dashed top border |
+| `.dashed-l` | — | Dashed left border |
 
 ---
 
 ## Components
 
-### 06 — Buttons
+### Buttons
 
-Six variants, three sizes. `transition-all duration-150`.
+Six variants: `default`, `secondary`, `outline`, `ghost`, `link`, `destructive`
 
-**Variants:** Primary, Secondary, Outline, Ghost, Link, Destructive
+### Card
 
-**Sizes:** Small (h-8), Default (h-9), Large (h-10)
+Flat border, no shadow. Uses dashed footer rules for meta.
 
-### 07 — Inputs
+### Callout
 
-Clean, minimal. Border does the work.
+Dashed left stripe sized to the accent type (info/warn/error/success).
 
-Default → `bg-transparent border border-input rounded-md px-3 py-2 text-sm`
+### Badge
 
-Focus → `border-ring ring-1 ring-ring`
-
-Error → `border-destructive`
-
-### 08 — Cards
-
-Flat border, no shadow. Separation via `bg-secondary` + `border-border`. Metric blocks have no border — just number + label.
-
-### 09 — Callouts
-
-Colored left border — no background fill.
-
-### 10 — Tabs
-
-Underline-style. Active tab has colored underline + smooth transition.
-
-### 11 — Badges
-
-Compact inline. Variants: default, secondary, outline, destructive, success.
-
-### 12 — Alerts
-
-Slide-in from top-right. Spring animation. Auto-dismiss at 5s.
-
----
-
-## Logo
-
-### 13 — Logo System
-
-The mark is a stylized "O" formed by a rising trend line.
-
-**Clear space:** 4px at 24px size, scaling proportionally.
-
-**Minimum sizes:** Mark (24px), Wordmark (120px), Full logo (140px)
+Four variants: `default`, `secondary`, `destructive`, `outline`
 
 ---
 
 ## Voice
 
-### 14 — Voice & Tone
+How OpenMoney communicates — across docs, product copy, and marketing.
 
-#### Precise over clever
-Name things what they are. Portfolio, position, VaR, Sharpe ratio — not "MoneyJourney".
-
-#### Terse, but confident
-Short sentences. No filler. Write like an analyst who trusts their numbers.
-
-#### Let data do the talking
-Lead with the metric, follow with context:
-
-```
-$284,530          ← The headline
-Portfolio Value   ← The label
-▲ 2.3% this month ← The context
-```
-
-#### Sharp, not loud
-Tight radii, dashed dividers, mono for numbers. Precise, never decorative.
-
-#### Examples
-
-| Context | Good | Bad |
-|---------|------|-----|
-| Empty | "Add your first position to start tracking." | "Welcome! Let's get started!" |
-| Error | "Provider returned no data for XYZ." | "Oops! Something went wrong." |
-| Alert | "Portfolio VaR at 3.2% — above 2.5% threshold." | "Heads up! Your risk is high." |
-
-#### Dos and Don'ts
-
-- ✅ Do use precise numbers ("VaR at 95%: 1.8%")
-- ✅ Do use mono for all data values
-- ✅ Do be direct ("Reduce MSFT by 5 shares")
-- ❌ Don't use exclamation marks in data contexts
-- ❌ Don't use emojis as UI elements
-- ❌ Don't explain what a user already knows
+1. **Clear over clever** — We name things what they are.
+2. **Terse, but warm** — Short sentences. No marketing fluff. Sound like a thoughtful engineer.
+3. **Show the code** — A well-named snippet does more than a paragraph.
+4. **Sharp, not loud** — Minimal radii, dashed dividers, mono for metadata. The design should feel precise, never decorative.
 
 ---
 
-## Appendix
-
-### Tailwind Config Reference
-
-```ts
-export default {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
-        primary: { DEFAULT: 'var(--primary)', fg: 'var(--primary-fg)' },
-        secondary: { DEFAULT: 'var(--secondary)', fg: 'var(--secondary-fg)' },
-        muted: { DEFAULT: 'var(--muted)', fg: 'var(--muted-fg)' },
-        accent: { DEFAULT: 'var(--accent)', fg: 'var(--accent-fg)' },
-        border: 'var(--border)',
-        input: 'var(--input)',
-        ring: 'var(--ring)',
-        destructive: 'var(--destructive)',
-        positive: 'var(--positive)',
-        negative: 'var(--negative)',
-        warning: 'var(--warning)',
-        info: 'var(--info)',
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
-      },
-      borderRadius: { DEFAULT: 'var(--radius)' },
-    },
-  },
-};
-```
-
----
-
-> Built for quants who demand precision. This document is living — it will evolve as OpenMoney grows.
+*Brand identity based on [better-auth.com/brand](https://better-auth.com/brand)*

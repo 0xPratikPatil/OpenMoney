@@ -4,35 +4,35 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 font-mono text-xs uppercase tracking-wider whitespace-nowrap transition-all duration-150 outline-none disabled:pointer-events-none disabled:opacity-40 cursor-pointer [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 cursor-pointer",
   {
     variants: {
       variant: {
         default:
-          "bg-[var(--brand)] text-[var(--text-inverse)] hover:bg-[var(--brand-hover)] border border-transparent active:scale-[0.97]",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
-          "bg-transparent text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--border-strong)] hover:bg-[var(--background-elevated)] active:scale-[0.97]",
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
-          "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--background-elevated)] border border-transparent active:scale-[0.97]",
-        danger:
-          "bg-[var(--negative-bg)] text-[var(--negative)] border border-[var(--negative)]/20 hover:border-[var(--negative)]/40 active:scale-[0.97]",
-        terminal:
-          "bg-[var(--background-elevated)] text-[var(--brand)] border border-[var(--brand-border)] hover:bg-[var(--brand-dim)] font-mono active:scale-[0.97]",
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-8 px-4 rounded-[var(--radius-sm)]",
-        sm: "h-7 px-3 rounded-[var(--radius-sm)] text-[10px]",
-        lg: "h-9 px-5 rounded-[var(--radius-md)]",
-        icon: "size-8 rounded-[var(--radius-sm)]",
-        "icon-sm": "size-7 rounded-[var(--radius-sm)]",
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9",
       },
     },
-    defaultVariants: { variant: "outline", size: "default" },
+    defaultVariants: { variant: "default", size: "default" },
   }
 )
 
 function Button({
-  className, variant = "outline", size = "default", asChild = false, ...props
+  className, variant = "default", size = "default", asChild = false, ...props
 }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot.Root : "button"
   return (

@@ -3,120 +3,105 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────────────────────────────────
-   ARKON Design System — Terminal-grade finance platform
-   Stack: Next.js 15 · shadcn/ui · Tailwind CSS · TypeScript
-   Theme: Dark-only · lime-yellow accent · Geist font
+   OpenMoney — Better Auth Theme
+   Source: https://better-auth.com/brand
+   Fonts: Geist Sans + Geist Mono
+   Radius: 0.2rem base — deliberately tight
+   Voice: Sharp, editorial, mono for metadata, terse but warm
    ───────────────────────────────────────────────────────────────────────── */
 
 @layer base {
   :root {
-    /* ── Backgrounds ── */
-    --background:          #080808;
-    --background-panel:    #0f0f0f;
-    --background-elevated: #141414;
-    --background-input:    #111111;
-    --background-subtle:   #1a1a1a;
-
-    /* ── Borders ── */
-    --border:              #242424;
-    --border-strong:       #333333;
-    --border-subtle:       #1c1c1c;
-    --border-hover:        #333333;
-
-    /* ── Text ── */
-    --foreground:          #f0f0f0;
-    --text-primary:        #f0f0f0;
-    --text-secondary:      #888888;
-    --text-tertiary:       #555555;
-    --text-inverse:        #080808;
-
-    /* ── Accent — Signal Green / Lime ── */
-    --brand:               #b8f73a;
-    --brand-dim:           #1e2a0a;
-    --brand-border:        #3d5a10;
-    --brand-hover:         #ceff5a;
-    --brand-foreground:    #080808;
-    --brand-muted:         rgba(184, 247, 58, 0.1);
-    --brand-glow:          rgba(184, 247, 58, 0.08);
-
-    /* ── Semantic ── */
-    --positive:            #4caf7d;
-    --positive-bg:         #0a1f15;
-    --destructive:         #e05c5c;
-    --destructive-muted:   rgba(224, 92, 92, 0.12);
-    --negative:            #e05c5c;
-    --negative-bg:         #1f0a0a;
-    --warning:             #e8a13a;
-    --warning-bg:          #1f1508;
-    --success:             #4caf7d;
-    --success-muted:       rgba(76, 175, 125, 0.12);
-    --info:                #5b8def;
-    --info-muted:          rgba(91, 141, 239, 0.12);
-
-    /* ── Status ── */
-    --status-active:       #4caf7d;
-    --status-completed:    #888888;
-    --status-reviewing:    #e8a13a;
-    --status-high:         #e05c5c;
-    --status-medium:       #e8a13a;
-    --status-low:          #888888;
-
-    /* ── Radius ── */
-    --radius-sm:           3px;
-    --radius-md:           6px;
-    --radius:              6px;
-    --radius-lg:           10px;
-    --radius-xl:           10px;
-    --radius-pill:         999px;
-
-    /* ── Shadows (no box-shadows — use borders for depth) ── */
-    --shadow-panel:        0 0 0 1px var(--border);
-    --shadow-focus:        0 0 0 2px var(--background), 0 0 0 4px var(--brand);
-    --shadow-accent:       0 0 20px -4px rgba(184, 247, 58, 0.15);
-    --shadow-glow:         0 0 40px -8px rgba(184, 247, 58, 0.1);
-    --shadow-xs:           none;
-    --shadow-sm:           none;
-    --shadow-md:           none;
-    --shadow-lg:           none;
-    --shadow-xl:           none;
-
-    /* ── Animation ── */
-    --ease-out:            cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-in-out:         cubic-bezier(0.65, 0, 0.35, 1);
-
-    /* ── Typography ── */
-    --font-sans:           'Geist', system-ui, -apple-system, sans-serif;
-    --font-mono:           'Geist Mono', 'JetBrains Mono', 'SF Mono', monospace;
+    --background:              oklch(0.145 0 0);
+    --foreground:              oklch(0.93 0 0);
+    --font-sans:               'Geist', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:               'Geist Mono', ui-monospace, monospace;
+    --font-heading:            'Geist', ui-sans-serif, system-ui, sans-serif;
+    --color-sidebar-ring:      oklch(0.708 0 0);
+    --radius:                  0.2rem;
+    --color-destructive:       oklch(0.577 0.245 27.325);
+    --color-border:            oklch(0.205 0 0);
+    --color-input:             oklch(0.205 0 0);
+    --color-ring:              oklch(0.708 0 0);
+    --color-chart-1:           oklch(0.488 0.243 264.376);
+    --color-chart-2:           oklch(0.696 0.17 162.48);
+    --color-chart-3:           oklch(0.769 0.188 70.08);
+    --color-chart-4:           oklch(0.627 0.265 303.9);
+    --color-chart-5:           oklch(0.645 0.246 16.439);
+    --color-background:        oklch(0.145 0 0);
+    --color-foreground:        oklch(0.93 0 0);
+    --color-primary:           oklch(0.93 0 0);
+    --color-primary-foreground:oklch(0.205 0 0);
+    --color-secondary:         oklch(0.269 0 0);
+    --color-secondary-foreground:oklch(0.93 0 0);
+    --color-muted:             oklch(0.205 0 0);
+    --color-muted-foreground:  oklch(0.708 0 0);
+    --color-accent:            oklch(0.269 0 0);
+    --color-accent-foreground: oklch(0.93 0 0);
+    --color-destructive-foreground:oklch(0.93 0 0);
+    --color-sidebar-background:oklch(0.145 0 0);
+    --color-sidebar-foreground:oklch(0.708 0 0);
+    --color-sidebar-primary:   oklch(0.93 0 0);
+    --color-sidebar-primary-foreground:oklch(0.205 0 0);
+    --color-sidebar-accent:    oklch(0.269 0 0);
+    --color-sidebar-accent-foreground:oklch(0.93 0 0);
+    --color-sidebar-border:    oklch(0.205 0 0);
 
     /* ── Shadcn aliases ── */
-    --card:                var(--background-panel);
-    --card-foreground:     var(--text-primary);
-    --popover:             var(--background-elevated);
-    --popover-foreground:  var(--text-primary);
-    --primary:             var(--text-primary);
-    --primary-foreground:  var(--text-inverse);
-    --secondary:           var(--background-elevated);
-    --secondary-foreground: var(--text-secondary);
-    --muted:               var(--background-subtle);
-    --muted-foreground:    var(--text-tertiary);
-    --accent:              var(--brand-dim);
-    --accent-foreground:   var(--brand);
-    --destructive-foreground: white;
-    --input:               var(--border);
-    --sidebar-background:  var(--background);
-    --sidebar-foreground:  var(--text-secondary);
-    --sidebar-primary:     var(--brand);
-    --sidebar-primary-foreground: var(--text-inverse);
-    --sidebar-accent:      var(--brand-dim);
-    --sidebar-accent-foreground: var(--brand);
-    --sidebar-border:      var(--border);
-    --sidebar-ring:        var(--brand);
+    --card:                    var(--background);
+    --card-foreground:         var(--foreground);
+    --popover:                 var(--background);
+    --popover-foreground:      var(--foreground);
+    --border:                  var(--color-border);
+    --input:                   var(--color-input);
+    --ring:                    var(--color-ring);
+
+    /* ── Custom tokens ── */
+    --text-primary:            var(--foreground);
+    --text-secondary:          var(--color-muted-foreground);
+    --text-tertiary:           oklch(0.556 0 0);
+    --background-panel:        var(--background);
+    --background-elevated:     var(--color-muted);
+    --background-input:        var(--color-muted);
+    --background-subtle:       var(--color-accent);
+    --border-strong:           oklch(0.3 0 0);
+    --border-subtle:           oklch(0.18 0 0);
+    --brand:                   var(--foreground);
+    --brand-dim:               var(--color-muted);
+    --brand-border:            var(--color-border);
+    --brand-hover:             oklch(0.98 0 0);
+    --brand-glow:              oklch(0.93 0 0 / 0.05);
+    --positive:                oklch(0.696 0.17 162.48);
+    --positive-bg:             oklch(0.696 0.17 162.48 / 0.1);
+    --negative:                oklch(0.577 0.245 27.325);
+    --negative-bg:             oklch(0.577 0.245 27.325 / 0.1);
+    --warning:                 oklch(0.769 0.188 70.08);
+    --warning-bg:              oklch(0.769 0.188 70.08 / 0.1);
+    --success:                 oklch(0.696 0.17 162.48);
+    --info:                    oklch(0.488 0.243 264.376);
+
+    /* ── Radius ── */
+    --radius-sm:               calc(var(--radius) - 2px);
+    --radius-md:               calc(var(--radius) - 1px);
+    --radius-lg:               var(--radius);
+    --radius-xl:               calc(var(--radius) + 4px);
+
+    /* ── Shadows — used sparingly, only for interactive affordances ── */
+    --shadow-xs:               0 1px 2px 0 oklch(0 0 0 / 0.05);
+    --shadow-sm:               0 1px 3px 0 oklch(0 0 0 / 0.1), 0 1px 2px -1px oklch(0 0 0 / 0.1);
+    --shadow-md:               0 4px 6px -1px oklch(0 0 0 / 0.1), 0 2px 4px -2px oklch(0 0 0 / 0.1);
+    --shadow-lg:               0 10px 15px -3px oklch(0 0 0 / 0.1), 0 4px 6px -4px oklch(0 0 0 / 0.1);
+    --shadow-xl:               0 20px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px oklch(0 0 0 / 0.1);
+    --shadow-panel:            none;
+    --shadow-focus:            0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+    --shadow-accent:           none;
+    --shadow-glow:             none;
   }
 }
 
 /* ── Base ── */
 @layer base {
-  * { border-color: var(--border); }
+  * { border-color: var(--color-border); }
 
   html {
     color-scheme: dark;
@@ -127,19 +112,43 @@
 
   body {
     background-color: var(--background);
-    color: var(--text-primary);
+    color: var(--foreground);
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     line-height: 1.5;
   }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+  ::-webkit-scrollbar-thumb { background: oklch(0.3 0 0); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: oklch(0.4 0 0); }
 
-  ::selection { background: var(--brand-dim); color: var(--brand); }
-
+  ::selection { background: oklch(0.93 0 0 / 0.15); color: var(--foreground); }
   .font-mono { font-variant-numeric: tabular-nums; }
+}
+
+/* ── Component utilities ── */
+@layer components {
+  /* Grid motif — 32px */
+  .bg-grid {
+    background-image: linear-gradient(to right, oklch(1 0 0 / 0.03) 1px, transparent 1px),
+                      linear-gradient(to bottom, oklch(1 0 0 / 0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  /* Grid motif — 8px */
+  .bg-grid-small {
+    background-image: linear-gradient(to right, oklch(1 0 0 / 0.03) 1px, transparent 1px),
+                      linear-gradient(to bottom, oklch(1 0 0 / 0.03) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+  /* Dot motif — 16px */
+  .bg-dot {
+    background-image: radial-gradient(circle, oklch(1 0 0 / 0.08) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  /* Dashed dividers */
+  .dashed-b { border-bottom: 1px dashed var(--color-border); }
+  .dashed-t { border-top: 1px dashed var(--color-border); }
+  .dashed-l { border-left: 1px dashed var(--color-border); }
 }
 
 /* ── Utilities ── */
@@ -147,7 +156,6 @@
   .animate-fade-in { animation: fadeIn 0.15s ease-out both; }
   .animate-slide-up { animation: slideInUp 0.2s ease-out both; }
   .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-  .animate-tick { animation: tick 0.15s ease-out both; }
 
   .stagger-children > * { animation: slideInUp 0.2s ease-out both; }
   .stagger-children > *:nth-child(1)  { animation-delay: 0ms; }
@@ -161,14 +169,5 @@
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes tick { 0% { opacity: 0.4; } 100% { opacity: 1; } }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-  .flash-update {
-    animation: flashUpdate 0.4s ease-out;
-  }
-  @keyframes flashUpdate {
-    0% { background-color: var(--brand-dim); }
-    100% { background-color: transparent; }
-  }
 }

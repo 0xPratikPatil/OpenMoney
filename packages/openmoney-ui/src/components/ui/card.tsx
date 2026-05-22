@@ -4,22 +4,22 @@ import { cn } from "@/lib/utils"
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div data-slot="card"
-      className={cn("flex flex-col bg-[var(--background-panel)] border border-[var(--border)] rounded-[var(--radius-md)] overflow-hidden", className)}
+      className={cn("flex flex-col bg-card text-card-foreground border border-border rounded-lg", className)}
       {...props}
     />
   )
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="card-header" className={cn("flex flex-col gap-1 px-4 py-3 border-b border-[var(--border)]", className)} {...props} />
+  return <div data-slot="card-header" className={cn("flex flex-col gap-1 px-6 py-4", className)} {...props} />
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="card-title" className={cn("font-sans text-sm font-medium text-[var(--text-primary)]", className)} {...props} />
+  return <div data-slot="card-title" className={cn("font-heading text-base font-semibold tracking-tight leading-none", className)} {...props} />
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="card-description" className={cn("text-xs text-[var(--text-tertiary)]", className)} {...props} />
+  return <div data-slot="card-description" className={cn("text-sm text-muted-foreground", className)} {...props} />
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
@@ -27,11 +27,11 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="card-content" className={cn("px-4 py-3", className)} {...props} />
+  return <div data-slot="card-content" className={cn("px-6", className)} {...props} />
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="card-footer" className={cn("flex items-center px-4 py-2.5 border-t border-[var(--border)]", className)} {...props} />
+  return <div data-slot="card-footer" className={cn("flex items-center px-6 pt-0 dashed-t", className)} {...props} />
 }
 
 export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent }

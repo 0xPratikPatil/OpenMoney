@@ -7,9 +7,8 @@ import { Toaster } from 'sonner';
 import {
   LayoutDashboard, Globe, TrendingUp, Search, Briefcase,
   Eye, ShieldAlert, Lightbulb, BookOpen, Settings, Database,
-  LogOut, Bell, ChevronLeft, ChevronRight, Activity,
+  LogOut, Bell, ChevronLeft, ChevronRight,
 } from 'lucide-react';
-import { LiveIndicator } from '@openmoney/ui';
 
 const NAV_GROUPS = [
   { label: 'OVERVIEW', items: [
@@ -56,14 +55,14 @@ export function Shell({ session, children }: ShellProps) {
   const SIDEBAR_W = collapsed ? 48 : 220;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--background)]">
+    <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
-      <aside className="flex flex-col h-full shrink-0 border-r border-[var(--border)] transition-all duration-200"
+      <aside className="flex flex-col h-full shrink-0 border-r border-border transition-all duration-200"
         style={{ width: SIDEBAR_W }}>
         {/* Logo */}
-        <div className={`flex items-center h-10 px-3 border-b border-[var(--border)] ${collapsed ? 'justify-center' : 'gap-2'}`}>
-          <span className="font-mono text-[var(--brand)] text-sm font-bold">A</span>
-          {!collapsed && <span className="font-mono text-xs font-semibold tracking-wide text-[var(--text-primary)]">ARKON</span>}
+        <div className={`flex items-center h-10 px-3 border-b border-border ${collapsed ? 'justify-center' : 'gap-2'}`}>
+          <span className="font-mono text-foreground text-sm font-bold">O</span>
+          {!collapsed && <span className="font-mono text-xs font-semibold tracking-tight text-foreground">OpenMoney</span>}
         </div>
 
         {/* Nav */}
@@ -71,7 +70,7 @@ export function Shell({ session, children }: ShellProps) {
           {NAV_GROUPS.map((group) => (
             <div key={group.label}>
               {!collapsed && (
-                <p className="px-2 mb-1 font-mono text-[9px] uppercase tracking-widest text-[var(--text-tertiary)]">
+                <p className="px-2 mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   {group.label}
                 </p>
               )}
@@ -81,13 +80,13 @@ export function Shell({ session, children }: ShellProps) {
                   const Icon = item.icon;
                   return (
                     <button key={item.id} onClick={() => router.push(item.href)}
-                      className={`relative flex items-center w-full rounded-[var(--radius-sm)] transition-colors duration-100
+                      className={`relative flex items-center w-full rounded-md transition-colors duration-100
                         ${collapsed ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 px-2.5 h-8'}
                         ${isActive
-                          ? 'bg-[var(--background-elevated)] text-[var(--text-primary)]'
-                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--background-subtle)]'
+                          ? 'bg-accent text-accent-foreground'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                         }`}>
-                      {isActive && <div className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-[var(--brand)]" />}
+                      {isActive && <div className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-foreground" />}
                       <Icon size={15} className="shrink-0" />
                       {!collapsed && <span className="text-xs font-medium truncate">{item.label}</span>}
                     </button>
@@ -99,9 +98,9 @@ export function Shell({ session, children }: ShellProps) {
         </nav>
 
         {/* Collapse */}
-        <div className="p-1.5 border-t border-[var(--border)]">
+        <div className="p-1.5 border-t border-border">
           <button onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center justify-center w-full h-7 rounded-[var(--radius-sm)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--background-subtle)] transition-colors">
+            className="flex items-center justify-center w-full h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
             {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
         </div>
@@ -110,30 +109,37 @@ export function Shell({ session, children }: ShellProps) {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar — 40px */}
-        <header className="flex items-center justify-between h-10 px-4 shrink-0 border-b border-[var(--border)]">
+        <header className="flex items-center justify-between h-10 px-4 shrink-0 border-b border-border">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] text-[var(--text-tertiary)] truncate">
+            <span className="font-mono text-[11px] text-muted-foreground truncate">
               {pathname.replace(/\//g, ' / ').replace(/^\s+\/\s/, '') || 'dashboard'}
             </span>
           </div>
 
           <div className="flex items-center gap-3">
-            <LiveIndicator label="LIVE" />
+            {/* Live indicator */}
+            <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-foreground">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-60" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-foreground" />
+              </span>
+              LIVE
+            </span>
 
-            <button className="relative p-1.5 rounded-[var(--radius-sm)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--background-elevated)] transition-colors">
+            <button className="relative p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
               <Bell size={14} />
-              <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[var(--brand)] ring-1 ring-[var(--background)]" />
+              <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-foreground ring-1 ring-background" />
             </button>
 
-            <div className="flex items-center gap-2 pl-2 border-l border-[var(--border)]">
-              <div className="flex items-center justify-center w-6 h-6 rounded-[var(--radius-sm)] bg-[var(--brand-dim)] text-[var(--brand)] text-[10px] font-mono font-semibold">
+            <div className="flex items-center gap-2 pl-2 border-l border-border">
+              <div className="flex items-center justify-center w-6 h-6 rounded-md bg-accent text-foreground text-[10px] font-mono font-semibold">
                 {session?.user?.name?.[0] || session?.user?.email?.[0] || '?'}
               </div>
-              <span className="font-mono text-[11px] text-[var(--text-secondary)] hidden sm:block max-w-[100px] truncate">
+              <span className="font-mono text-[11px] text-muted-foreground hidden sm:block max-w-[100px] truncate">
                 {session?.user?.name || session?.user?.email}
               </span>
               <Link href="/api/auth/sign-out"
-                className="p-1 rounded-[var(--radius-sm)] text-[var(--text-tertiary)] hover:text-[var(--negative)] hover:bg-[var(--negative-bg)] transition-colors"
+                className="p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                 title="Sign out">
                 <LogOut size={13} />
               </Link>
@@ -146,9 +152,9 @@ export function Shell({ session, children }: ShellProps) {
 
       <Toaster position="bottom-right" theme="dark" toastOptions={{
         style: {
-          background: 'var(--background-elevated)', border: '1px solid var(--border)',
-          color: 'var(--text-primary)', borderRadius: 'var(--radius-md)', fontSize: '12px',
-          fontFamily: 'var(--font-sans)', boxShadow: 'none',
+          background: 'var(--background)', border: '1px solid var(--border)',
+          color: 'var(--foreground)', borderRadius: 'var(--radius)', fontSize: '13px',
+          fontFamily: 'var(--font-sans)', boxShadow: 'var(--shadow-lg)',
         },
       }} />
     </div>

@@ -59,10 +59,10 @@ export default function MarketsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-sans text-xl font-semibold tracking-tight flex items-center gap-2">
-            <Globe size={18} className="text-[var(--brand)]" /> Markets
+          <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
+            <Globe size={18} className="text-foreground" /> Markets
           </h1>
-          <p className="font-mono text-[11px] text-[var(--text-tertiary)] mt-0.5">Multi-asset real-time overview</p>
+          <p className="font-mono text-[11px] text-muted-foreground mt-0.5">Multi-asset real-time overview</p>
         </div>
         <div className="flex items-center gap-2">
           <LiveIndicator label="LIVE" />
@@ -71,26 +71,26 @@ export default function MarketsPage() {
       </div>
 
       {/* Major Indices */}
-      <div className="bg-[var(--background-panel)] border border-[var(--border)] rounded-[var(--radius-md)] overflow-hidden">
-        <div className="px-4 py-2.5 border-b border-[var(--border)]">
-          <span className="font-mono uppercase text-[10px] tracking-widest text-[var(--text-tertiary)] flex items-center gap-1.5">
+      <div className="bg-card border border-border rounded-md overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-border">
+          <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground flex items-center gap-1.5">
             <BarChart3 size={11} /> MAJOR INDICES
           </span>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-[var(--border)]">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-border">
           {INDICES.map((idx, i) => {
             const q = indices[i];
             const pct = q?.changePercent ?? 0;
             const isPos = pct >= 0;
             return (
-              <div key={idx.ticker} className="px-4 py-3 hover:bg-[var(--background-elevated)] transition-colors cursor-pointer">
+              <div key={idx.ticker} className="px-4 py-3 hover:bg-accent/50 transition-colors cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-tertiary)]">{idx.name}</p>
-                  <p className="font-mono text-[9px] text-[var(--text-tertiary)]">{idx.ticker}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{idx.name}</p>
+                  <p className="font-mono text-[9px] text-muted-foreground">{idx.ticker}</p>
                 </div>
                 <p className="font-mono text-xl font-semibold tabular-nums">{q?.price ? q.price.toLocaleString('en-US',{minimumFractionDigits:2}) : '—'}</p>
                 <div className="mt-2">
-                  {q?.changePercent != null ? <DeltaBadge value={fmtPct(pct)} status={isPos ? 'positive' : 'negative'} /> : <span className="text-[var(--text-tertiary)]">—</span>}
+                  {q?.changePercent != null ? <DeltaBadge value={fmtPct(pct)} status={isPos ? 'positive' : 'negative'} /> : <span className="text-muted-foreground">—</span>}
                 </div>
                 <div className="mt-3">
                   <SparklineBar values={sparkData} status={isPos ? 'positive' : 'negative'} height={20} />
@@ -102,9 +102,9 @@ export default function MarketsPage() {
       </div>
 
       {/* Sector Heatmap */}
-      <div className="bg-[var(--background-panel)] border border-[var(--border)] rounded-[var(--radius-md)] overflow-hidden">
-        <div className="px-4 py-2.5 border-b border-[var(--border)]">
-          <span className="font-mono uppercase text-[10px] tracking-widest text-[var(--text-tertiary)] flex items-center gap-1.5">
+      <div className="bg-card border border-border rounded-md overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-border">
+          <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground flex items-center gap-1.5">
             <Activity size={11} /> SECTOR PERFORMANCE
           </span>
         </div>
@@ -115,9 +115,9 @@ export default function MarketsPage() {
               const pct = q?.changePercent ?? 0;
               const isPos = pct >= 0;
               return (
-                <div key={sec.ticker} className={`rounded-[var(--radius-sm)] p-3 text-center border transition-colors hover:bg-[var(--background-elevated)] ${isPos ? 'border-[var(--positive)]/10' : 'border-[var(--negative)]/10'}`}>
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-tertiary)]">{sec.name}</p>
-                  <p className={`mt-1 font-mono text-sm font-semibold tabular-nums ${isPos ? 'text-[var(--positive)]' : 'text-[var(--negative)]'}`}>{fmtPct(pct)}</p>
+                <div key={sec.ticker} className={`rounded-sm p-3 text-center border transition-colors hover:bg-accent/50 ${isPos ? 'border-border' : 'border-border'}`}>
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{sec.name}</p>
+                  <p className={`mt-1 font-mono text-sm font-semibold tabular-nums ${isPos ? 'text-foreground' : 'text-destructive'}`}>{fmtPct(pct)}</p>
                 </div>
               );
             })}
@@ -125,7 +125,7 @@ export default function MarketsPage() {
         </div>
       </div>
 
-      <p className="text-center font-mono text-[9px] text-[var(--text-tertiary)]">Data delayed 15–20 min · Powered by Yahoo Finance</p>
+      <p className="text-center font-mono text-[9px] text-muted-foreground">Data delayed 15–20 min · Powered by Yahoo Finance</p>
     </div>
   );
 }
@@ -133,11 +133,11 @@ export default function MarketsPage() {
 function MarketsSkeleton() {
   return (
     <div className="p-6 max-w-[1440px] mx-auto space-y-6">
-      <div className="h-6 w-24 rounded bg-[var(--background-elevated)]" />
+      <div className="h-6 w-24 rounded bg-muted" />
       <div className="grid grid-cols-4 gap-3">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-32 rounded-[var(--radius-md)] bg-[var(--background-panel)] border border-[var(--border)]" />)}
+        {[...Array(4)].map((_, i) => <div key={i} className="h-32 rounded-md bg-muted" />)}
       </div>
-      <div className="h-48 rounded-[var(--radius-md)] bg-[var(--background-panel)] border border-[var(--border)]" />
+      <div className="h-48 rounded-md bg-muted" />
     </div>
   );
 }
@@ -145,11 +145,11 @@ function MarketsSkeleton() {
 function MarketsError({error,retry}:{error:string;retry:()=>void}) {
   return (
     <div className="p-6 max-w-md mx-auto mt-20">
-      <div className="flex flex-col items-center text-center bg-[var(--background-panel)] border border-[var(--border)] rounded-[var(--radius-md)] p-8">
-        <AlertTriangle size={24} className="text-[var(--negative)] mb-3" />
-        <h2 className="font-sans text-sm font-semibold">Failed to load</h2>
-        <p className="font-mono text-[11px] text-[var(--text-tertiary)] mt-1">{error}</p>
-        <Button variant="terminal" size="sm" className="mt-4" onClick={retry}><RefreshCw size={13} /> Retry</Button>
+      <div className="flex flex-col items-center text-center bg-card border border-border rounded-md p-8">
+        <AlertTriangle size={24} className="text-destructive mb-3" />
+        <h2 className="text-sm font-semibold">Failed to load</h2>
+        <p className="font-mono text-[11px] text-muted-foreground mt-1">{error}</p>
+        <Button variant="outline" size="sm" className="mt-4" onClick={retry}><RefreshCw size={13} /> Retry</Button>
       </div>
     </div>
   );

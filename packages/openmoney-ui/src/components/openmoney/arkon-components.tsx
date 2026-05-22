@@ -21,7 +21,7 @@ export function DeltaBadge({ value, status, size = "sm" }: DeltaBadgeProps) {
   const styles = {
     positive: "bg-[var(--positive-bg)] text-[var(--positive)] border-[var(--positive)]/20",
     negative: "bg-[var(--negative-bg)] text-[var(--negative)] border-[var(--negative)]/20",
-    neutral: "bg-[var(--background-elevated)] text-[var(--text-secondary)] border-[var(--border)]",
+    neutral: "bg-muted text-muted-foreground border-border",
   }[status];
 
   const Icon = { positive: ArrowUpRight, negative: ArrowDownRight, neutral: Minus }[status];
@@ -110,12 +110,12 @@ export function MetricCard({
         <div className="absolute inset-0 pointer-events-none border border-[var(--brand-border)] rounded-[var(--radius-md)]" />
       )}
 
-      <p className="font-mono uppercase text-[10px] tracking-widest text-[var(--text-tertiary)] mb-3">{label}</p>
+      <p className="font-mono uppercase text-[10px] tracking-widest text-muted-foreground mb-3">{label}</p>
 
       <div className="flex items-baseline gap-2 mb-1">
         <span className={cn(
           "font-mono text-4xl font-semibold leading-none",
-          accent ? "text-[var(--brand)]" : "text-[var(--text-primary)]"
+          accent ? "text-foreground" : "text-foreground"
         )}>
           {value}
         </span>
@@ -137,20 +137,20 @@ type StatusType = "ACTIVE" | "COMPLETED" | "REVIEWING" | "FAILED" | "PENDING" | 
 
 const STATUS_STYLES: Record<StatusType, string> = {
   ACTIVE: "bg-[var(--positive-bg)] text-[var(--positive)] border-[var(--positive)]/20",
-  COMPLETED: "bg-[var(--background-elevated)] text-[var(--text-secondary)] border-[var(--border)]",
+  COMPLETED: "bg-muted text-muted-foreground border-border",
   REVIEWING: "bg-[var(--warning-bg)] text-[var(--warning)] border-[var(--warning)]/20",
   FAILED: "bg-[var(--negative-bg)] text-[var(--negative)] border-[var(--negative)]/20",
-  PENDING: "bg-[var(--background-elevated)] text-[var(--text-tertiary)] border-[var(--border)]",
-  PAUSED: "bg-[var(--background-elevated)] text-[var(--text-tertiary)] border-[var(--border)]",
+  PENDING: "bg-muted text-muted-foreground border-border",
+  PAUSED: "bg-muted text-muted-foreground border-border",
 };
 
 const STATUS_DOT: Record<StatusType, string> = {
   ACTIVE: "bg-[var(--positive)] animate-pulse",
-  COMPLETED: "bg-[var(--text-tertiary)]",
+  COMPLETED: "bg-muted-foreground",
   REVIEWING: "bg-[var(--warning)]",
   FAILED: "bg-[var(--negative)]",
-  PENDING: "bg-[var(--text-tertiary)]",
-  PAUSED: "bg-[var(--text-tertiary)]",
+  PENDING: "bg-muted-foreground",
+  PAUSED: "bg-muted-foreground",
 };
 
 export function StatusBadge({ status, className }: { status: StatusType; className?: string }) {
@@ -172,10 +172,10 @@ export function StatusBadge({ status, className }: { status: StatusType; classNa
 
 export function LiveIndicator({ label = "LIVE", className }: { label?: string; className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-[var(--positive)]", className)}>
+    <span className={cn("inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-foreground", className)}>
       <span className="relative flex h-1.5 w-1.5">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--positive)] opacity-60" />
-        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--positive)]" />
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-60" />
+        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-foreground" />
       </span>
       {label}
     </span>
@@ -261,10 +261,10 @@ export function PriorityBadge({ priority, className }: { priority: Priority; cla
 export function TagChip({ label, active, className }: { label: string; active?: boolean; className?: string }) {
   return (
     <span className={cn(
-      "inline-flex items-center px-2 py-0.5 rounded-[var(--radius-sm)] font-mono text-[10px] tracking-wide border",
+      "inline-flex items-center px-2 py-0.5 rounded-sm font-mono text-[10px] tracking-wide border",
       active
-        ? "bg-[var(--brand-dim)] text-[var(--brand)] border-[var(--brand-border)]"
-        : "bg-[var(--background-elevated)] text-[var(--text-secondary)] border-[var(--border)]",
+        ? "bg-muted text-foreground border-border"
+        : "bg-muted text-muted-foreground border-border",
       className
     )}>
       {label}
