@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { api, type ProviderInfo } from '@/lib/api';
 import { Skeleton, Card, CardContent, CardHeader, CardTitle, Badge } from '@openmoney/ui';
-import { Search, Database, Key, Globe, Package, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Search, Database, Key, Globe, Package, AlertTriangle, RefreshCw, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CATEGORIES = ['all', 'equity', 'etf', 'forex', 'crypto', 'futures', 'economic', 'news', 'other'] as const;
@@ -155,14 +155,31 @@ export default function ProvidersPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
+                  {/* Status indicator */}
+                  {provider.status === 'ACTIVE' && (
+                    <CheckCircle size={14} className="text-green-500 shrink-0" />
+                  )}
+                  {provider.status === 'ERROR' && (
+                    <XCircle size={14} className="text-red-500 shrink-0" />
+                  )}
+                  {provider.status === 'DISABLED' && (
+                    <Key size={14} className="text-amber-500 shrink-0" />
+                  )}
+                  {provider.status === 'UNKNOWN' && (
+                    <HelpCircle size={14} className="text-gray-400 shrink-0" />
+                  )}
                   <Package size={16} className="text-primary" />
                   <CardTitle className="text-sm font-mono">{provider.name}</CardTitle>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  {provider.credentials.length > 0 && (
+                  {provider.free ? (
+                    <Badge className="bg-green-500/10 text-green-400 border-green-500/20 text-[10px]">
+                      Free
+                    </Badge>
+                  ) : (
                     <Badge variant="secondary" className="text-[10px]">
                       <Key size={10} className="mr-1" />
-                      API Key
+                      {provider.status === 'DISABLED' ? 'Needs Key' : 'Paid'}
                     </Badge>
                   )}
                   <Badge variant="outline" className="text-[10px] font-mono">

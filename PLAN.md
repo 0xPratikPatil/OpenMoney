@@ -6,7 +6,7 @@
 
 | Service | Responsibility | Tech | Port | Status | Depends on |
 |---------|---------------|------|------|--------|------------|
-| `api-gateway` | Hono API server: auth middleware, route dispatch, CORS, rate limiting, request validation | Hono + Bun | 4000 | ✅ Live | `packages/database`, `packages/shared` |
+| `api-gateway` | Hono API server: auth middleware, route dispatch, CORS, rate limiting, request validation, provider routing, unified response envelope, global logging | Hono + Bun | 4000 | ✅ Live | `packages/database`, `packages/shared` |
 | `web-frontend` | Next.js 15 App Router: dashboard, portfolio UX, risk views, journal, watchlists | Next.js + Bun | 3000 | 🔧 In dev | `api-gateway`, `packages/shared` |
 | `ingestion` | Market data pipeline: WebSocket listeners, REST pollers, normalization, quality checks | Hono + Bun + Redis | — | 🔧 Planned | `packages/database`, `packages/shared`, Redis |
 | `quant-engine` | Risk metrics, indicators, signal generation, action recommendations | Bun + TypeScript | — | 🔧 Planned | `packages/database`, `packages/shared`, Redis |
@@ -30,8 +30,52 @@ openmoney/
 │   └── docs/                       # Fumadocs (port 3001)
 ├── packages/
 │   ├── shared/                     # Zod schemas, TS types, shared utilities
+│   │   ├── logging/                # Global logging system (6 levels, transports)
+│   │   ├── errors/                 # Standardized error codes + OpenMoneyError
+│   │   ├── providers/              # Provider router, health tracker, fallback
+│   │   ├── schemas/                # Shared Zod schemas (equity, portfolio, etc.)
+│   │   └── utils/                  # HTTP client, rate limiter, ticker utils
 │   ├── database/                   # Prisma schema + client
-│   └── config/                     # Shared environment config
+│   ├── config/                     # Shared environment config
+│   ├── provider-core/              # AbstractFetcher, ProviderRegistry, QueryExecutor
+│   └── providers/                  # 33 provider packages (yfinance, fmp, etc.)
+...
+```
+ 
+ ## Data Pipeline Architecture
+ 
+ ### Provider Lifecycle
+ 
+ ```
+ Request → Domain Router → createProviderQueryHandler()
+   → executeProviderQuery() [with logging + error normalization]
+     → QueryExecutor.execute(provider, model, params)
+       → ProviderRegistry.get(provider)
+         → AbstractFetcher<T>.fetchData() [TET pattern]
+           → transformQuery → extractData → transformData
+ 
+ If fallback enabled (POST /api/query with fallback: true):
+   → executeWithFallback()
+     → ProviderRouter.getProviderChain(model)
+       → Try free-active → next free → paid-active → paid-disabled
+       → On failure: providerHealth.markError(name, error)
+         → Skip errored providers for 5 min (circuit breaker)
+       → On success: providerHealth.markActive(name)
+ ```
+ 
+ ### Provider Priority
+ 1. **Free + Active** (yfinance, finviz, nasdaq, etc.) — always tried first
+ 2. **Free + Error** — skipped (5 min cooldown, auto-retry after)
+ 3. **Paid + Active** (user has API key configured) — used when no free provider
+ 4. **Paid + Disabled** (no API key) — shown in UI but not used unless explicitly requested
+ 5. **User Preference** — model-specific override via settings
+ 
+ ### Key Architectural Components
+ - `ProviderRouter` — priority-ordered provider chain per model
+ - `ProviderHealthTracker` — runtime health state, circuit breaker
+ - `OpenMoneyError` — 20 standardized error codes
+ - `logger` — 6-level structured logging with request context
+ - `ApiResult<T>` — unified response envelope `{ success, data|error, meta }`
 ├── docker/
 │   ├── Dockerfile.api
 │   ├── Dockerfile.web

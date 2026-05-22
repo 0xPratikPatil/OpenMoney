@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { globalRegistry, QueryExecutor } from "@openmoney/provider-core";
-import { executeWithFallback, errorCodeToHttpStatus } from "@openmoney/shared";
+import { executeWithFallback, errorCodeToHttpStatus, providerHealth } from "@openmoney/shared";
 import { executeProviderQuery, ok, fail } from "../lib/response";
 
 const executor = new QueryExecutor(globalRegistry);
@@ -89,17 +89,40 @@ queryRouter.get("/providers", (c) => {
     description: string;
     models: string[];
     requiresCredentials: boolean;
+    free: boolean;
+    status: string;
   }> = {};
 
   for (const [name, p] of providers) {
+    const models = Array.from(p.fetcherMap.keys());
     data[name] = {
       description: p.description,
-      models: Array.from(p.fetcherMap.keys()),
+      models,
       requiresCredentials: p.credentials.length > 0,
+      free: providerHealth.isFree(name),
+      status: providerHealth.getDisplayStatus(name),
     };
   }
 
   return c.json(ok(data));
+});
+
+/**
+ * GET /api/providers/health
+ * Get runtime health status of all providers.
+ * Shows which are connected, errored, or need API keys.
+ */
+queryRouter.get("/providers/health", (c) => {
+  const providers = globalRegistry.getAll();
+  const names = Array.from(providers.keys());
+  const modelMap = new Map<string, string[]>();
+
+  for (const [name, p] of providers) {
+    modelMap.set(name, Array.from(p.fetcherMap.keys()));
+  }
+
+  const snapshot = providerHealth.buildSnapshot(names, modelMap);
+  return c.json(ok(snapshot));
 });
 
 /**

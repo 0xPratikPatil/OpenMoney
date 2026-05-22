@@ -169,7 +169,32 @@ export interface ProviderInfo {
   website: string;
   credentials: string[];
   models: string[];
+  free: boolean;
   status: string;
+}
+
+export interface ProviderHealthSnapshot {
+  providers: Array<{
+    name: string;
+    status: string;
+    free: boolean;
+    modelCount: number;
+    models: string[];
+    lastChecked?: string;
+    lastError?: string;
+    cooldownRemaining?: number;
+  }>;
+  summary: {
+    total: number;
+    active: number;
+    error: number;
+    disabled: number;
+    unknown: number;
+    freeActive: number;
+    paidActive: number;
+    modelsWithFreeCoverage: number;
+    modelsWithOnlyPaid: number;
+  };
 }
 
 export interface TickerQuote {
@@ -285,6 +310,7 @@ export const api = {
     providers: {
       list: () => request<ProviderInfo[]>('/api/providers'),
       get: (name: string) => request<ProviderInfo>(`/api/providers/${name}`),
+      health: () => request<ProviderHealthSnapshot>('/api/providers/health'),
       query: (provider: string, model: string, params: Record<string, unknown>) =>
         request<unknown>('/api/query', {
           method: 'POST',

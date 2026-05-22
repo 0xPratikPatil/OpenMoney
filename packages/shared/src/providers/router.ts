@@ -15,6 +15,7 @@
 import type { ProviderRegistry, QueryExecutor } from "@openmoney/provider-core";
 import { logger } from "../logging";
 import { OpenMoneyError } from "../errors";
+import { providerHealth } from "./status";
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                      */
@@ -160,19 +161,33 @@ export class ProviderRouter {
     return this.getSortedProviders(model, registry);
   }
 
-  /** Sort providers by priority + free-status preference */
+  /** Sort providers by priority + free-status + health state.
+   *  Skips providers in ERROR state (recent failure) and DISABLED paid providers. */
   private getSortedProviders(model: string, registry: ProviderRegistry): string[] {
     const candidates: Array<{ name: string; priority: number; free: boolean }> = [];
 
     for (const [name, provider] of registry.getAll()) {
-      if (provider.fetcherMap.has(model)) {
-        const p = this.priorities.get(name);
-        candidates.push({
-          name,
-          priority: p?.priority ?? 99,
-          free: p?.free ?? false,
-        });
+      if (!provider.fetcherMap.has(model)) continue;
+
+      // Skip providers in ERROR state (recent failure — cool down)
+      if (!providerHealth.isEligible(name)) {
+        logger.debug(`Skipping ${name} for ${model} — in ERROR cooldown`);
+        continue;
       }
+
+      const p = this.priorities.get(name);
+      const free = providerHealth.isFree(name);
+      const displayStatus = providerHealth.getDisplayStatus(name);
+
+      // Skip paid providers that are DISABLED (no API key) — only use them if
+      // the user explicitly requested this provider.
+      if (!free && displayStatus === "DISABLED") continue;
+
+      candidates.push({
+        name,
+        priority: p?.priority ?? 99,
+        free,
+      });
     }
 
     // Sort: free providers first, then by priority number
@@ -231,6 +246,9 @@ export async function executeWithFallback<T = unknown>(
 
       const data = await executor.execute<T>(providerName, model, params, opts?.credentials);
 
+      // Mark provider as healthy
+      providerHealth.markActive(providerName);
+
       if (isFallback) {
         logger.warn("Provider fallback used", {
           provider: providerName,
@@ -250,6 +268,9 @@ export async function executeWithFallback<T = unknown>(
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       errors.push({ provider: providerName, error: msg });
+
+      // Mark provider as unhealthy
+      providerHealth.markError(providerName, msg);
 
       logger.warn("Provider attempt failed", {
         provider: providerName,
