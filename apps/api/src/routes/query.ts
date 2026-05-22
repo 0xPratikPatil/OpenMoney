@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { globalRegistry, QueryExecutor } from "@openmoney/provider-core";
+import { executeWithFallback, errorCodeToHttpStatus } from "@openmoney/shared";
 import { executeProviderQuery, ok, fail } from "../lib/response";
 
 const executor = new QueryExecutor(globalRegistry);
@@ -33,11 +34,34 @@ queryRouter.post(
       model: z.string().min(1, { message: "Model name is required" }),
       params: z.record(z.unknown()).default({}),
       credentials: z.record(z.string()).optional(),
+      fallback: z.boolean().default(false).describe("Enable automatic provider fallback on failure"),
     }),
   ),
   async (c) => {
-    const { provider, model, params, credentials } = c.req.valid("json");
+    const { provider, model, params, credentials, fallback } = c.req.valid("json");
 
+    // With fallback enabled, try other providers if the requested one fails
+    if (fallback) {
+      try {
+        const routeResult = await executeWithFallback(
+          executor, globalRegistry, model,
+          params as Record<string, unknown>,
+          { requestedProvider: provider, credentials },
+        );
+        return c.json(ok(routeResult.data, {
+          provider: routeResult.provider,
+          model: routeResult.model,
+          total: Array.isArray(routeResult.data) ? routeResult.data.length : undefined,
+        }));
+      } catch (error) {
+        const err = error instanceof Error ? error : new Error(String(error));
+        const code = (error as Record<string, unknown>)?.code as string ?? "ALL_PROVIDERS_FAILED";
+        const status = errorCodeToHttpStatus(code as any);
+        return c.json(fail(code, err.message), status as 400 | 404 | 500 | 502);
+      }
+    }
+
+    // Standard single-provider query
     const result = await executeProviderQuery(
       executor,
       provider,

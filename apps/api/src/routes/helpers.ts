@@ -3,6 +3,8 @@
  *
  * Every domain router should use these helpers to avoid repeating
  * validation, error handling, and response formatting logic.
+ *
+ * Uses the global provider router for automatic fallback across providers.
  */
 
 import { Hono } from "hono";
@@ -11,6 +13,7 @@ import type { Context } from "hono";
 import { QueryExecutor, globalRegistry } from "@openmoney/provider-core";
 import { executeProviderQuery } from "../lib/response";
 import { requestContext } from "../middleware/request-context";
+import { errorCodeToHttpStatus } from "@openmoney/shared";
 
 /** Default provider to use when none is specified. */
 export const DEFAULT_PROVIDER = "yfinance";
@@ -130,18 +133,9 @@ export async function createProviderQueryHandler<T>(
 
 /**
  * Map provider error codes to HTTP status codes.
+ * Delegates to the shared error code mapper for consistency.
  */
-function mapErrorCodeToStatus(code: string): 400 | 401 | 404 | 429 {
-  switch (code) {
-    case "PROVIDER_NOT_FOUND":
-    case "FETCHER_NOT_FOUND":
-    case "EMPTY_DATA":
-      return 404;
-    case "UNAUTHORIZED":
-      return 401;
-    case "RATE_LIMIT":
-      return 429;
-    default:
-      return 400;
-  }
+function mapErrorCodeToStatus(code: string): 200 | 400 | 401 | 404 | 422 | 429 | 500 | 502 | 503 | 504 {
+  const status = errorCodeToHttpStatus(code as any);
+  return status as 200 | 400 | 401 | 404 | 422 | 429 | 500 | 502 | 503 | 504;
 }

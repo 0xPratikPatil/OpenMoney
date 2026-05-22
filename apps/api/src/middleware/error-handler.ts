@@ -2,53 +2,83 @@
  * Error Handler Middleware
  *
  * A Hono middleware that catches all errors thrown by downstream handlers.
- * Maps known error codes (from ProviderError subclasses) to HTTP status
- * codes and returns a standardized `ApiError` response.
+ * Normalizes provider errors, Zod validation errors, and unknown errors
+ * into a standardized ApiError response using OpenMoneyError codes.
  *
- * Logs errors with requestId for distributed tracing.
+ * Logs errors through the global logger with requestId for distributed tracing.
  */
 import type { Context } from "hono";
 import type { StatusCode } from "hono/utils/http-status";
+import { ZodError } from "zod";
 import {
   ProviderError,
   EmptyDataError,
   UnauthorizedError,
   RateLimitError,
 } from "@openmoney/provider-core";
+import { ErrorCode, OpenMoneyError, logger } from "@openmoney/shared";
 import { getRequestId, getElapsedDuration } from "./request-context";
 import { fail } from "../lib/response";
 
 /**
- * Determine the error code from any thrown error.
+ * Normalize any thrown error into a standardized error code + HTTP status.
  */
-function getErrorCode(error: unknown): string {
-  if (error instanceof EmptyDataError) return "EMPTY_DATA";
-  if (error instanceof UnauthorizedError) return "UNAUTHORIZED";
-  if (error instanceof RateLimitError) return "RATE_LIMIT";
-  if (error instanceof ProviderError) return error.code ?? "PROVIDER_ERROR";
-  if (error instanceof SyntaxError) return "PARSE_ERROR";
-  if (error instanceof TypeError) return "TYPE_ERROR";
-  return "INTERNAL_ERROR";
-}
+function normalizeError(error: unknown): {
+  code: string;
+  message: string;
+  status: StatusCode;
+  details?: unknown;
+} {
+  // OpenMoneyError — already standardized
+  if (error instanceof OpenMoneyError) {
+    return {
+      code: error.code,
+      message: error.message,
+      status: error.httpStatus as StatusCode,
+      details: error.details,
+    };
+  }
 
-/**
- * Determine the HTTP status code from any thrown error.
- */
-function getHttpStatus(error: unknown): StatusCode {
-  if (error instanceof EmptyDataError) return 404;
-  if (error instanceof UnauthorizedError) return 401;
-  if (error instanceof RateLimitError) return 429;
-  if (error instanceof ProviderError) return 400;
-  if (error instanceof SyntaxError) return 400;
-  return 500 as StatusCode;
-}
+  // Provider-specific errors
+  if (error instanceof EmptyDataError) {
+    return { code: ErrorCode.EMPTY_DATA, message: error.message, status: 404 };
+  }
+  if (error instanceof UnauthorizedError) {
+    return { code: ErrorCode.UNAUTHORIZED, message: error.message, status: 401 };
+  }
+  if (error instanceof RateLimitError) {
+    return { code: ErrorCode.RATE_LIMIT, message: error.message, status: 429 };
+  }
+  if (error instanceof ProviderError) {
+    return {
+      code: error.code ?? ErrorCode.INTERNAL_ERROR,
+      message: error.message,
+      status: 400,
+    };
+  }
 
-/**
- * Get the error message from any thrown error.
- */
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  return "An unexpected error occurred";
+  // Zod validation errors
+  if (error instanceof ZodError) {
+    return {
+      code: ErrorCode.VALIDATION_ERROR,
+      message: "Request validation failed",
+      status: 400,
+      details: error.errors.map((e) => ({
+        path: e.path.join("."),
+        message: e.message,
+      })),
+    };
+  }
+
+  // Known HTTP errors (from fetch, etc.)
+  const err = error as Record<string, unknown> | null;
+  if (err?.name === "TimeoutError" || err?.code === "ETIMEDOUT") {
+    return { code: ErrorCode.TIMEOUT, message: "Request timed out", status: 504 };
+  }
+
+  // Default: internal error
+  const message = error instanceof Error ? error.message : String(error);
+  return { code: ErrorCode.INTERNAL_ERROR, message, status: 500 };
 }
 
 /**
@@ -62,24 +92,21 @@ function getErrorMessage(error: unknown): string {
 export function errorHandler(err: Error, c: Context): Response {
   const requestId = getRequestId(c);
   const duration = getElapsedDuration(c);
-  const code = getErrorCode(err);
-  const message = getErrorMessage(err);
-  const status = getHttpStatus(err);
+  const { code, message, status, details } = normalizeError(err);
 
-  // Log the error with requestId for tracing
-  console.error(
-    JSON.stringify({
-      level: "error",
-      requestId,
-      code,
-      message,
-      status,
-      duration,
-      stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-    }),
-  );
+  // Log through global logger
+  logger.error(`Error: ${code} — ${message}`, {
+    requestId,
+    code,
+    status,
+    duration,
+    path: c.req.path,
+    method: c.req.method,
+    stack: process.env.NODE_ENV === "development" ? err.stack?.split("\n").slice(0, 5) : undefined,
+    details,
+  });
 
-  const body = fail(code, message, { requestId });
+  const body = fail(code, message, { requestId, ...(details ? { details } : {}) });
   return new Response(JSON.stringify(body), {
     status,
     headers: { "content-type": "application/json" },

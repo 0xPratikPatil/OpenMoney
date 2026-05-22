@@ -1,14 +1,14 @@
 /**
- * Standardized API response envelope.
- * Every API response follows this format for consistency.
+ * Standardized API response envelope — OpenMoney
  *
- * Conventions:
- *   - All endpoints return { success, data, meta } or { success, error, meta }
- *   - `meta.timestamp` is ISO 8601
- *   - `meta.duration` is wall-clock ms, rounded to 2 decimals
- *   - `meta.requestId` is a UUIDv4 for distributed tracing
- *   - `meta.total` is present for list endpoints
+ * Every API response follows this format for consistency:
+ *   - Success: { success: true, data: T, meta: { timestamp, duration, requestId, ... } }
+ *   - Error:   { success: false, error: { code, message, details? }, meta: { ... } }
+ *
+ * This is enforced across ALL routes and providers for uniform client handling.
  */
+
+import { OpenMoneyError, logger } from "@openmoney/shared";
 
 export interface ApiMeta {
   /** Request timestamp in ISO 8601 */
@@ -23,6 +23,10 @@ export interface ApiMeta {
   requestId: string;
   /** Total count of items in data array (for list endpoints) */
   total?: number;
+  /** Whether a fallback provider was used */
+  fallback?: boolean;
+  /** The originally requested provider (if different from actual) */
+  requestedProvider?: string;
 }
 
 export interface ApiResponse<T = unknown> {
@@ -83,10 +87,11 @@ export function fail(code: string, message: string, details?: unknown): ApiError
 }
 
 /**
- * Wrap a provider query execution with the standardized response format.
+ * Wrap a provider query execution with the standardized response format
+ * and global logging.
  *
- * Measures wall-clock duration, catches errors (ProviderError, EmptyDataError,
- * UnauthorizedError, RateLimitError), and returns a structured ApiResult.
+ * Measures wall-clock duration, catches and normalizes all errors,
+ * and returns a structured ApiResult.
  *
  * @param executor   - A QueryExecutor instance.
  * @param provider   - Provider name (e.g. "yfinance").
@@ -114,8 +119,23 @@ export async function executeProviderQuery<T>(
   const requestId = crypto.randomUUID();
 
   try {
+    logger.info(`Provider query: ${provider}/${model}`, {
+      requestId,
+      provider,
+      model,
+      paramsKeys: Object.keys(params).join(","),
+    });
+
     const data = await executor.execute<T>(provider, model, params, credentials);
     const duration = roundMs(performance.now() - start);
+
+    logger.info(`Provider query success: ${provider}/${model}`, {
+      requestId,
+      provider,
+      model,
+      duration,
+      total: Array.isArray(data) ? data.length : undefined,
+    });
 
     return {
       success: true,
@@ -131,14 +151,20 @@ export async function executeProviderQuery<T>(
     };
   } catch (error) {
     const duration = roundMs(performance.now() - start);
-    const code = error instanceof Error
-      ? ((error as unknown as Record<string, unknown>).code as string) ?? "UNKNOWN_ERROR"
-      : "UNKNOWN_ERROR";
-    const message = error instanceof Error ? error.message : "An unexpected error occurred";
+    const omError = OpenMoneyError.from(error);
+
+    logger.error(`Provider query failed: ${provider}/${model} — ${omError.code}`, {
+      requestId,
+      provider,
+      model,
+      duration,
+      code: omError.code,
+      message: omError.message,
+    });
 
     return {
       success: false,
-      error: { code, message },
+      error: { code: omError.code, message: omError.message, details: omError.details },
       meta: {
         timestamp: new Date().toISOString(),
         duration,

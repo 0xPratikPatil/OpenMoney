@@ -1,9 +1,10 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { logger } from 'hono/logger';
+import { logger as honoLogger } from 'hono/logger';
 import { secureHeaders } from 'hono/secure-headers';
 import { config } from '@openmoney/config';
 import { globalRegistry } from '@openmoney/provider-core';
+import { configureLogger } from '@openmoney/shared';
 import { auth } from './lib/auth';
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/error-handler';
@@ -40,13 +41,19 @@ import { wsHandler, startLiveQuotePoller } from './routes/ws';
 // Initialize provider system at startup (registers all providers into globalRegistry)
 initializeProviders();
 
+// Configure global logging
+configureLogger({
+  appName: "openmoney-api",
+  level: config.app.isDev ? "debug" : "info",
+});
+
 // Start live quote poller for WebSocket subscribers
 startLiveQuotePoller();
 
 const app = new Hono();
 
 // Global middleware
-app.use('*', logger());
+app.use('*', honoLogger());
 app.use('*', secureHeaders());
 app.use('/api/*', cors({
   origin: config.api.corsOrigins,
