@@ -1,14 +1,20 @@
 /**
  * Yahoo Finance Cookie + Crumb Authentication
  *
- * Implements the yfinance library's auth flow:
- *   1. GET https://guce.yahoo.com/consent → auto-redirects through consent
- *      (sets A1, A3, GUC session cookies via redirect chain + Set-Cookie)
- *   2. GET https://query2.finance.yahoo.com/v1/test/getcrumb with cookies
- *      → returns crumb string in response body
+ * Implements the yfinance library's auth flow with strategy toggling:
+ *   BASIC strategy:
+ *     1. GET https://fc.yahoo.com → acquire initial session cookies (A3, etc.)
+ *     2. GET https://query2.finance.yahoo.com/v1/test/getcrumb → crumb string
+ *   CSRF strategy (fallback):
+ *     1. GET https://guce.yahoo.com/consent → auto-redirects through consent
+ *        (sets A1, A3, GUC session cookies via redirect chain + Set-Cookie)
+ *     2. GET https://query2.finance.yahoo.com/v1/test/getcrumb with cookies
  *
  * The crumb is sent as a URL QUERY PARAMETER on every API request
  * (matching yfinance's _make_request() behavior).
+ *
+ * Strategy toggles between 'basic' and 'csrf' on auth failure,
+ * matching yfinance's _set_cookie_strategy() pattern.
  *
  * Cache TTL: 25 minutes. Invalidated on 401 with automatic retry.
  *
@@ -18,6 +24,8 @@
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+
+type Strategy = "basic" | "csrf";
 
 interface CookieAndCrumb {
   cookie: string;
@@ -31,14 +39,17 @@ interface CookieAndCrumb {
 
 let cached: CookieAndCrumb | null = null;
 let fetchPromise: Promise<CookieAndCrumb> | null = null;
+let currentStrategy: Strategy = "basic";
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
 const SESSION_TTL_MS = 25 * 60 * 1000;
-const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+const UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 const CONSENT_URL = "https://guce.yahoo.com/consent";
+const FC_YAHOO_URL = "https://fc.yahoo.com";
 const CRUMB_URL = "https://query2.finance.yahoo.com/v1/test/getcrumb";
 
 // ---------------------------------------------------------------------------
@@ -54,7 +65,7 @@ export async function getCookieAndCrumb(): Promise<CookieAndCrumb> {
     return fetchPromise;
   }
 
-  fetchPromise = doFetch().finally(() => {
+  fetchPromise = doFetchWithToggle().finally(() => {
     fetchPromise = null;
   });
 
@@ -66,19 +77,41 @@ export function invalidateCookieCache(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Internal: fetch logic
+// Internal: fetch logic with strategy toggle
 // ---------------------------------------------------------------------------
 
-async function doFetch(): Promise<CookieAndCrumb> {
-  // Step 1: Visit guce.yahoo.com/consent to acquire session cookies
-  // The consent page auto-redirects through guce→consent.yahoo.com→yahoo.com,
-  // setting A1, A3, GUC cookies along the way via Set-Cookie headers.
-  const consentResp = await fetch(CONSENT_URL, {
-    headers: { "User-Agent": UA },
-    redirect: "follow",
-  });
+async function doFetchWithToggle(): Promise<CookieAndCrumb> {
+  try {
+    return await doFetch(currentStrategy);
+  } catch (err) {
+    // Toggle strategy and retry once (mimics yfinance's _set_cookie_strategy)
+    const prevStrategy = currentStrategy;
+    currentStrategy = currentStrategy === "basic" ? "csrf" : "basic";
+    console.warn(
+      `[yfinance] Cookie strategy '${prevStrategy}' failed, toggling to '${currentStrategy}'`
+    );
+    return doFetch(currentStrategy);
+  }
+}
 
-  let cookieStr = buildCookieString(consentResp);
+async function doFetch(strategy: Strategy): Promise<CookieAndCrumb> {
+  let cookieStr: string;
+
+  if (strategy === "basic") {
+    // Step 1: Visit fc.yahoo.com to acquire session cookies
+    const fcResp = await fetch(FC_YAHOO_URL, {
+      headers: { "User-Agent": UA },
+      redirect: "follow",
+    });
+    cookieStr = buildCookieString(fcResp);
+  } else {
+    // CSRF strategy: Visit guce.yahoo.com/consent
+    const consentResp = await fetch(CONSENT_URL, {
+      headers: { "User-Agent": UA },
+      redirect: "follow",
+    });
+    cookieStr = buildCookieString(consentResp);
+  }
 
   // Step 2: Get crumb using the session cookies
   const crumbResp = await fetch(CRUMB_URL, {
@@ -147,9 +180,8 @@ function extractCookies(resp: Response): Record<string, string> {
     const semi = raw.indexOf(";", eq + 1);
     if (eq === -1) continue;
     const name = raw.slice(0, eq).trim();
-    const value = semi === -1
-      ? raw.slice(eq + 1).trim()
-      : raw.slice(eq + 1, semi).trim();
+    const value =
+      semi === -1 ? raw.slice(eq + 1).trim() : raw.slice(eq + 1, semi).trim();
     if (value) cookies[name] = value;
   }
 

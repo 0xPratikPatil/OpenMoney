@@ -77,6 +77,17 @@ const FinancialStatementQuerySchema = z.object({
   provider: z.string().default(DEFAULT_PROVIDER),
 });
 
+const PresetScreenerQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(1000).default(25),
+  sort: z.enum(["asc", "desc"]).default("desc"),
+  provider: z.string().default(DEFAULT_PROVIDER),
+});
+
+const AnalystQuerySchema = z.object({
+  symbol: z.string().min(1).transform((s) => s.toUpperCase()),
+  provider: z.string().default(DEFAULT_PROVIDER),
+});
+
 // ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
@@ -293,9 +304,214 @@ router.get(
   },
 );
 
+// ---------------------------------------------------------------------------
+// Predefined screeners (no symbol required)
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /api/equity/active
+ * Get most actively traded equities.
+ *
+ * Query params:
+ *   limit    - Max results (default: 25, max: 1000)
+ *   sort     - Sort order (default: "desc")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/active",
+  zValidator("query", PresetScreenerQuerySchema),
+  async (c) => {
+    const { limit, sort, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/active", { limit, sort });
+  },
+);
+
+/**
+ * GET /api/equity/gainers
+ * Get top gainers by percentage change.
+ *
+ * Query params:
+ *   limit    - Max results (default: 25, max: 1000)
+ *   sort     - Sort order (default: "desc")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/gainers",
+  zValidator("query", PresetScreenerQuerySchema),
+  async (c) => {
+    const { limit, sort, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/gainers", { limit, sort });
+  },
+);
+
+/**
+ * GET /api/equity/losers
+ * Get top losers by percentage change.
+ *
+ * Query params:
+ *   limit    - Max results (default: 25, max: 1000)
+ *   sort     - Sort order (default: "desc")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/losers",
+  zValidator("query", PresetScreenerQuerySchema),
+  async (c) => {
+    const { limit, sort, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/losers", { limit, sort });
+  },
+);
+
+/**
+ * GET /api/equity/aggressive-small-caps
+ * Get aggressive small-cap equities screener.
+ *
+ * Query params:
+ *   limit    - Max results (default: 25, max: 1000)
+ *   sort     - Sort order (default: "desc")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/aggressive-small-caps",
+  zValidator("query", PresetScreenerQuerySchema),
+  async (c) => {
+    const { limit, sort, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/aggressive-small-caps", {
+      limit, sort,
+    });
+  },
+);
+
+/**
+ * GET /api/equity/growth-tech
+ * Get growth technology equities screener.
+ *
+ * Query params:
+ *   limit    - Max results (default: 25, max: 1000)
+ *   sort     - Sort order (default: "desc")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/growth-tech",
+  zValidator("query", PresetScreenerQuerySchema),
+  async (c) => {
+    const { limit, sort, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/growth-tech", {
+      limit, sort,
+    });
+  },
+);
+
+/**
+ * GET /api/equity/undervalued-growth
+ * Get undervalued growth equities screener.
+ *
+ * Query params:
+ *   limit    - Max results (default: 25, max: 1000)
+ *   sort     - Sort order (default: "desc")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/undervalued-growth",
+  zValidator("query", PresetScreenerQuerySchema),
+  async (c) => {
+    const { limit, sort, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/undervalued-growth", {
+      limit, sort,
+    });
+  },
+);
+
+/**
+ * GET /api/equity/undervalued-large-caps
+ * Get undervalued large-cap equities screener.
+ *
+ * Query params:
+ *   limit    - Max results (default: 25, max: 1000)
+ *   sort     - Sort order (default: "desc")
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/undervalued-large-caps",
+  zValidator("query", PresetScreenerQuerySchema),
+  async (c) => {
+    const { limit, sort, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/undervalued-large-caps", {
+      limit, sort,
+    });
+  },
+);
+
+// ---------------------------------------------------------------------------
+// Analyst data (symbol-required)
+// ---------------------------------------------------------------------------
+
+/**
+ * GET /api/equity/price-target
+ * Get analyst price target consensus for a symbol.
+ *
+ * Query params:
+ *   symbol   - Ticker symbol (required)
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/price-target",
+  zValidator("query", AnalystQuerySchema),
+  async (c) => {
+    const { symbol, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/price-target", { symbol });
+  },
+);
+
+/**
+ * GET /api/equity/share-statistics
+ * Get share statistics for a symbol (outstanding shares, float, short interest, etc.).
+ *
+ * Query params:
+ *   symbol   - Ticker symbol (required)
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/share-statistics",
+  zValidator("query", AnalystQuerySchema),
+  async (c) => {
+    const { symbol, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/share-statistics", { symbol });
+  },
+);
+
+/**
+ * GET /api/equity/key-executives
+ * Get key executives and compensation data for a symbol.
+ *
+ * Query params:
+ *   symbol   - Ticker symbol (required)
+ *   provider - Data provider (optional, defaults to "yfinance")
+ */
+router.get(
+  "/key-executives",
+  zValidator("query", AnalystQuerySchema),
+  async (c) => {
+    const { symbol, provider } = c.req.valid("query");
+    return createProviderQueryHandler(c, executor, provider, "equity/key-executives", { symbol });
+  },
+);
+
+// ---------------------------------------------------------------------------
+// Search (aliased to unified search router via fallback model list)
+// ---------------------------------------------------------------------------
+
+const EQUITY_SEARCH_MODELS = [
+  "equity/search",
+  "equity/screener",
+  "equity/active",
+  "equity/gainers",
+];
+
 /**
  * GET /api/equity/search
- * Search equities by name or ticker.
+ * Search equities by name or ticker. Falls back through multiple model types
+ * since yfinance doesn't have a native search model.
  *
  * Query params:
  *   query    - Search text (required)
@@ -307,9 +523,10 @@ router.get(
   zValidator("query", SearchQuerySchema),
   async (c) => {
     const { query, limit, provider } = c.req.valid("query");
-    return createProviderQueryHandler(c, executor, provider, "equity/search", {
-      query, limit,
-    });
+    const prov = globalRegistry.get(provider);
+    const availableModels = prov ? Array.from(prov.fetcherMap.keys()) : [];
+    const model = EQUITY_SEARCH_MODELS.find((m) => availableModels.includes(m)) ?? "equity/screener";
+    return createProviderQueryHandler(c, executor, provider, model, { query, limit });
   },
 );
 

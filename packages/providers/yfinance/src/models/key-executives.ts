@@ -52,12 +52,25 @@ export class YFinanceKeyExecutivesFetcher extends AbstractFetcher<
       YFinanceKeyExecutivesData.parse({
         title: o.title,
         name: o.name,
-        pay: o.totalPay,
-        exercisedValue: o.exercisedValue,
-        unexercisedValue: o.unexercisedValue,
+        pay: extractRawNumber(o.totalPay),
+        exercisedValue: extractRawNumber(o.exercisedValue),
+        unexercisedValue: extractRawNumber(o.unexercisedValue),
         fiscalYear: o.fiscalYear,
         yearBorn: o.yearBorn,
       }),
     );
   }
+}
+
+/**
+ * Yahoo returns some numeric fields as objects: { raw: number, fmt: string, longFmt: string }.
+ * Extract the `raw` value if present, otherwise return the value as-is.
+ */
+function extractRawNumber(value: unknown): number | null | undefined {
+  if (value === null || value === undefined) return value as null | undefined;
+  if (typeof value === "number") return value;
+  if (typeof value === "object" && value !== null && "raw" in value) {
+    return (value as Record<string, unknown>).raw as number;
+  }
+  return null;
 }

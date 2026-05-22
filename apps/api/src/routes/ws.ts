@@ -101,16 +101,20 @@ export function broadcastPriceUpdate(ticker: string, price: number, change: numb
 }
 
 /**
- * Live quote poller — fetches quotes from yfinance every 30s
- * for all tickers with active subscribers. Runs as a background
- * interval until the ingestion pipeline replaces it.
+ * Live quote poller — fetches quotes from yfinance every 15s
+ * for all tickers with active subscribers, using batched multi-symbol
+ * requests for efficient real-time data delivery.
  */
 let pollerInterval: ReturnType<typeof setInterval> | null = null;
+
+const POLL_INTERVAL_MS = 15_000; // 15 seconds
+const BATCH_SIZE = 50;           // Max symbols per yfinance quote request
 
 export function startLiveQuotePoller(): void {
   if (pollerInterval) return;
 
   pollerInterval = setInterval(async () => {
+    // Collect all unique subscribed tickers
     const allTickers = new Set<string>();
     for (const client of clients.values()) {
       for (const t of client.subscriptions) {
@@ -120,35 +124,42 @@ export function startLiveQuotePoller(): void {
     if (allTickers.size === 0) return;
 
     const tickers = Array.from(allTickers);
+
     try {
       const { globalRegistry, QueryExecutor } = await import("@openmoney/provider-core");
       const executor = new QueryExecutor(globalRegistry);
 
-      for (const ticker of tickers) {
+      // Batch tickers into groups of BATCH_SIZE for efficient multi-symbol requests
+      for (let i = 0; i < tickers.length; i += BATCH_SIZE) {
+        const batch = tickers.slice(i, i + BATCH_SIZE);
+        const symbolStr = batch.join(",");
+
         try {
           const result = await executor.execute<Array<Record<string, unknown>>>(
-            "yfinance", "equity/quote", { symbol: ticker },
+            "yfinance", "equity/quote", { symbol: symbolStr },
           );
-          if (Array.isArray(result) && result.length > 0) {
-            const quote = result[0]!;
-            broadcastPriceUpdate(
-              ticker,
-              quote.price as number,
-              (quote.change ?? 0) as number,
-              (quote.changePercent ?? 0) as number,
-              new Date().toISOString(),
-            );
+          if (Array.isArray(result)) {
+            for (const quote of result) {
+              const ticker = quote.symbol as string;
+              if (ticker && allTickers.has(ticker)) {
+                broadcastPriceUpdate(
+                  ticker,
+                  quote.price as number,
+                  (quote.change ?? 0) as number,
+                  (quote.changePercent ?? 0) as number,
+                  new Date().toISOString(),
+                );
+              }
+            }
           }
         } catch {
-          // Skip failed fetches silently
+          // Skip failed batch silently — retry next interval
         }
-        // Rate-limit: 1 quote per 200ms to avoid overwhelming yfinance
-        await new Promise((r) => setTimeout(r, 200));
       }
     } catch {
-      // Provider system unavailable
+      // Provider system unavailable — retry next interval
     }
-  }, 30_000);
+  }, POLL_INTERVAL_MS);
 }
 
 export function stopLiveQuotePoller(): void {
