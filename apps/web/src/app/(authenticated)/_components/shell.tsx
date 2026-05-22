@@ -5,76 +5,43 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Toaster } from 'sonner';
 import {
-  LayoutDashboard,
-  Briefcase,
-  ShieldAlert,
-  Lightbulb,
-  Eye,
-  BookOpen,
-  Search,
-  Settings,
-  Globe,
-  TrendingUp,
-  LogOut,
-  Bell,
-  Sparkles,
-  Command,
-  ChevronLeft,
-  ChevronRight,
-  Database,
+  LayoutDashboard, Globe, TrendingUp, Search, Briefcase,
+  Eye, ShieldAlert, Lightbulb, BookOpen, Settings, Database,
+  LogOut, Bell, ChevronLeft, ChevronRight, Activity,
 } from 'lucide-react';
+import { LiveIndicator } from '@openmoney/ui';
 
-/* ───────────────────────────────────────────────────────────────
-   Navigation Items
-   ─────────────────────────────────────────────────────────────── */
-
-const NAV_ITEMS = [
-  {
-    group: '',
-    items: [
-      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-      { id: 'markets',   label: 'Markets',    icon: Globe,            href: '/markets' },
-      { id: 'screener',  label: 'Screener',   icon: TrendingUp,       href: '/screener' },
-      { id: 'search',    label: 'Search',     icon: Search,           href: '/search' },
-    ],
-  },
-  {
-    group: 'Portfolio',
-    items: [
-      { id: 'portfolios',      label: 'Portfolios',      icon: Briefcase,   href: '/portfolio' },
-      { id: 'watchlists',      label: 'Watchlists',      icon: Eye,         href: '/watchlist' },
-      { id: 'risk',            label: 'Risk',            icon: ShieldAlert, href: '/portfolio/risk' },
-      { id: 'recommendations', label: 'Recommendations', icon: Lightbulb,   href: '/portfolio/recommendations' },
-    ],
-  },
-  {
-    group: 'Analysis',
-    items: [
-      { id: 'journal',     label: 'Journal',      icon: BookOpen,       href: '/journal' },
-      { id: 'dashboards',  label: 'Dashboards',   icon: LayoutDashboard, href: '/dashboards' },
-    ],
-  },
-  {
-    group: 'System',
-    items: [
-      { id: 'providers',  label: 'Providers',  icon: Database,  href: '/providers' },
-      { id: 'settings',   label: 'Settings',   icon: Settings,  href: '/settings' },
-    ],
-  },
+const NAV_GROUPS = [
+  { label: 'OVERVIEW', items: [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+    { id: 'markets',   label: 'Markets',    icon: Globe,            href: '/markets' },
+    { id: 'screener',  label: 'Screener',   icon: TrendingUp,       href: '/screener' },
+    { id: 'search',    label: 'Search',     icon: Search,           href: '/search' },
+  ]},
+  { label: 'PORTFOLIO', items: [
+    { id: 'portfolios',      label: 'Portfolios',      icon: Briefcase,   href: '/portfolio' },
+    { id: 'watchlists',      label: 'Watchlists',      icon: Eye,         href: '/watchlist' },
+    { id: 'risk',            label: 'Risk Analytics',  icon: ShieldAlert, href: '/portfolio/risk' },
+    { id: 'recommendations', label: 'Recommendations', icon: Lightbulb,   href: '/portfolio/recommendations' },
+  ]},
+  { label: 'ANALYSIS', items: [
+    { id: 'journal',    label: 'Journal',     icon: BookOpen,        href: '/journal' },
+    { id: 'dashboards', label: 'Dashboards',  icon: LayoutDashboard, href: '/dashboards' },
+  ]},
+  { label: 'SYSTEM', items: [
+    { id: 'providers', label: 'Data Sources', icon: Database,  href: '/providers' },
+    { id: 'settings',  label: 'Settings',     icon: Settings,  href: '/settings' },
+  ]},
 ];
 
 function getActiveId(pathname: string): string {
-  for (const group of NAV_ITEMS) {
+  for (const group of NAV_GROUPS) {
     for (const item of group.items) {
       if (pathname === item.href || pathname.startsWith(item.href + '/')) return item.id;
     }
   }
   return 'dashboard';
 }
-
-/* ───────────────────────────────────────────────────────────────
-   Shell Component
-   ─────────────────────────────────────────────────────────────── */
 
 interface ShellProps {
   session: any;
@@ -86,33 +53,26 @@ export function Shell({ session, children }: ShellProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = React.useState(false);
   const activeId = getActiveId(pathname);
-
-  const SIDEBAR_W = collapsed ? 56 : 224;
+  const SIDEBAR_W = collapsed ? 48 : 220;
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--background)]">
-      {/* ── Sidebar ── */}
-      <aside
-        className="flex flex-col h-full shrink-0 border-r border-[var(--border)] bg-[var(--surface)] transition-all duration-300 ease-out"
-        style={{ width: SIDEBAR_W }}
-      >
+      {/* Sidebar */}
+      <aside className="flex flex-col h-full shrink-0 border-r border-[var(--border)] transition-all duration-200"
+        style={{ width: SIDEBAR_W }}>
         {/* Logo */}
-        <div className={`flex items-center h-14 px-4 border-b border-[var(--border)] ${collapsed ? 'justify-center' : 'gap-3'}`}>
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[var(--brand-muted)]">
-            <Sparkles size={15} className="text-[var(--brand)]" />
-          </div>
-          {!collapsed && (
-            <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">OpenMoney</span>
-          )}
+        <div className={`flex items-center h-10 px-3 border-b border-[var(--border)] ${collapsed ? 'justify-center' : 'gap-2'}`}>
+          <span className="font-mono text-[var(--brand)] text-sm font-bold">A</span>
+          {!collapsed && <span className="font-mono text-xs font-semibold tracking-wide text-[var(--text-primary)]">ARKON</span>}
         </div>
 
-        {/* Nav items */}
-        <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-5">
-          {NAV_ITEMS.map((group) => (
-            <div key={group.group}>
-              {group.group && !collapsed && (
-                <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--text-tertiary)]">
-                  {group.group}
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto py-2 px-1.5 space-y-4">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label}>
+              {!collapsed && (
+                <p className="px-2 mb-1 font-mono text-[9px] uppercase tracking-widest text-[var(--text-tertiary)]">
+                  {group.label}
                 </p>
               )}
               <div className="space-y-0.5">
@@ -120,23 +80,16 @@ export function Shell({ session, children }: ShellProps) {
                   const isActive = item.id === activeId;
                   const Icon = item.icon;
                   return (
-                    <button
-                      key={item.id}
-                      onClick={() => router.push(item.href)}
-                      className={`
-                        flex items-center w-full rounded-lg transition-all duration-150
-                        ${collapsed ? 'justify-center px-0 h-9 w-9 mx-auto' : 'gap-3 px-3 h-9'}
+                    <button key={item.id} onClick={() => router.push(item.href)}
+                      className={`relative flex items-center w-full rounded-[var(--radius-sm)] transition-colors duration-100
+                        ${collapsed ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 px-2.5 h-8'}
                         ${isActive
-                          ? 'bg-[var(--brand-muted)] text-[var(--brand)]'
-                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)]'
-                        }
-                      `}
-                    >
-                      <Icon size={16} className="shrink-0" />
-                      {!collapsed && <span className="text-sm font-medium truncate">{item.label}</span>}
-                      {!collapsed && isActive && (
-                        <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--brand)]" />
-                      )}
+                          ? 'bg-[var(--background-elevated)] text-[var(--text-primary)]'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--background-subtle)]'
+                        }`}>
+                      {isActive && <div className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-[var(--brand)]" />}
+                      <Icon size={15} className="shrink-0" />
+                      {!collapsed && <span className="text-xs font-medium truncate">{item.label}</span>}
                     </button>
                   );
                 })}
@@ -145,83 +98,59 @@ export function Shell({ session, children }: ShellProps) {
           ))}
         </nav>
 
-        {/* Collapse toggle */}
-        <div className="p-2 border-t border-[var(--border)]">
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center justify-center w-full h-8 rounded-lg text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-colors"
-          >
-            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+        {/* Collapse */}
+        <div className="p-1.5 border-t border-[var(--border)]">
+          <button onClick={() => setCollapsed(!collapsed)}
+            className="flex items-center justify-center w-full h-7 rounded-[var(--radius-sm)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--background-subtle)] transition-colors">
+            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
         </div>
       </aside>
 
-      {/* ── Main Content ── */}
+      {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header — glass */}
-        <header className="flex items-center justify-between h-14 px-6 shrink-0 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-xl">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-[var(--surface-elevated)] border border-[var(--border)]">
-              <Command size={12} className="text-[var(--text-tertiary)]" />
-              <span className="text-[11px] font-mono text-[var(--text-tertiary)]">
-                {pathname.replace(/\//g, ' / ').replace(/^\s+\/\s/, '') || 'dashboard'}
-              </span>
-            </div>
+        {/* Topbar — 40px */}
+        <header className="flex items-center justify-between h-10 px-4 shrink-0 border-b border-[var(--border)]">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[11px] text-[var(--text-tertiary)] truncate">
+              {pathname.replace(/\//g, ' / ').replace(/^\s+\/\s/, '') || 'dashboard'}
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Live indicator */}
-            <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[var(--success-muted)] border border-[var(--success)]/10">
-              <div className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
-              <span className="text-[10px] font-medium text-[var(--success)]">Live</span>
-            </div>
+            <LiveIndicator label="LIVE" />
 
-            {/* Notifications */}
-            <button className="relative p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-colors">
-              <Bell size={16} />
-              <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[var(--brand)] ring-2 ring-[var(--surface)]" />
+            <button className="relative p-1.5 rounded-[var(--radius-sm)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--background-elevated)] transition-colors">
+              <Bell size={14} />
+              <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[var(--brand)] ring-1 ring-[var(--background)]" />
             </button>
 
-            {/* User */}
-            <div className="flex items-center gap-2 pl-3 border-l border-[var(--border)]">
-              <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[var(--brand-muted)] text-[var(--brand)] text-xs font-semibold">
+            <div className="flex items-center gap-2 pl-2 border-l border-[var(--border)]">
+              <div className="flex items-center justify-center w-6 h-6 rounded-[var(--radius-sm)] bg-[var(--brand-dim)] text-[var(--brand)] text-[10px] font-mono font-semibold">
                 {session?.user?.name?.[0] || session?.user?.email?.[0] || '?'}
               </div>
-              <span className="text-xs text-[var(--text-secondary)] hidden sm:block max-w-[120px] truncate">
+              <span className="font-mono text-[11px] text-[var(--text-secondary)] hidden sm:block max-w-[100px] truncate">
                 {session?.user?.name || session?.user?.email}
               </span>
-              <Link
-                href="/api/auth/sign-out"
-                className="p-1.5 rounded-md text-[var(--text-tertiary)] hover:text-[var(--destructive)] hover:bg-[var(--destructive-muted)] transition-colors"
-                title="Sign out"
-              >
-                <LogOut size={14} />
+              <Link href="/api/auth/sign-out"
+                className="p-1 rounded-[var(--radius-sm)] text-[var(--text-tertiary)] hover:text-[var(--negative)] hover:bg-[var(--negative-bg)] transition-colors"
+                title="Sign out">
+                <LogOut size={13} />
               </Link>
             </div>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="flex-1 overflow-y-auto">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
 
-      {/* Toasts */}
-      <Toaster
-        position="bottom-right"
-        theme="dark"
-        toastOptions={{
-          style: {
-            background: 'var(--surface-overlay)',
-            border: '1px solid var(--border)',
-            color: 'var(--text-primary)',
-            borderRadius: 'var(--radius-lg)',
-            fontSize: '13px',
-            boxShadow: 'var(--shadow-lg)',
-          },
-        }}
-      />
+      <Toaster position="bottom-right" theme="dark" toastOptions={{
+        style: {
+          background: 'var(--background-elevated)', border: '1px solid var(--border)',
+          color: 'var(--text-primary)', borderRadius: 'var(--radius-md)', fontSize: '12px',
+          fontFamily: 'var(--font-sans)', boxShadow: 'none',
+        },
+      }} />
     </div>
   );
 }

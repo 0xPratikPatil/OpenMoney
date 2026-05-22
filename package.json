@@ -9,6 +9,7 @@
     "dev:web": "bun run --cwd apps/web dev",
     "dev:ingestion": "bun run --cwd apps/ingestion dev",
     "dev:quant": "bun run --cwd apps/quant-engine dev",
+    "dev:showcase": "bun run --cwd apps/showcase dev",
     "dev:docs": "bun run --cwd apps/docs dev",
     "dev:notification": "bun run --cwd apps/notification dev",
     "build": "bun run build:packages && bun run build:providers && bun run build:apps",

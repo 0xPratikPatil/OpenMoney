@@ -111,13 +111,27 @@ export type { SignalCardProps } from './components/openmoney/signal-card';
 export { SignalTimeline } from './components/openmoney/signal-timeline';
 export type { SignalTimelineProps } from './components/openmoney/signal-timeline';
 export { SlideInPanel } from './components/openmoney/slide-in-panel';
-// SlideInPanel type embedded from './components/openmoney/slide-in-panel';
 export { Sparkline } from './components/openmoney/sparkline';
 export type { SparklineProps } from './components/openmoney/sparkline';
 export { TickerSearch } from './components/openmoney/ticker-search';
 export type { TickerSearchProps } from './components/openmoney/ticker-search';
 export { TopBar } from './components/openmoney/topbar';
 export type { TopBarProps } from './components/openmoney/topbar';
+
+// ---------------------------------------------------------------------------
+// ARKON Design System — Signature Components
+// ---------------------------------------------------------------------------
+export {
+  DeltaBadge,
+  SparklineBar,
+  MetricCard,
+  StatusBadge,
+  LiveIndicator,
+  SignalGauge,
+  PriorityBadge,
+  TagChip,
+  SectionHeader,
+} from './components/openmoney/arkon-components';
 
 // ---------------------------------------------------------------------------
 // Hooks

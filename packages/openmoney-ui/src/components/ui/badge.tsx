@@ -4,26 +4,24 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-lg border px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap transition-colors [&>svg]:pointer-events-none [&>svg]:size-3",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden border px-2 py-0.5 font-mono uppercase text-[9px] tracking-widest font-medium whitespace-nowrap transition-colors [&>svg]:pointer-events-none [&>svg]:size-3",
   {
     variants: {
       variant: {
         default:
-          "bg-[var(--text-primary)] text-[var(--background)] border-transparent",
-        secondary:
-          "bg-[var(--surface-elevated)] text-[var(--text-secondary)] border-[var(--border)]",
+          "bg-[var(--background-elevated)] text-[var(--text-secondary)] border-[var(--border)]",
+        brand:
+          "bg-[var(--brand-dim)] text-[var(--brand)] border-[var(--brand-border)]",
+        success:
+          "bg-[var(--positive-bg)] text-[var(--positive)] border-[var(--positive)]/20",
+        destructive:
+          "bg-[var(--negative-bg)] text-[var(--negative)] border-[var(--negative)]/20",
+        warning:
+          "bg-[var(--warning-bg)] text-[var(--warning)] border-[var(--warning)]/20",
         outline:
           "border-[var(--border)] text-[var(--text-secondary)]",
-        success:
-          "bg-[var(--success-muted)] text-[var(--success)] border-[var(--success)]/10",
-        destructive:
-          "bg-[var(--destructive-muted)] text-[var(--destructive)] border-[var(--destructive)]/10",
-        warning:
-          "bg-[var(--warning-muted)] text-[var(--warning)] border-[var(--warning)]/10",
-        brand:
-          "bg-[var(--brand-muted)] text-[var(--brand)] border-[var(--brand-border)]",
         ghost:
-          "text-[var(--text-tertiary)] border-transparent hover:bg-[var(--surface-elevated)]",
+          "text-[var(--text-tertiary)] border-transparent hover:bg-[var(--background-elevated)]",
       },
     },
     defaultVariants: { variant: "default" },
