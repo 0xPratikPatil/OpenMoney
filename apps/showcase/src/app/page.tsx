@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button, Badge, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@openmoney/ui';
-import { Palette, Component, ArrowRight, Layers } from 'lucide-react';
+import { Palette, Component, ArrowRight } from 'lucide-react';
 
 const stats = [
   { label: 'UI Components', value: '51', desc: 'shadcn/ui primitives' },
@@ -13,9 +13,8 @@ const stats = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-full bg-grid">
-      {/* Hero */}
-      <section className="border-b border-border">
+    <div className="min-h-full">
+      <section className="border-b border-foreground/10 bg-grid text-foreground/10">
         <div className="max-w-4xl mx-auto px-8 py-20">
           <Badge variant="secondary" className="mb-4 font-mono">v0.0.1 · Design System</Badge>
           <h1 className="text-4xl font-semibold tracking-tight mb-3" style={{lineHeight:'1.1'}}>
@@ -32,8 +31,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="border-b border-border">
+      <section className="border-b border-foreground/10">
         <div className="max-w-4xl mx-auto px-8 py-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat) => (
@@ -47,8 +45,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Links */}
-      <section className="border-b border-border">
+      <section className="border-b border-foreground/10">
         <div className="max-w-4xl mx-auto px-8 py-12">
           <h2 className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground mb-6">EXPLORE</h2>
           <div className="grid grid-cols-2 gap-3">
@@ -57,12 +54,12 @@ export default function HomePage() {
               { href: '/tokens', title: 'Design Tokens', desc: 'Color palette, typography scale, spacing, border radii, shadows.' },
             ].map((link) => (
               <Link key={link.href} href={link.href} className="no-underline group">
-                <Card className="h-full group-hover:border-border transition-colors">
+                <Card className="h-full group-hover:border-foreground/20 transition-colors">
                   <CardHeader>
                     <CardTitle>{link.title}</CardTitle>
                     <CardDescription>{link.desc}</CardDescription>
                   </CardHeader>
-                  <CardContent className="dashed-t">
+                  <CardContent>
                     <span className="inline-flex items-center gap-1 font-mono text-[10px] text-foreground uppercase tracking-wider group-hover:gap-2 transition-all">
                       Explore <ArrowRight size={11} />
                     </span>
@@ -74,7 +71,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Principles */}
       <section className="max-w-4xl mx-auto px-8 py-12">
         <h2 className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground mb-6">DESIGN PRINCIPLES</h2>
         <div className="grid grid-cols-3 gap-3">
@@ -83,7 +79,7 @@ export default function HomePage() {
             { title: 'Density', desc: "Information is the design. We respect the user's intelligence with dense, data-rich layouts." },
             { title: 'Sharp, not loud', desc: 'Minimal radii, dashed dividers, mono for metadata. The design should feel precise, never decorative.' },
           ].map((p) => (
-            <div key={p.title} className="bg-card border border-border rounded-md p-5 hover:border-border transition-colors">
+            <div key={p.title} className="border border-foreground/10 rounded-md p-5 hover:border-foreground/20 transition-colors">
               <p className="font-mono text-[11px] text-foreground mb-2 uppercase tracking-wider">{p.title}</p>
               <p className="text-xs text-muted-foreground leading-relaxed">{p.desc}</p>
             </div>

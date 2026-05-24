@@ -42,10 +42,7 @@ function getActiveId(pathname: string): string {
   return 'dashboard';
 }
 
-interface ShellProps {
-  session: any;
-  children: React.ReactNode;
-}
+interface ShellProps { session: any; children: React.ReactNode; }
 
 export function Shell({ session, children }: ShellProps) {
   const router = useRouter();
@@ -57,15 +54,13 @@ export function Shell({ session, children }: ShellProps) {
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
-      <aside className="flex flex-col h-full shrink-0 border-r border-border transition-all duration-200"
+      <aside className="flex flex-col h-full shrink-0 border-r border-foreground/10 transition-all duration-200"
         style={{ width: SIDEBAR_W }}>
-        {/* Logo */}
-        <div className={`flex items-center h-10 px-3 border-b border-border ${collapsed ? 'justify-center' : 'gap-2'}`}>
+        <div className={`flex items-center h-10 px-3 border-b border-foreground/10 ${collapsed ? 'justify-center' : 'gap-2'}`}>
           <span className="font-mono text-foreground text-sm font-bold">O</span>
-          {!collapsed && <span className="font-mono text-xs font-semibold tracking-tight text-foreground">OpenMoney</span>}
+          {!collapsed && <span className="text-xs font-semibold tracking-tight text-foreground">OpenMoney</span>}
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 overflow-y-auto py-2 px-1.5 space-y-4">
           {NAV_GROUPS.map((group) => (
             <div key={group.label}>
@@ -83,8 +78,8 @@ export function Shell({ session, children }: ShellProps) {
                       className={`relative flex items-center w-full rounded-md transition-colors duration-100
                         ${collapsed ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 px-2.5 h-8'}
                         ${isActive
-                          ? 'bg-accent text-accent-foreground'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                          ? 'bg-foreground/8 text-foreground'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'
                         }`}>
                       {isActive && <div className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-foreground" />}
                       <Icon size={15} className="shrink-0" />
@@ -97,10 +92,9 @@ export function Shell({ session, children }: ShellProps) {
           ))}
         </nav>
 
-        {/* Collapse */}
-        <div className="p-1.5 border-t border-border">
+        <div className="p-1.5 border-t border-foreground/10">
           <button onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center justify-center w-full h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
+            className="flex items-center justify-center w-full h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors">
             {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
         </div>
@@ -108,16 +102,11 @@ export function Shell({ session, children }: ShellProps) {
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Topbar — 40px */}
-        <header className="flex items-center justify-between h-10 px-4 shrink-0 border-b border-border">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] text-muted-foreground truncate">
-              {pathname.replace(/\//g, ' / ').replace(/^\s+\/\s/, '') || 'dashboard'}
-            </span>
-          </div>
-
+        <header className="flex items-center justify-between h-10 px-4 shrink-0 border-b border-foreground/10">
+          <span className="font-mono text-[11px] text-muted-foreground truncate">
+            {pathname.replace(/\//g, ' / ').replace(/^\s+\/\s/, '') || 'dashboard'}
+          </span>
           <div className="flex items-center gap-3">
-            {/* Live indicator */}
             <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-foreground">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-60" />
@@ -125,14 +114,12 @@ export function Shell({ session, children }: ShellProps) {
               </span>
               LIVE
             </span>
-
-            <button className="relative p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
+            <button className="relative p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors">
               <Bell size={14} />
               <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-foreground ring-1 ring-background" />
             </button>
-
-            <div className="flex items-center gap-2 pl-2 border-l border-border">
-              <div className="flex items-center justify-center w-6 h-6 rounded-md bg-accent text-foreground text-[10px] font-mono font-semibold">
+            <div className="flex items-center gap-2 pl-2 border-l border-foreground/10">
+              <div className="flex items-center justify-center w-6 h-6 rounded-md bg-foreground/10 text-foreground text-[10px] font-mono font-semibold">
                 {session?.user?.name?.[0] || session?.user?.email?.[0] || '?'}
               </div>
               <span className="font-mono text-[11px] text-muted-foreground hidden sm:block max-w-[100px] truncate">
@@ -146,13 +133,12 @@ export function Shell({ session, children }: ShellProps) {
             </div>
           </div>
         </header>
-
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
 
       <Toaster position="bottom-right" theme="dark" toastOptions={{
         style: {
-          background: 'var(--background)', border: '1px solid var(--border)',
+          background: 'var(--card)', border: '1px solid var(--border)',
           color: 'var(--foreground)', borderRadius: 'var(--radius)', fontSize: '13px',
           fontFamily: 'var(--font-sans)', boxShadow: 'var(--shadow-lg)',
         },

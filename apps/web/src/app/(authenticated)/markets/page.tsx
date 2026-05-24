@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import * as React from 'react';
 import { api } from '@/lib/api';
-import { DeltaBadge, SparklineBar, LiveIndicator, Button, Badge } from '@openmoney/ui';
+import { DeltaBadge, SparklineBar, LiveIndicator, Button } from '@openmoney/ui';
 import { Globe, RefreshCw, AlertTriangle, BarChart3, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -20,7 +20,6 @@ const SECTORS = [
 ];
 
 interface Quote { symbol: string; price: number; changePercent: number; }
-
 function fmtPct(v: number) { return `${v>=0?'+':''}${v.toFixed(2)}%`; }
 const sparkData = Array.from({length: 20}, () => Math.random());
 
@@ -56,7 +55,6 @@ export default function MarketsPage() {
 
   return (
     <div className="p-6 max-w-[1440px] mx-auto space-y-6 animate-fade-in">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
@@ -70,20 +68,17 @@ export default function MarketsPage() {
         </div>
       </div>
 
-      {/* Major Indices */}
-      <div className="bg-card border border-border rounded-md overflow-hidden">
-        <div className="px-4 py-2.5 border-b border-border">
+      <div className="border border-foreground/10 rounded-md overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-foreground/10">
           <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground flex items-center gap-1.5">
             <BarChart3 size={11} /> MAJOR INDICES
           </span>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-border">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-foreground/5">
           {INDICES.map((idx, i) => {
-            const q = indices[i];
-            const pct = q?.changePercent ?? 0;
-            const isPos = pct >= 0;
+            const q = indices[i]; const pct = q?.changePercent ?? 0; const isPos = pct >= 0;
             return (
-              <div key={idx.ticker} className="px-4 py-3 hover:bg-accent/50 transition-colors cursor-pointer">
+              <div key={idx.ticker} className="px-4 py-3 hover:bg-foreground/3 transition-colors cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
                   <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{idx.name}</p>
                   <p className="font-mono text-[9px] text-muted-foreground">{idx.ticker}</p>
@@ -92,18 +87,15 @@ export default function MarketsPage() {
                 <div className="mt-2">
                   {q?.changePercent != null ? <DeltaBadge value={fmtPct(pct)} status={isPos ? 'positive' : 'negative'} /> : <span className="text-muted-foreground">—</span>}
                 </div>
-                <div className="mt-3">
-                  <SparklineBar values={sparkData} status={isPos ? 'positive' : 'negative'} height={20} />
-                </div>
+                <div className="mt-3"><SparklineBar values={sparkData} status={isPos ? 'positive' : 'negative'} height={20} /></div>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Sector Heatmap */}
-      <div className="bg-card border border-border rounded-md overflow-hidden">
-        <div className="px-4 py-2.5 border-b border-border">
+      <div className="border border-foreground/10 rounded-md overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-foreground/10">
           <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground flex items-center gap-1.5">
             <Activity size={11} /> SECTOR PERFORMANCE
           </span>
@@ -111,11 +103,9 @@ export default function MarketsPage() {
         <div className="p-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
             {SECTORS.map((sec, i) => {
-              const q = sectors[i];
-              const pct = q?.changePercent ?? 0;
-              const isPos = pct >= 0;
+              const q = sectors[i]; const pct = q?.changePercent ?? 0; const isPos = pct >= 0;
               return (
-                <div key={sec.ticker} className={`rounded-sm p-3 text-center border transition-colors hover:bg-accent/50 ${isPos ? 'border-border' : 'border-border'}`}>
+                <div key={sec.ticker} className="rounded-sm p-3 text-center border border-foreground/5 transition-colors hover:bg-foreground/3">
                   <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{sec.name}</p>
                   <p className={`mt-1 font-mono text-sm font-semibold tabular-nums ${isPos ? 'text-foreground' : 'text-destructive'}`}>{fmtPct(pct)}</p>
                 </div>
@@ -133,11 +123,11 @@ export default function MarketsPage() {
 function MarketsSkeleton() {
   return (
     <div className="p-6 max-w-[1440px] mx-auto space-y-6">
-      <div className="h-6 w-24 rounded bg-muted" />
+      <div className="h-6 w-24 rounded-md bg-foreground/5" />
       <div className="grid grid-cols-4 gap-3">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-32 rounded-md bg-muted" />)}
+        {[...Array(4)].map((_, i) => <div key={i} className="h-32 rounded-md bg-foreground/5" />)}
       </div>
-      <div className="h-48 rounded-md bg-muted" />
+      <div className="h-48 rounded-md bg-foreground/5" />
     </div>
   );
 }
@@ -145,7 +135,7 @@ function MarketsSkeleton() {
 function MarketsError({error,retry}:{error:string;retry:()=>void}) {
   return (
     <div className="p-6 max-w-md mx-auto mt-20">
-      <div className="flex flex-col items-center text-center bg-card border border-border rounded-md p-8">
+      <div className="flex flex-col items-center text-center border border-foreground/10 rounded-md p-8">
         <AlertTriangle size={24} className="text-destructive mb-3" />
         <h2 className="text-sm font-semibold">Failed to load</h2>
         <p className="font-mono text-[11px] text-muted-foreground mt-1">{error}</p>

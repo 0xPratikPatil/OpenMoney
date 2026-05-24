@@ -17,7 +17,6 @@ const INDICES = [
 ];
 
 interface Quote { symbol: string; price: number; changePercent: number; }
-
 function fmtCurr(v: number) { return new Intl.NumberFormat('en-US', {style:'currency',currency:'USD',notation:'compact',maximumFractionDigits:1}).format(v); }
 function fmtPct(v: number) { return `${v>=0?'+':''}${v.toFixed(2)}%`; }
 
@@ -53,7 +52,6 @@ export default function DashboardPage() {
   }, []);
 
   React.useEffect(() => { fetch(); }, [fetch]);
-
   const sparkData = React.useMemo(() => Array.from({length: 30}, () => Math.random()), []);
 
   if (loading) return <DashSkeleton />;
@@ -61,7 +59,6 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 max-w-[1440px] mx-auto space-y-5 animate-fade-in">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Dashboard</h1>
@@ -75,7 +72,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
         <MetricCard label="PORTFOLIO VALUE" value={fmtCurr(totalValue)} status="neutral" sparkline={sparkData} accent />
         <MetricCard label="DAY P&L" value={fmtCurr(dayPnl)} delta={fmtPct(0.86)} status="positive" sparkline={sparkData.map(v => v * 1.2)} />
@@ -83,21 +79,17 @@ export default function DashboardPage() {
         <MetricCard label="PORTFOLIOS" value={String(portfolios.length)} status="neutral" />
       </div>
 
-      {/* Market Indices + Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Indices */}
-        <div className="lg:col-span-2 bg-card border border-border rounded-md overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
+        <div className="lg:col-span-2 border border-foreground/10 rounded-md overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-foreground/10">
             <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground">MARKET SNAPSHOT</span>
             <LiveIndicator label="LIVE" />
           </div>
-          <div className="grid grid-cols-3 divide-x divide-border">
+          <div className="grid grid-cols-3 divide-x divide-foreground/5">
             {INDICES.map((idx, i) => {
-              const q = quotes[i];
-              const pct = q?.changePercent ?? 0;
-              const isPos = pct >= 0;
+              const q = quotes[i]; const pct = q?.changePercent ?? 0; const isPos = pct >= 0;
               return (
-                <div key={idx.ticker} className="px-4 py-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <div key={idx.ticker} className="px-4 py-3 hover:bg-foreground/3 transition-colors cursor-pointer">
                   <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-2">{idx.name}</p>
                   <p className="font-mono text-lg font-semibold tabular-nums">{q?.price ? q.price.toLocaleString('en-US',{minimumFractionDigits:2}) : '—'}</p>
                   <div className="mt-1">
@@ -109,9 +101,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="bg-card border border-border rounded-md overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-border">
+        <div className="border border-foreground/10 rounded-md overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-foreground/10">
             <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground">RISK METRICS</span>
           </div>
           <div className="px-4 py-3 space-y-3">
@@ -130,17 +121,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Signals */}
-      <div className="bg-card border border-border rounded-md overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-2.5 dashed-b">
+      <div className="border border-foreground/10 rounded-md overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-foreground/5 border-dashed">
           <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground">RECENT SIGNALS</span>
           {signals.length > 0 && <Badge variant="secondary">{signals.length}</Badge>}
         </div>
         {signals.length > 0 ? (
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-foreground/5">
             {signals.slice(0, 5).map((s) => (
-              <div key={s.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-accent/50 transition-colors">
-                <div className={`flex items-center justify-center w-7 h-7 rounded-md shrink-0 ${s.action === 'add' || s.action === 'hold' ? 'bg-secondary text-foreground' : 'bg-destructive/10 text-destructive'}`}>
+              <div key={s.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-foreground/3 transition-colors">
+                <div className={`flex items-center justify-center w-7 h-7 rounded-md shrink-0 ${s.action === 'add' || s.action === 'hold' ? 'bg-foreground/5 text-foreground' : 'bg-destructive/10 text-destructive'}`}>
                   {s.action === 'add' || s.action === 'hold' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -150,7 +140,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2">
                   {s.confidence != null && (
                     <div className="flex items-center gap-1.5">
-                      <div className="w-10 h-1 rounded-full bg-muted overflow-hidden">
+                      <div className="w-10 h-1 rounded-full bg-foreground/5 overflow-hidden">
                         <div className={`h-full rounded-full ${(s.confidence ?? 0) >= 70 ? 'bg-foreground' : (s.confidence ?? 0) >= 40 ? 'bg-muted-foreground' : 'bg-destructive'}`} style={{ width: `${s.confidence}%` }} />
                       </div>
                       <span className="font-mono text-[9px] text-muted-foreground">{s.confidence}%</span>
@@ -174,13 +164,13 @@ export default function DashboardPage() {
 function DashSkeleton() {
   return (
     <div className="p-6 max-w-[1440px] mx-auto space-y-5">
-      <div className="flex items-center justify-between"><div className="h-6 w-32 rounded bg-muted" /><div className="h-8 w-24 rounded bg-muted" /></div>
+      <div className="flex items-center justify-between"><div className="h-6 w-32 rounded-md bg-foreground/5" /><div className="h-8 w-24 rounded-md bg-foreground/5" /></div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-32 rounded-md bg-muted" />)}
+        {[...Array(4)].map((_, i) => <div key={i} className="h-32 rounded-md bg-foreground/5" />)}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        <div className="lg:col-span-2 h-28 rounded-md bg-muted" />
-        <div className="h-28 rounded-md bg-muted" />
+        <div className="lg:col-span-2 h-28 rounded-md bg-foreground/5" />
+        <div className="h-28 rounded-md bg-foreground/5" />
       </div>
     </div>
   );
@@ -189,7 +179,7 @@ function DashSkeleton() {
 function DashError({ error, retry }: { error: string; retry: () => void }) {
   return (
     <div className="p-6 max-w-md mx-auto mt-20">
-      <div className="flex flex-col items-center text-center bg-card border border-border rounded-md p-8">
+      <div className="flex flex-col items-center text-center border border-foreground/10 rounded-md p-8">
         <AlertTriangle size={24} className="text-destructive mb-3" />
         <h2 className="text-sm font-semibold">Failed to load</h2>
         <p className="font-mono text-[11px] text-muted-foreground mt-1">{error}</p>
