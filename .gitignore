@@ -10,3 +10,4 @@ dist/
 reference
 reference_yfianance
 apps/docs/.source/
+.opencode/
