@@ -1,204 +1,302 @@
 'use client';
 
 import Link from 'next/link';
-import { Button, Badge, Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@openmoney/ui';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, TrendingDown, Activity, BarChart3, Globe, Search, Plus } from 'lucide-react';
+import {
+  Button, Badge,
+  FadeIn, SlideIn, StaggerChildren, AnimateOnScroll, ParallaxLayer,
+  GradientText, BentoGrid, BentoGridItem, Marquee,
+  ParticlesBackground, Dock, DockItem, CursorGlow,
+  CountUp, Typewriter, AnimatedTabs, AnimatedTabsList, AnimatedTabsTrigger, AnimatedTabsContent,
+} from '@openmoney/ui';
+import {
+  ArrowRight, Sparkles, Component, Palette, LayoutDashboard, Code2,
+  Zap, Globe, Layers, Monitor, Smartphone, Cpu, ChevronRight,
+  Github, Twitter, ArrowUpRight, ArrowDownRight, Activity,
+} from 'lucide-react';
 
 /* ── Section Header ── */
-function SectionHeader({ title, description }: { title: string; description?: string }) {
+function SectionHeader({ label, title, description }: { label?: string; title: string; description?: string }) {
   return (
-    <div className="space-y-1">
-      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-      {description && <p className="text-sm text-muted-foreground max-w-prose">{description}</p>}
-    </div>
-  );
-}
-
-/* ── Live Preview Card ── */
-function LivePreview({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="space-y-3">
-      <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{title}</p>
-      <div className="border border-foreground/10 rounded-md p-6">{children}</div>
-    </div>
+    <AnimateOnScroll animation="fade-up" className="space-y-3 text-center max-w-2xl mx-auto">
+      {label && <Badge variant="secondary" className="font-mono text-[10px] tracking-wider">{label}</Badge>}
+      <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
+      {description && <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>}
+    </AnimateOnScroll>
   );
 }
 
 export default function HomePage() {
   return (
-    <div className="min-h-full">
-      {/* Hero */}
-      <section className="relative border-b border-foreground/10 overflow-hidden">
-        <div className="absolute inset-0 bg-grid text-foreground/[0.04] pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
-        <div className="relative max-w-4xl mx-auto px-8 py-24">
-          <Badge variant="secondary" className="mb-4 font-mono">v0.0.1 · Design System</Badge>
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
-            Building blocks for
-            <span className="block text-muted-foreground">financial intelligence</span>
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-lg leading-relaxed mt-4">
-            Clean, modern building blocks for quantitative investment platforms. Copy and paste into your apps. Works with all React frameworks. Open Source.
-          </p>
-          <div className="flex gap-3 mt-8">
-            <Link href="/tokens"><Button>Browse Components</Button></Link>
-            <Link href="/tokens"><Button variant="outline">Design Tokens</Button></Link>
-          </div>
+    <div className="min-h-full bg-surface-0">
+      {/* ═══════════════════════════════════════════════════════ HERO ═══════════════════════════════════════════════════ */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden border-b border-border-subtle">
+        <ParticlesBackground
+          particleCount={60}
+          color="var(--brand-dim)"
+          speed="default"
+          connectDistance={180}
+          className="absolute inset-0"
+        />
+        <div className="absolute inset-0 hero-gradient pointer-events-none" />
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8 py-32">
+          <FadeIn duration={0.5}>
+            <Badge variant="outline" className="font-mono text-[11px] gap-2 glass-surface">
+              <Sparkles size={12} className="text-brand" />
+              <Typewriter text="Production-grade design system" speed={40} />
+            </Badge>
+          </FadeIn>
+
+          <FadeIn duration={0.5} delay={0.15}>
+            <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05]">
+              <GradientText gradientFrom="var(--brand)" gradientVia="var(--info)" gradientTo="var(--brand-hover)" animate>
+                OpenMoney
+              </GradientText>
+              <span className="block mt-3">components for the</span>
+              <span className="block text-muted-foreground">modern web</span>
+            </h1>
+          </FadeIn>
+
+          <FadeIn duration={0.5} delay={0.3}>
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              A dark-first, production-grade component library for building premium financial interfaces. 
+              Crafted with precision motion, accessibility, and developer experience in mind.
+            </p>
+          </FadeIn>
+
+          <FadeIn duration={0.5} delay={0.45}>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link href="/components">
+                <Button size="lg" className="gap-2">
+                  <Component size={16} />
+                  Browse Components
+                  <ArrowRight size={16} />
+                </Button>
+              </Link>
+              <Link href="/tokens">
+                <Button variant="outline" size="lg" className="gap-2">
+                  <Palette size={16} />
+                  Design Tokens
+                </Button>
+              </Link>
+            </div>
+          </FadeIn>
+
+          <FadeIn duration={0.5} delay={0.6}>
+            <div className="flex items-center justify-center gap-6 pt-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <Zap size={14} className="text-brand" /> <CountUp target={70} suffix="+ components" />
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Globe size={14} className="text-info" /> Dark-first
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Code2 size={14} className="text-muted-foreground" /> TypeScript
+              </span>
+            </div>
+          </FadeIn>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
+          <ChevronRight size={20} className="rotate-90" />
         </div>
       </section>
 
-      {/* Featured Blocks */}
-      <section className="border-b border-foreground/10">
-        <div className="max-w-5xl mx-auto px-8 py-16 space-y-12">
-          <SectionHeader title="Featured Blocks" description="Production-ready dashboard layouts and data displays." />
+      {/* ═══════════════════════════════════════════════════ FEATURES BENTO ═══════════════════════════════════════════════ */}
+      <section className="border-b border-border-subtle py-24">
+        <div className="max-w-6xl mx-auto px-6 space-y-16">
+          <SectionHeader
+            label="WHY OPENMONEY"
+            title="Designed for the modern stack"
+            description="Every component is optimized for TypeScript, Tailwind v4, React 19, and the motion ecosystem."
+          />
 
-          {/* Dashboard Block */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">Dashboard with KPI cards and market data</p>
-                <p className="text-[11px] text-muted-foreground font-mono mt-0.5">npx openmoney add dashboard-01</p>
-              </div>
-              <Badge variant="outline" className="font-mono">dashboard-01</Badge>
-            </div>
-            <div className="border border-foreground/10 rounded-md overflow-hidden">
-              <div className="bg-foreground/[0.02] p-6">
-                {/* Dashboard Preview */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                  {[
-                    { label: 'PORTFOLIO VALUE', value: '$2.4M', delta: '+3.2%', status: 'positive' as const },
-                    { label: 'DAY P&L', value: '+$12.8K', delta: '+0.53%', status: 'positive' as const },
-                    { label: 'VAR (95%)', value: '-2.34%', delta: '-0.8%', status: 'negative' as const },
-                    { label: 'POSITIONS', value: '24', status: 'neutral' as const },
-                  ].map((kpi) => (
-                    <div key={kpi.label} className="border border-foreground/10 rounded-md p-3">
-                      <p className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground mb-2">{kpi.label}</p>
-                      <p className="font-mono text-2xl font-semibold tabular-nums">{kpi.value}</p>
-                      {kpi.delta && (
-                        <span className={`inline-flex items-center gap-0.5 mt-1 font-mono text-[10px] ${kpi.status === 'positive' ? 'text-emerald-500' : 'text-red-500'}`}>
-                          {kpi.status === 'positive' ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
-                          {kpi.delta}
-                        </span>
-                      )}
+          <BentoGrid columns={3} gap={5}>
+            <BentoGridItem colSpan={2} rowSpan={1}>
+              <CursorGlow glowSize={500}>
+                <div className="p-2 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-brand/10 border border-brand-border flex items-center justify-center">
+                      <Layers size={20} className="text-brand" />
                     </div>
-                  ))}
-                </div>
-                {/* Market Indices */}
-                <div className="grid grid-cols-3 gap-3">
-                  {['S&P 500', 'NASDAQ', 'DOW'].map((name) => (
-                    <div key={name} className="border border-foreground/10 rounded-md p-3">
-                      <p className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">{name}</p>
-                      <p className="font-mono text-base font-semibold tabular-nums mt-1">5,432.10</p>
-                      <span className="inline-flex items-center gap-0.5 mt-1 font-mono text-[10px] text-emerald-500"><ArrowUpRight size={10} /> +1.2%</span>
+                    <div>
+                      <h3 className="font-semibold text-sm">Dark-First Design System</h3>
+                      <p className="text-xs text-muted-foreground">Complete oklch palette with financial semantics</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div className="border-t border-foreground/10 px-4 py-2 flex items-center justify-between">
-                <span className="text-[11px] text-muted-foreground">Dashboard with KPI cards, market indices, and risk metrics</span>
-                <span className="text-[10px] font-mono text-muted-foreground">4 files</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Screener Block */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">Stock screener with data table</p>
-                <p className="text-[11px] text-muted-foreground font-mono mt-0.5">npx openmoney add screener-01</p>
-              </div>
-              <Badge variant="outline" className="font-mono">screener-01</Badge>
-            </div>
-            <div className="border border-foreground/10 rounded-md overflow-hidden">
-              <div className="bg-foreground/[0.02] p-6">
-                <div className="border border-foreground/10 rounded-md overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-foreground/10">
-                    <span className="font-mono uppercase text-[10px] tracking-wider text-muted-foreground">MOST ACTIVE</span>
-                    <span className="font-mono text-[10px] text-muted-foreground">25 results</span>
                   </div>
-                  <div className="divide-y divide-foreground/5">
-                    {[
-                      { symbol: 'NVDA', name: 'NVIDIA Corp', price: '$219.51', change: '+2.4%', positive: true },
-                      { symbol: 'AAPL', name: 'Apple Inc', price: '$304.99', change: '+1.1%', positive: true },
-                      { symbol: 'TSLA', name: 'Tesla Inc', price: '$270.01', change: '-0.8%', positive: false },
-                      { symbol: 'MSFT', name: 'Microsoft Corp', price: '$419.09', change: '+0.5%', positive: true },
-                    ].map((row) => (
-                      <div key={row.symbol} className="flex items-center gap-4 px-4 py-2.5 hover:bg-foreground/[0.03] transition-colors">
-                        <span className="font-mono text-xs font-semibold w-12">{row.symbol}</span>
-                        <span className="text-xs text-muted-foreground flex-1 truncate">{row.name}</span>
-                        <span className="font-mono text-xs tabular-nums">{row.price}</span>
-                        <span className={`font-mono text-[10px] tabular-nums ${row.positive ? 'text-emerald-500' : 'text-red-500'}`}>{row.change}</span>
-                      </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {['positive', 'negative', 'warning', 'info', 'brand', 'chart-1', 'chart-2', 'chart-3'].map((color) => (
+                      <div key={color} className="h-8 rounded-md border border-border-subtle" style={{ backgroundColor: `var(--${color})` }} />
                     ))}
                   </div>
                 </div>
+              </CursorGlow>
+            </BentoGridItem>
+
+            <BentoGridItem colSpan={1} rowSpan={1}>
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-lg bg-info/10 border border-info/20 flex items-center justify-center">
+                  <Cpu size={20} className="text-info" />
+                </div>
+                <h3 className="font-semibold text-sm">Motion Primitives</h3>
+                <p className="text-xs text-muted-foreground">6 composable animation primitives. 150ms-300ms, ease-out, no bounce.</p>
               </div>
-              <div className="border-t border-foreground/10 px-4 py-2 flex items-center justify-between">
-                <span className="text-[11px] text-muted-foreground">Stock screener with sortable data table and status badges</span>
-                <span className="text-[10px] font-mono text-muted-foreground">3 files</span>
+            </BentoGridItem>
+
+            <BentoGridItem colSpan={1} rowSpan={1}>
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-lg bg-positive/10 border border-positive/20 flex items-center justify-center">
+                  <Monitor size={20} className="text-positive" />
+                </div>
+                <h3 className="font-semibold text-sm">Accessible</h3>
+                <p className="text-xs text-muted-foreground">WCAG AA contrast, keyboard nav, screen reader support built in.</p>
               </div>
+            </BentoGridItem>
+
+            <BentoGridItem colSpan={1} rowSpan={1}>
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-lg bg-warning/10 border border-warning/20 flex items-center justify-center">
+                  <Smartphone size={20} className="text-warning" />
+                </div>
+                <h3 className="font-semibold text-sm">Responsive</h3>
+                <p className="text-xs text-muted-foreground">Mobile-first with 6 breakpoints. Touch targets ≥ 44px.</p>
+              </div>
+            </BentoGridItem>
+
+            <BentoGridItem colSpan={1} rowSpan={1}>
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center justify-center">
+                  <Code2 size={20} className="text-destructive" />
+                </div>
+                <h3 className="font-semibold text-sm">Tree-Shakeable</h3>
+                <p className="text-xs text-muted-foreground">Import only what you need. Zero runtime for unused components.</p>
+              </div>
+            </BentoGridItem>
+          </BentoGrid>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════ COMPONENT SPOTLIGHT ═══════════════════════════════════════════ */}
+      <section className="border-b border-border-subtle py-24">
+        <div className="max-w-6xl mx-auto px-6 space-y-16">
+          <SectionHeader
+            label="PREMIUM COMPONENTS"
+            title="New animation-first components"
+            description="Built on motion/react with DESIGN.md-compliant animation primitives."
+          />
+
+          <StaggerChildren staggerDelay={0.08} childDuration={0.25}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { name: 'FadeIn', desc: 'Configurable fade-in on mount', icon: Sparkles, color: 'brand' },
+                { name: 'SlideIn', desc: 'Directional slide entrance', icon: ArrowRight, color: 'info' },
+                { name: 'ScaleIn', desc: '0.95→1 scale entrance', icon: Layers, color: 'positive' },
+                { name: 'StaggerChildren', desc: 'Delayed child animation', icon: LayoutDashboard, color: 'warning' },
+                { name: 'MorphingDialog', desc: 'layoutId morph animation', icon: Monitor, color: 'chart-1' },
+                { name: 'Dock', desc: 'macOS-style floating nav', icon: Zap, color: 'chart-2' },
+                { name: 'Marquee', desc: 'Infinite scroll banner', icon: Globe, color: 'chart-3' },
+                { name: 'GradientText', desc: 'Animated gradient text', icon: Palette, color: 'brand' },
+              ].map((item) => (
+                <Link key={item.name} href="/components" className="no-underline group">
+                  <div className="border border-border rounded-lg p-5 bg-surface-1 hover:border-border-strong transition-colors duration-150 hover:-translate-y-0.5">
+                    <div className={`w-9 h-9 rounded-lg bg-${item.color}/10 border border-${item.color}/20 flex items-center justify-center mb-3`}>
+                      <item.icon size={18} className={`text-${item.color}`} />
+                    </div>
+                    <p className="font-mono text-xs font-medium">{item.name}</p>
+                    <p className="text-[11px] text-text-tertiary mt-1">{item.desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </StaggerChildren>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════ DATA COMPONENTS ═══════════════════════════════════════════════ */}
+      <section className="border-b border-border-subtle py-24">
+        <div className="max-w-6xl mx-auto px-6 space-y-16">
+          <SectionHeader
+            label="FINANCE COMPONENTS"
+            title="Purpose-built for financial data"
+            description="Components with semantic coloring, monospace data display, and real-time indicators."
+          />
+
+          <AnimateOnScroll animation="fade-up">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* KPI Cards */}
+              {[
+                { label: 'PORTFOLIO VALUE', value: '$2,412,391,27', change: '+3.2%', up: true },
+                { label: 'DAY P&L', value: '+$12,841.53', change: '+0.53%', up: true },
+                { label: 'VOLATILITY (30D)', value: '18.4%', change: '-2.1%', up: false },
+              ].map((kpi) => (
+                <div key={kpi.label} className="border border-border rounded-lg p-5 bg-surface-1">
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary mb-2">{kpi.label}</p>
+                  <p className="font-mono text-2xl font-semibold tabular-nums">{kpi.value}</p>
+                  <span className={`inline-flex items-center gap-1 mt-2 font-mono text-[11px] ${kpi.up ? 'text-positive' : 'text-negative'}`}>
+                    {kpi.up ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                    {kpi.change}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </AnimateOnScroll>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════ CTA ═══════════════════════════════════════════════════ */}
+      <section className="py-32">
+        <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
+          <AnimateOnScroll animation="fade-up">
+            <Badge variant="outline" className="font-mono text-[11px] glass-surface">OPEN SOURCE</Badge>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-4">
+              Ready to build something
+              <span className="block text-brand">exceptional?</span>
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto mt-3">
+              Start with production-ready components designed for financial intelligence.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
+              <Link href="/components">
+                <Button size="lg" className="gap-2">
+                  Explore Components
+                  <ArrowRight size={16} />
+                </Button>
+              </Link>
+              <Link href="https://github.com/your-org/openmoney" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" size="lg" className="gap-2">
+                  <Github size={16} />
+                  Star on GitHub
+                </Button>
+              </Link>
+            </div>
+          </AnimateOnScroll>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════ FOOTER ═══════════════════════════════════════════════════ */}
+      <footer className="border-t border-border-subtle">
+        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-brand flex items-center justify-center">
+              <Activity size={12} className="text-black" />
+            </div>
+            <span className="text-xs font-medium">OpenMoney</span>
+            <Badge variant="outline" className="font-mono text-[10px]">v0.1.0</Badge>
+          </div>
+          <div className="flex items-center gap-6 text-xs text-muted-foreground">
+            <span className="font-mono">Dark-first · TypeScript · Tailwind · React</span>
+            <div className="flex items-center gap-3">
+              <Link href="https://x.com/openmoney" className="hover:text-foreground transition-colors">
+                <Twitter size={14} />
+              </Link>
+              <Link href="https://github.com/your-org/openmoney" className="hover:text-foreground transition-colors">
+                <Github size={14} />
+              </Link>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Components Preview */}
-      <section className="border-b border-foreground/10">
-        <div className="max-w-5xl mx-auto px-8 py-16 space-y-8">
-          <SectionHeader title="Components" description="Individual UI primitives and finance-specific components." />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { name: 'MetricCard', desc: 'KPI display with delta badge and sparkline', href: '/tokens#finance' },
-              { name: 'DeltaBadge', desc: 'Signed percentage change with directional icon', href: '/tokens#finance' },
-              { name: 'SparklineBar', desc: 'Tick-mark bar chart for time series', href: '/tokens#finance' },
-              { name: 'StatusBadge', desc: 'ACTIVE/COMPLETED/REVIEWING/FAILED pill', href: '/tokens#finance' },
-              { name: 'SignalGauge', desc: 'Horizontal segmented gauge bar', href: '/tokens#finance' },
-              { name: 'Callout', desc: 'Dashed left stripe by accent type', href: '/tokens#components' },
-            ].map((comp) => (
-              <Link key={comp.name} href={comp.href} className="no-underline group">
-                <div className="border border-foreground/10 rounded-md p-4 hover:border-foreground/20 transition-colors">
-                  <p className="text-sm font-medium font-mono">{comp.name}</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">{comp.desc}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Design Tokens Preview */}
-      <section className="border-b border-foreground/10">
-        <div className="max-w-5xl mx-auto px-8 py-16 space-y-8">
-          <SectionHeader title="Design Tokens" description="Color, typography, radius, and shadow foundations." />
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-px bg-foreground/10 border border-foreground/10">
-            {[
-              { name: 'Background', css: 'var(--background)' },
-              { name: 'Foreground', css: 'var(--foreground)' },
-              { name: 'Primary', css: 'var(--primary)' },
-              { name: 'Secondary', css: 'var(--secondary)' },
-              { name: 'Muted', css: 'var(--muted)' },
-              { name: 'Accent', css: 'var(--accent)' },
-              { name: 'Destructive', css: 'var(--destructive)' },
-              { name: 'Border', css: 'var(--border)' },
-            ].map((t) => (
-              <div key={t.name} className="bg-background p-2 space-y-1">
-                <div className="h-10 w-full border border-foreground/10" style={{ backgroundColor: t.css }} />
-                <p className="text-[10px] font-medium truncate">{t.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <section className="max-w-5xl mx-auto px-8 py-12">
-        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-          <span>OpenMoney Design System · v0.0.1</span>
-          <span className="font-mono">Built with shadcn/ui + better-auth theme</span>
-        </div>
-      </section>
+      </footer>
     </div>
   );
 }

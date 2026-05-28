@@ -108,6 +108,13 @@ import {
   SheetHeader,
   SheetTitle,
   CorrelationMatrix,
+  // Premium components
+  FadeIn, SlideIn, ScaleIn, StaggerChildren, AnimateOnScroll, ParallaxLayer,
+  GradientText, BentoGrid, BentoGridItem, Marquee,
+  ParticlesBackground, Dock, DockItem, CursorGlow, Spotlight,
+  MorphingDialog, MorphingDialogTrigger, MorphingDialogContent,
+  MagneticButton, AnimatedBadge, CountUp, Typewriter,
+  AnimatedTabs, AnimatedTabsList, AnimatedTabsTrigger, AnimatedTabsContent,
 } from '@openmoney/ui';
 
 import {
@@ -167,6 +174,175 @@ function PreviewCardVertical({ title, children }: { title: string; children: Rea
 export function ComponentDemos() {
   return (
     <div className="space-y-0">
+      {/* ═══════════════════ MOTION PRIMITIVES ═══════════════════ */}
+      <Section id="motion" label="Motion Primitives" description="Composable animation primitives. 150ms-300ms, ease-out, no spring/bounce.">
+        <PreviewCard title="FadeIn">
+          <FadeIn duration={0.5} className="space-y-2">
+            <p className="text-sm">This content fades in on mount</p>
+            <FadeIn duration={0.5} delay={0.2}><Badge variant="outline">Nested</Badge></FadeIn>
+          </FadeIn>
+        </PreviewCard>
+
+        <PreviewCard title="SlideIn (all directions)">
+          <div className="grid grid-cols-2 gap-2">
+            <SlideIn direction="up"><Badge>Up</Badge></SlideIn>
+            <SlideIn direction="down"><Badge>Down</Badge></SlideIn>
+            <SlideIn direction="left"><Badge>Left</Badge></SlideIn>
+            <SlideIn direction="right"><Badge>Right</Badge></SlideIn>
+          </div>
+        </PreviewCard>
+
+        <PreviewCard title="ScaleIn">
+          <ScaleIn duration={0.3}>
+            <div className="border border-border rounded-lg p-4 bg-surface-1 text-sm">Scaled from 0.95→1</div>
+          </ScaleIn>
+        </PreviewCard>
+
+        <PreviewCard title="StaggerChildren">
+          <StaggerChildren staggerDelay={0.08}>
+            <div className="flex flex-wrap gap-2">
+              {['First', 'Second', 'Third', 'Fourth'].map((label) => (
+                <Badge key={label} variant="secondary">{label}</Badge>
+              ))}
+            </div>
+          </StaggerChildren>
+        </PreviewCard>
+
+        <PreviewCard title="AnimateOnScroll (fade-up)">
+          <AnimateOnScroll animation="fade-up" className="text-sm text-text-secondary">
+            This animates when scrolled into view
+          </AnimateOnScroll>
+        </PreviewCard>
+
+        <PreviewCard title="ParallaxLayer">
+          <ParallaxLayer speed={0.3} className="border border-border rounded-lg p-4 bg-surface-1 text-sm">
+            Parallax scroll effect (subtle)
+          </ParallaxLayer>
+        </PreviewCard>
+      </Section>
+
+      {/* ═══════════════════ PREMIUM COMPONENTS ═══════════════════ */}
+      <Section id="premium" label="Premium" description="New animation-first components built on motion/react.">
+        <PreviewCard title="GradientText">
+          <GradientText gradientFrom="var(--brand)" gradientVia="var(--info)" gradientTo="var(--brand-hover)" animate>
+            Premium gradient text
+          </GradientText>
+        </PreviewCard>
+
+        <PreviewCard title="MagneticButton">
+          <div className="flex gap-3">
+            <MagneticButton strength={0.3}>
+              <Button variant="outline">Hover me</Button>
+            </MagneticButton>
+            <MagneticButton strength={0.5}>
+              <Button>Strong pull</Button>
+            </MagneticButton>
+          </div>
+        </PreviewCard>
+
+        <PreviewCard title="AnimatedBadge (variants)">
+          <div className="flex flex-wrap gap-2">
+            <AnimatedBadge>Default</AnimatedBadge>
+            <AnimatedBadge variant="positive">+12.4%</AnimatedBadge>
+            <AnimatedBadge variant="negative">-3.2%</AnimatedBadge>
+            <AnimatedBadge variant="destructive">Error</AnimatedBadge>
+            <AnimatedBadge variant="outline">Outline</AnimatedBadge>
+          </div>
+        </PreviewCard>
+
+        <PreviewCard title="CountUp + Typewriter">
+          <div className="space-y-2">
+            <div className="font-mono text-2xl font-semibold tabular-nums">
+              <CountUp target={2400000} prefix="$" format={(n) => n.toLocaleString()} />
+            </div>
+            <p className="text-sm text-text-secondary">
+              <Typewriter text="Animated text reveal for taglines and descriptions" speed={30} />
+            </p>
+          </div>
+        </PreviewCard>
+
+        <PreviewCard title="Spotlight">
+          <Spotlight spotlightRadius={250}>
+            <div className="p-6 text-sm text-center text-text-secondary">
+              Move your cursor over this card <br />
+              <span className="text-brand font-mono text-xs mt-1 block">Spotlight effect follows</span>
+            </div>
+          </Spotlight>
+        </PreviewCard>
+
+        <PreviewCard title="CursorGlow">
+          <CursorGlow glowSize={350}>
+            <div className="p-6 text-sm text-center text-text-secondary">
+              Hover to reveal cursor glow <br />
+              <span className="text-xs text-brand mt-1 block">Smooth spring interpolation</span>
+            </div>
+          </CursorGlow>
+        </PreviewCard>
+
+        <PreviewCard title="Marquee">
+          <Marquee speed={40} fadeWidth={60} className="py-2 border border-border rounded-lg bg-surface-1">
+            <div className="flex gap-8 text-sm text-text-secondary">
+              {['React 19', 'TypeScript', 'Tailwind v4', 'motion/react', 'Radix UI', 'Next.js', 'Bun', 'Geist'].map((tech) => (
+                <Badge key={tech} variant="secondary" className="font-mono text-[10px]">{tech}</Badge>
+              ))}
+            </div>
+          </Marquee>
+        </PreviewCard>
+
+        <PreviewCard title="ParticlesBackground">
+          <div className="relative h-32 rounded-lg overflow-hidden border border-border">
+            <ParticlesBackground particleCount={30} color="var(--brand-dim)" speed="slow" connectDistance={120} className="absolute inset-0" />
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-text-secondary font-mono">
+              Particle canvas overlay
+            </div>
+          </div>
+        </PreviewCard>
+
+        <PreviewCard title="Dock">
+          <div className="h-24 flex items-end">
+            <Dock magnification={1.4}>
+              <DockItem label="Home" icon={ChevronRight} active />
+              <DockItem label="Explore" icon={ChevronRight} />
+              <DockItem label="Settings" icon={ChevronRight} />
+              <DockItem label="Profile" icon={ChevronRight} />
+            </Dock>
+          </div>
+        </PreviewCard>
+
+        <PreviewCard title="MorphingDialog">
+          <MorphingDialog>
+            <MorphingDialogTrigger>
+              <Button variant="outline" size="sm">Open Morphing Dialog</Button>
+            </MorphingDialogTrigger>
+            <MorphingDialogContent title="Morphing Animation" description="This dialog morphs from the trigger button using layoutId.">
+              <p className="text-sm text-text-secondary">Smooth transition powered by motion/react layout animations.</p>
+            </MorphingDialogContent>
+          </MorphingDialog>
+        </PreviewCard>
+
+        <PreviewCard title="BentoGrid">
+          <BentoGrid columns={3} gap={4}>
+            <BentoGridItem colSpan={2}><div className="bg-surface-1 border border-border rounded-lg p-4 text-sm font-mono">2×1</div></BentoGridItem>
+            <BentoGridItem colSpan={1}><div className="bg-surface-1 border border-border rounded-lg p-4 text-sm font-mono">1×1</div></BentoGridItem>
+            <BentoGridItem colSpan={1}><div className="bg-surface-1 border border-border rounded-lg p-4 text-sm font-mono">1×1</div></BentoGridItem>
+            <BentoGridItem colSpan={2}><div className="bg-surface-1 border border-border rounded-lg p-4 text-sm font-mono">2×1</div></BentoGridItem>
+          </BentoGrid>
+        </PreviewCard>
+
+        <PreviewCard title="AnimatedTabs">
+          <AnimatedTabs>
+            <AnimatedTabsList>
+              <AnimatedTabsTrigger>Tab One</AnimatedTabsTrigger>
+              <AnimatedTabsTrigger>Tab Two</AnimatedTabsTrigger>
+              <AnimatedTabsTrigger>Tab Three</AnimatedTabsTrigger>
+            </AnimatedTabsList>
+            <AnimatedTabsContent><p className="text-sm text-text-secondary p-4">Content for tab one</p></AnimatedTabsContent>
+            <AnimatedTabsContent><p className="text-sm text-text-secondary p-4">Content for tab two</p></AnimatedTabsContent>
+            <AnimatedTabsContent><p className="text-sm text-text-secondary p-4">Content for tab three</p></AnimatedTabsContent>
+          </AnimatedTabs>
+        </PreviewCard>
+      </Section>
+
       {/* ── Buttons ── */}
       <Section id="buttons" label="Buttons" description="Interactive triggers for user actions.">
         <PreviewCard title="Variants (6)">

@@ -1,8 +1,8 @@
 // ---------------------------------------------------------------------------
 // Design tokens
 // ---------------------------------------------------------------------------
-export { colors } from './tokens';
-export type { ColorKey } from './tokens';
+export { colors, typography, spacing, radius } from './tokens';
+export type { ColorToken, BrandColorToken, TypographyToken, TypographyTokenName, SpacingToken, RadiusToken } from './tokens';
 
 // ---------------------------------------------------------------------------
 // Utilities
@@ -74,6 +74,10 @@ export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './comp
 // ---------------------------------------------------------------------------
 export { AllocationPie } from './components/openmoney/allocation-pie';
 export type { AllocationPieProps, AllocationSegment } from './components/openmoney/allocation-pie';
+export { AnimatedTabs, AnimatedTabsList, AnimatedTabsTrigger, AnimatedTabsContent } from './components/openmoney/animated-tabs';
+export type { AnimatedTabsProps, AnimatedTabsListProps, AnimatedTabsTriggerProps, AnimatedTabsContentProps } from './components/openmoney/animated-tabs';
+export { BentoGrid, BentoGridItem } from './components/openmoney/bento-grid';
+export type { BentoGridProps, BentoGridItemProps } from './components/openmoney/bento-grid';
 export { Callout } from './components/openmoney/callout';
 export type { CalloutProps } from './components/openmoney/callout';
 export { ComparisonOverlay } from './components/openmoney/comparison-overlay';
@@ -88,12 +92,16 @@ export { EmptyState } from './components/openmoney/empty-state';
 export type { EmptyStateProps } from './components/openmoney/empty-state';
 export { FilterBar } from './components/openmoney/filter-bar';
 export type { FilterBarProps } from './components/openmoney/filter-bar';
+export { GradientText } from './components/openmoney/gradient-text';
+export type { GradientTextProps } from './components/openmoney/gradient-text';
 export { JournalCard } from './components/openmoney/journal-card';
 export type { JournalCardProps } from './components/openmoney/journal-card';
 export { JournalForm } from './components/openmoney/journal-form';
 export type { JournalFormProps, JournalFormData } from './components/openmoney/journal-form';
 export { AppShell } from './components/openmoney/layout';
 export type { AppShellProps } from './components/openmoney/layout';
+export { Marquee } from './components/openmoney/marquee';
+export type { MarqueeProps } from './components/openmoney/marquee';
 export { MetricBlock } from './components/openmoney/metric-block';
 export type { MetricBlockProps } from './components/openmoney/metric-block';
 export { MetricsGrid } from './components/openmoney/metrics-grid';
@@ -113,10 +121,40 @@ export type { SignalTimelineProps } from './components/openmoney/signal-timeline
 export { SlideInPanel } from './components/openmoney/slide-in-panel';
 export { Sparkline } from './components/openmoney/sparkline';
 export type { SparklineProps } from './components/openmoney/sparkline';
+export { Spotlight } from './components/openmoney/spotlight';
+export type { SpotlightProps } from './components/openmoney/spotlight';
 export { TickerSearch } from './components/openmoney/ticker-search';
 export type { TickerSearchProps } from './components/openmoney/ticker-search';
 export { TopBar } from './components/openmoney/topbar';
 export type { TopBarProps } from './components/openmoney/topbar';
+
+// ---------------------------------------------------------------------------
+// Premium Components — new design system additions
+// ---------------------------------------------------------------------------
+export { AnimatedBadge } from './components/openmoney/animated-badge';
+export type { AnimatedBadgeProps } from './components/openmoney/animated-badge';
+export { AnimatedTabs, AnimatedTabsList, AnimatedTabsTrigger, AnimatedTabsContent } from './components/openmoney/animated-tabs';
+export type { AnimatedTabsProps } from './components/openmoney/animated-tabs';
+export { BentoGrid, BentoGridItem } from './components/openmoney/bento-grid';
+export type { BentoGridProps, BentoGridItemProps } from './components/openmoney/bento-grid';
+export { CountUp } from './components/openmoney/count-up';
+export type { CountUpProps } from './components/openmoney/count-up';
+export { CursorGlow } from './components/openmoney/cursor-glow';
+export type { CursorGlowProps } from './components/openmoney/cursor-glow';
+export { Dock, DockItem } from './components/openmoney/dock';
+export type { DockProps, DockItemProps } from './components/openmoney/dock';
+export { GradientText } from './components/openmoney/gradient-text';
+export type { GradientTextProps } from './components/openmoney/gradient-text';
+export { MagneticButton } from './components/openmoney/magnetic-button';
+export type { MagneticButtonProps } from './components/openmoney/magnetic-button';
+export { Marquee } from './components/openmoney/marquee';
+export type { MarqueeProps } from './components/openmoney/marquee';
+export { MorphingDialog, MorphingDialogTrigger, MorphingDialogContent } from './components/openmoney/morphing-dialog';
+export type { MorphingDialogProps } from './components/openmoney/morphing-dialog';
+export { ParticlesBackground } from './components/openmoney/particles-background';
+export type { ParticlesBackgroundProps } from './components/openmoney/particles-background';
+export { Typewriter } from './components/openmoney/typewriter';
+export type { TypewriterProps } from './components/openmoney/typewriter';
 
 // ---------------------------------------------------------------------------
 // ARKON Design System — Signature Components
@@ -134,7 +172,18 @@ export {
 } from './components/openmoney/arkon-components';
 
 // ---------------------------------------------------------------------------
+// Motion Primitives
+// ---------------------------------------------------------------------------
+export { FadeIn, SlideIn, ScaleIn, StaggerChildren, AnimateOnScroll, ParallaxLayer } from './components/motion';
+export type { FadeInProps, SlideInProps, ScaleInProps, StaggerChildrenProps, AnimateOnScrollProps, ScrollAnimation, ParallaxLayerProps } from './components/motion';
+
+// ---------------------------------------------------------------------------
 // Hooks
 // ---------------------------------------------------------------------------
 export { useToast, toast } from './hooks';
+export { useAnimateInView } from './hooks/use-animate-in-view';
+export { useScrollProgress } from './hooks/use-scroll-progress';
+export { useParallax } from './hooks/use-parallax';
+export { useCountUp } from './hooks/use-count-up';
+export { useTypewriter } from './hooks/use-typewriter';
 
