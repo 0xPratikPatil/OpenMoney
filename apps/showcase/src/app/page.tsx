@@ -1,302 +1,397 @@
 'use client';
 
+import * as React from 'react';
 import Link from 'next/link';
 import {
   Button, Badge,
-  FadeIn, SlideIn, StaggerChildren, AnimateOnScroll, ParallaxLayer,
-  GradientText, BentoGrid, BentoGridItem, Marquee,
-  ParticlesBackground, Dock, DockItem, CursorGlow,
-  CountUp, Typewriter, AnimatedTabs, AnimatedTabsList, AnimatedTabsTrigger, AnimatedTabsContent,
+  MetricCard, DeltaBadge, StatusBadge, TagChip, SparklineBar,
+  cn,
 } from '@openmoney/ui';
 import {
-  ArrowRight, Sparkles, Component, Palette, LayoutDashboard, Code2,
-  Zap, Globe, Layers, Monitor, Smartphone, Cpu, ChevronRight,
-  Github, Twitter, ArrowUpRight, ArrowDownRight, Activity,
+  ArrowRight, Box, Palette, Component, LayoutDashboard, Search, Github,
+  Layers, Zap, Command, BarChart3,
 } from 'lucide-react';
 
-/* ── Section Header ── */
-function SectionHeader({ label, title, description }: { label?: string; title: string; description?: string }) {
-  return (
-    <AnimateOnScroll animation="fade-up" className="space-y-3 text-center max-w-2xl mx-auto">
-      {label && <Badge variant="secondary" className="font-mono text-[10px] tracking-wider">{label}</Badge>}
-      <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">{title}</h2>
-      {description && <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>}
-    </AnimateOnScroll>
-  );
-}
+/* ───────────────────────────────────────────────────────────────
+   Homepage — editorial landing for the OpenMoney design system.
+   Mirrors the tokens page: flat cards, opacity borders, monospace
+   metadata, no shadows, no decorative motion.
+   ─────────────────────────────────────────────────────────────── */
+
+const sparkDummy = Array.from({ length: 20 }, () => Math.random());
 
 export default function HomePage() {
   return (
-    <div className="min-h-full bg-surface-0">
-      {/* ═══════════════════════════════════════════════════════ HERO ═══════════════════════════════════════════════════ */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden border-b border-border-subtle">
-        <ParticlesBackground
-          particleCount={60}
-          color="var(--brand-dim)"
-          speed="default"
-          connectDistance={180}
-          className="absolute inset-0"
-        />
-        <div className="absolute inset-0 hero-gradient pointer-events-none" />
+    <div className="relative min-h-dvh">
+      <Hero />
+      <div className="max-w-5xl mx-auto px-5 sm:px-6 lg:px-10 py-16 space-y-16">
+        <Section id="blocks" eyebrow="01" title="What's inside">
+          <FeaturedBlocks />
+        </Section>
 
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8 py-32">
-          <FadeIn duration={0.5}>
-            <Badge variant="outline" className="font-mono text-[11px] gap-2 glass-surface">
-              <Sparkles size={12} className="text-brand" />
-              <Typewriter text="Production-grade design system" speed={40} />
-            </Badge>
-          </FadeIn>
+        <Section id="components" eyebrow="02" title="Component families">
+          <ComponentsPreview />
+        </Section>
 
-          <FadeIn duration={0.5} delay={0.15}>
-            <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05]">
-              <GradientText gradientFrom="var(--brand)" gradientVia="var(--info)" gradientTo="var(--brand-hover)" animate>
-                OpenMoney
-              </GradientText>
-              <span className="block mt-3">components for the</span>
-              <span className="block text-muted-foreground">modern web</span>
-            </h1>
-          </FadeIn>
+        <Section id="tokens-section" eyebrow="03" title="Design tokens">
+          <TokensPreview />
+        </Section>
 
-          <FadeIn duration={0.5} delay={0.3}>
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              A dark-first, production-grade component library for building premium financial interfaces. 
-              Crafted with precision motion, accessibility, and developer experience in mind.
-            </p>
-          </FadeIn>
-
-          <FadeIn duration={0.5} delay={0.45}>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link href="/components">
-                <Button size="lg" className="gap-2">
-                  <Component size={16} />
-                  Browse Components
-                  <ArrowRight size={16} />
-                </Button>
-              </Link>
-              <Link href="/tokens">
-                <Button variant="outline" size="lg" className="gap-2">
-                  <Palette size={16} />
-                  Design Tokens
-                </Button>
-              </Link>
-            </div>
-          </FadeIn>
-
-          <FadeIn duration={0.5} delay={0.6}>
-            <div className="flex items-center justify-center gap-6 pt-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <Zap size={14} className="text-brand" /> <CountUp target={70} suffix="+ components" />
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Globe size={14} className="text-info" /> Dark-first
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Code2 size={14} className="text-muted-foreground" /> TypeScript
-              </span>
-            </div>
-          </FadeIn>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
-          <ChevronRight size={20} className="rotate-90" />
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════ FEATURES BENTO ═══════════════════════════════════════════════ */}
-      <section className="border-b border-border-subtle py-24">
-        <div className="max-w-6xl mx-auto px-6 space-y-16">
-          <SectionHeader
-            label="WHY OPENMONEY"
-            title="Designed for the modern stack"
-            description="Every component is optimized for TypeScript, Tailwind v4, React 19, and the motion ecosystem."
-          />
-
-          <BentoGrid columns={3} gap="md">
-            <BentoGridItem colSpan={2} rowSpan={1}>
-              <CursorGlow glowSize={500}>
-                <div className="p-2 space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-brand/10 border border-brand-border flex items-center justify-center">
-                      <Layers size={20} className="text-brand" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-sm">Dark-First Design System</h3>
-                      <p className="text-xs text-muted-foreground">Complete oklch palette with financial semantics</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {['positive', 'negative', 'warning', 'info', 'brand', 'chart-1', 'chart-2', 'chart-3'].map((color) => (
-                      <div key={color} className="h-8 rounded-md border border-border-subtle" style={{ backgroundColor: `var(--${color})` }} />
-                    ))}
-                  </div>
-                </div>
-              </CursorGlow>
-            </BentoGridItem>
-
-            <BentoGridItem colSpan={1} rowSpan={1}>
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-info/10 border border-info/20 flex items-center justify-center">
-                  <Cpu size={20} className="text-info" />
-                </div>
-                <h3 className="font-semibold text-sm">Motion Primitives</h3>
-                <p className="text-xs text-muted-foreground">6 composable animation primitives. 150ms-300ms, ease-out, no bounce.</p>
-              </div>
-            </BentoGridItem>
-
-            <BentoGridItem colSpan={1} rowSpan={1}>
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-positive/10 border border-positive/20 flex items-center justify-center">
-                  <Monitor size={20} className="text-positive" />
-                </div>
-                <h3 className="font-semibold text-sm">Accessible</h3>
-                <p className="text-xs text-muted-foreground">WCAG AA contrast, keyboard nav, screen reader support built in.</p>
-              </div>
-            </BentoGridItem>
-
-            <BentoGridItem colSpan={1} rowSpan={1}>
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-warning/10 border border-warning/20 flex items-center justify-center">
-                  <Smartphone size={20} className="text-warning" />
-                </div>
-                <h3 className="font-semibold text-sm">Responsive</h3>
-                <p className="text-xs text-muted-foreground">Mobile-first with 6 breakpoints. Touch targets ≥ 44px.</p>
-              </div>
-            </BentoGridItem>
-
-            <BentoGridItem colSpan={1} rowSpan={1}>
-              <div className="space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center justify-center">
-                  <Code2 size={20} className="text-destructive" />
-                </div>
-                <h3 className="font-semibold text-sm">Tree-Shakeable</h3>
-                <p className="text-xs text-muted-foreground">Import only what you need. Zero runtime for unused components.</p>
-              </div>
-            </BentoGridItem>
-          </BentoGrid>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════ COMPONENT SPOTLIGHT ═══════════════════════════════════════════ */}
-      <section className="border-b border-border-subtle py-24">
-        <div className="max-w-6xl mx-auto px-6 space-y-16">
-          <SectionHeader
-            label="PREMIUM COMPONENTS"
-            title="New animation-first components"
-            description="Built on motion/react with DESIGN.md-compliant animation primitives."
-          />
-
-          <StaggerChildren staggerDelay={0.08} childDuration={0.25}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { name: 'FadeIn', desc: 'Configurable fade-in on mount', icon: Sparkles, color: 'brand' },
-                { name: 'SlideIn', desc: 'Directional slide entrance', icon: ArrowRight, color: 'info' },
-                { name: 'ScaleIn', desc: '0.95→1 scale entrance', icon: Layers, color: 'positive' },
-                { name: 'StaggerChildren', desc: 'Delayed child animation', icon: LayoutDashboard, color: 'warning' },
-                { name: 'MorphingDialog', desc: 'layoutId morph animation', icon: Monitor, color: 'chart-1' },
-                { name: 'Dock', desc: 'macOS-style floating nav', icon: Zap, color: 'chart-2' },
-                { name: 'Marquee', desc: 'Infinite scroll banner', icon: Globe, color: 'chart-3' },
-                { name: 'GradientText', desc: 'Animated gradient text', icon: Palette, color: 'brand' },
-              ].map((item) => (
-                <Link key={item.name} href="/components" className="no-underline group">
-                  <div className="border border-border rounded-lg p-5 bg-surface-1 hover:border-border-strong transition-colors duration-150 hover:-translate-y-0.5">
-                    <div className={`w-9 h-9 rounded-lg bg-${item.color}/10 border border-${item.color}/20 flex items-center justify-center mb-3`}>
-                      <item.icon size={18} className={`text-${item.color}`} />
-                    </div>
-                    <p className="font-mono text-xs font-medium">{item.name}</p>
-                    <p className="text-[11px] text-text-tertiary mt-1">{item.desc}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </StaggerChildren>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════ DATA COMPONENTS ═══════════════════════════════════════════════ */}
-      <section className="border-b border-border-subtle py-24">
-        <div className="max-w-6xl mx-auto px-6 space-y-16">
-          <SectionHeader
-            label="FINANCE COMPONENTS"
-            title="Purpose-built for financial data"
-            description="Components with semantic coloring, monospace data display, and real-time indicators."
-          />
-
-          <AnimateOnScroll animation="fade-up">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* KPI Cards */}
-              {[
-                { label: 'PORTFOLIO VALUE', value: '$2,412,391,27', change: '+3.2%', up: true },
-                { label: 'DAY P&L', value: '+$12,841.53', change: '+0.53%', up: true },
-                { label: 'VOLATILITY (30D)', value: '18.4%', change: '-2.1%', up: false },
-              ].map((kpi) => (
-                <div key={kpi.label} className="border border-border rounded-lg p-5 bg-surface-1">
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-text-tertiary mb-2">{kpi.label}</p>
-                  <p className="font-mono text-2xl font-semibold tabular-nums">{kpi.value}</p>
-                  <span className={`inline-flex items-center gap-1 mt-2 font-mono text-[11px] ${kpi.up ? 'text-positive' : 'text-negative'}`}>
-                    {kpi.up ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                    {kpi.change}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </AnimateOnScroll>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════ CTA ═══════════════════════════════════════════════════ */}
-      <section className="py-32">
-        <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
-          <AnimateOnScroll animation="fade-up">
-            <Badge variant="outline" className="font-mono text-[11px] glass-surface">OPEN SOURCE</Badge>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-4">
-              Ready to build something
-              <span className="block text-brand">exceptional?</span>
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto mt-3">
-              Start with production-ready components designed for financial intelligence.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-              <Link href="/components">
-                <Button size="lg" className="gap-2">
-                  Explore Components
-                  <ArrowRight size={16} />
-                </Button>
-              </Link>
-              <Link href="https://github.com/your-org/openmoney" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="lg" className="gap-2">
-                  <Github size={16} />
-                  Star on GitHub
-                </Button>
-              </Link>
-            </div>
-          </AnimateOnScroll>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════ FOOTER ═══════════════════════════════════════════════════ */}
-      <footer className="border-t border-border-subtle">
-        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-brand flex items-center justify-center">
-              <Activity size={12} className="text-black" />
-            </div>
-            <span className="text-xs font-medium">OpenMoney</span>
-            <Badge variant="outline" className="font-mono text-[10px]">v0.1.0</Badge>
-          </div>
-          <div className="flex items-center gap-6 text-xs text-muted-foreground">
-            <span className="font-mono">Dark-first · TypeScript · Tailwind · React</span>
-            <div className="flex items-center gap-3">
-              <Link href="https://x.com/openmoney" className="hover:text-foreground transition-colors">
-                <Twitter size={14} />
-              </Link>
-              <Link href="https://github.com/your-org/openmoney" className="hover:text-foreground transition-colors">
-                <Github size={14} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <Section id="finance" eyebrow="04" title="Finance primitives">
+          <FinancePreview />
+        </Section>
+      </div>
+      <Footer />
     </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════ HERO ═══════════════════════════════════════════════════ */
+
+function Hero() {
+  return (
+    <section className="relative border-b border-foreground/[0.06] overflow-hidden">
+      <div className="absolute inset-0 bg-grid text-foreground/[0.04] pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
+      <div className="relative max-w-3xl mx-auto px-5 sm:px-6 lg:px-10 py-24 md:py-32 text-center space-y-6">
+        <p className="text-[11px] font-mono uppercase tracking-wider text-foreground/50">
+          OpenMoney Design System
+        </p>
+        <h1 className="text-3xl md:text-5xl tracking-tight leading-tight">
+          Components for the
+          <br />
+          <span className="underline underline-offset-4 decoration-foreground/40">modern web</span>
+        </h1>
+        <p className="text-sm text-foreground/70 dark:text-foreground/50 leading-relaxed max-w-lg mx-auto">
+          A dark-first, production-grade component library for building premium financial interfaces. Crafted with precision, accessibility, and developer experience in mind.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <Link href="/tokens">
+            <Button className="gap-2">
+              <Palette size={16} />
+              Design Tokens
+              <ArrowRight size={16} />
+            </Button>
+          </Link>
+          <Link href="/tokens#components">
+            <Button variant="outline" className="gap-2">
+              <Component size={16} />
+              Browse Components
+            </Button>
+          </Link>
+        </div>
+        <div className="flex items-center justify-center gap-4 pt-4 text-[10px] font-mono uppercase tracking-wider text-foreground/50">
+          <span className="flex items-center gap-1.5">
+            <Zap size={12} className="text-foreground/40" />
+            70+ components
+          </span>
+          <span className="text-foreground/25">·</span>
+          <span className="flex items-center gap-1.5">
+            <Layers size={12} className="text-foreground/40" />
+            Dark-first
+          </span>
+          <span className="text-foreground/25">·</span>
+          <span className="flex items-center gap-1.5">
+            <Command size={12} className="text-foreground/40" />
+            TypeScript
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════ SECTION ═══════════════════════════════════════════════════ */
+
+function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
+  return (
+    <section id={id} className="scroll-mt-24 space-y-8">
+      <div className="flex items-baseline justify-between border-b border-foreground/10 pb-3">
+        <h2 className="text-lg md:text-xl tracking-tight">{title}</h2>
+        <span className="text-[11px] font-mono text-foreground/40">{eyebrow}</span>
+      </div>
+      <div className="space-y-10">{children}</div>
+    </section>
+  );
+}
+
+/* ════════════════════════════════════════════════ FEATURED BLOCKS ════════════════════════════════════════════════ */
+
+function FeaturedBlocks() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <DashboardPreview />
+      <ScreenerPreview />
+    </div>
+  );
+}
+
+function DashboardPreview() {
+  return (
+    <div className="border border-foreground/10 rounded-md overflow-hidden">
+      <div className="border-b border-foreground/10 px-4 py-2.5 flex items-center justify-between">
+        <span className="text-[11px] font-mono uppercase tracking-wider text-foreground/50">Dashboard</span>
+        <span className="text-[10px] font-mono text-foreground/40">block</span>
+      </div>
+      <div className="p-4 space-y-3">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="border border-foreground/10 p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-foreground/50">Portfolio Value</p>
+            <p className="font-mono text-lg font-semibold tabular-nums mt-0.5">$2,412,391.27</p>
+          </div>
+          <div className="border border-foreground/10 p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-foreground/50">Day P&L</p>
+            <p className="font-mono text-lg font-semibold tabular-nums mt-0.5 text-green-500">+$12,841.53</p>
+            <p className="text-[10px] font-mono text-foreground/50 mt-0.5">+0.53%</p>
+          </div>
+        </div>
+        <div className="border border-foreground/10 p-3">
+          <p className="text-[10px] font-mono uppercase tracking-wider text-foreground/50 mb-2">Sparkline (20d)</p>
+          <SparklineBar values={sparkDummy} status="positive" height={28} />
+        </div>
+        <div className="flex items-center gap-2">
+          <StatusBadge status="ACTIVE" />
+          <TagChip label="EQUITY" active />
+          <DeltaBadge value="+3.2%" status="positive" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScreenerPreview() {
+  return (
+    <div className="border border-foreground/10 rounded-md overflow-hidden">
+      <div className="border-b border-foreground/10 px-4 py-2.5 flex items-center justify-between">
+        <span className="text-[11px] font-mono uppercase tracking-wider text-foreground/50">Screener</span>
+        <span className="text-[10px] font-mono text-foreground/40">block</span>
+      </div>
+      <div className="p-4 space-y-3">
+        <div className="flex items-center gap-3 border border-foreground/10 p-2">
+          <Search size={14} className="text-foreground/40 shrink-0" />
+          <div className="flex-1 space-y-1">
+            <div className="h-3 w-full bg-foreground/[0.06]" />
+            <div className="h-3 w-3/4 bg-foreground/[0.03]" />
+          </div>
+        </div>
+        <div className="border border-foreground/10 divide-y divide-foreground/10">
+          {['AAPL', 'MSFT', 'GOOGL', 'NVDA'].map((sym) => (
+            <div key={sym} className="flex items-center justify-between p-2.5 text-xs">
+              <span className="font-mono font-medium">{sym}</span>
+              <span className="font-mono text-foreground/70 tabular-nums">
+                ${(Math.random() * 400 + 100).toFixed(2)}
+              </span>
+              <span className={cn(
+                'font-mono text-[11px] tabular-nums',
+                Math.random() > 0.4 ? 'text-green-500' : 'text-red-500',
+              )}>
+                {(Math.random() > 0.4 ? '+' : '-')}{(Math.random() * 5).toFixed(2)}%
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-1">
+          <TagChip label="TECH" />
+          <TagChip label="LARGE CAP" />
+          <TagChip label="US" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════ COMPONENT FAMILIES ═══════════════════════════════════════════════ */
+
+const componentGroups = [
+  {
+    label: 'Foundations',
+    href: '/tokens#foundations',
+    desc: 'Color, typography, radius, and shadow tokens. Swatches, type scales, and spacing rules.',
+    icon: Palette,
+  },
+  {
+    label: 'Components',
+    href: '/tokens#components',
+    desc: 'Buttons, inputs, cards, callouts, tabs, badges, and alerts. Raw headless UI primitives.',
+    icon: Component,
+  },
+  {
+    label: 'Finance',
+    href: '/tokens#finance',
+    desc: 'Metric cards, delta badges, sparkline bars, signal gauges, and live indicators.',
+    icon: BarChart3,
+  },
+  {
+    label: 'Motifs',
+    href: '/tokens#motifs',
+    desc: 'Grid patterns, dot backgrounds, and subtle texture surfaces. Editorial texture toolkit.',
+    icon: Box,
+  },
+  {
+    label: 'Layout',
+    href: '/tokens#components',
+    desc: 'App shell, sidebar, top bar, and navigation. Skeleton for every screen in the app.',
+    icon: LayoutDashboard,
+  },
+  {
+    label: 'Voice',
+    href: '/tokens#voice',
+    desc: 'Tone principles: clear over clever, terse but warm. How OpenMoney communicates.',
+    icon: Layers,
+  },
+];
+
+function ComponentsPreview() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {componentGroups.map((g) => (
+        <Link key={g.label} href={g.href} className="no-underline group">
+          <div className="border border-foreground/10 hover:border-foreground/20 transition-colors rounded-md p-4 h-full">
+            <div className="flex items-center gap-2 mb-3">
+              <g.icon size={16} className="text-foreground/50 group-hover:text-foreground/80 transition-colors" />
+              <span className="text-[11px] font-medium">{g.label}</span>
+            </div>
+            <p className="text-[13px] text-foreground/60 leading-relaxed">{g.desc}</p>
+            <p className="text-[10px] font-mono text-foreground/40 mt-3 group-hover:text-foreground/60 transition-colors">
+              {g.href}
+            </p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════ TOKENS PREVIEW ════════════════════════════════════════════════ */
+
+const colorTokens = [
+  { name: 'background', label: 'Background' },
+  { name: 'foreground', label: 'Foreground' },
+  { name: 'primary', label: 'Primary' },
+  { name: 'primary-foreground', label: 'Primary FG' },
+  { name: 'secondary', label: 'Secondary' },
+  { name: 'secondary-foreground', label: 'Secondary FG' },
+  { name: 'muted', label: 'Muted' },
+  { name: 'muted-foreground', label: 'Muted FG' },
+  { name: 'accent', label: 'Accent' },
+  { name: 'accent-foreground', label: 'Accent FG' },
+  { name: 'border', label: 'Border' },
+  { name: 'input', label: 'Input' },
+  { name: 'ring', label: 'Ring' },
+  { name: 'destructive', label: 'Destructive' },
+] as const;
+
+function TokensPreview() {
+  return (
+    <div className="space-y-4">
+      <p className="text-[13px] text-foreground/50 leading-relaxed max-w-prose">
+        The palette that makes up every surface in the product. Each token resolves from an oklch CSS variable.
+      </p>
+
+      {/* Swatch gallery — exact same pattern as tokens page */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-foreground/10 border border-foreground/10">
+        {colorTokens.map((t) => (
+          <div key={t.name} className="bg-background p-3 space-y-2">
+            <div className="h-14 w-full border border-foreground/10" style={{ backgroundColor: `var(--${t.name})` }} />
+            <div className="space-y-0.5">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="text-[11px] font-medium">{t.label}</p>
+                <p className="text-[10px] font-mono text-foreground/60">&#x2014;</p>
+              </div>
+              <p className="text-[10px] font-mono text-foreground/45">--{t.name}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between pt-2">
+        <p className="text-[11px] font-mono uppercase tracking-wider text-foreground/50">
+          14 core tokens &#x00B7; oklch color space
+        </p>
+        <Link href="/tokens#foundations" className="text-[11px] font-mono text-foreground/50 hover:text-foreground/80 transition-colors no-underline">
+          view all <ArrowRight size={12} className="inline ml-0.5" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════ FINANCE PREVIEW ════════════════════════════════════════════════ */
+
+function FinancePreview() {
+  return (
+    <div className="space-y-6">
+      <p className="text-[13px] text-foreground/50 leading-relaxed max-w-prose">
+        Domain-specific components for financial data display. Semantic coloring, monospace data, and real-time indicators.
+      </p>
+
+      {/* Metric Cards */}
+      <div>
+        <p className="text-[11px] font-mono uppercase tracking-wider text-foreground/50 mb-3">Metric Cards</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <MetricCard label="PORTFOLIO VALUE" value="$2.4M" status="neutral" sparkline={sparkDummy} accent />
+          <MetricCard label="DAY P&L" value="+$12.8K" delta="+0.53%" status="positive" sparkline={sparkDummy.map(v => v * 1.3)} />
+          <MetricCard label="VAR (95%)" value="-2.34%" delta="-0.8%" status="negative" />
+          <MetricCard label="POSITIONS" value="24" status="neutral" />
+        </div>
+      </div>
+
+      {/* Badges and chips */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <p className="text-[11px] font-mono uppercase tracking-wider text-foreground/50 mb-3">Delta &amp; Status</p>
+          <div className="flex flex-wrap gap-2">
+            <DeltaBadge value="+2.4%" status="positive" />
+            <DeltaBadge value="-1.8%" status="negative" />
+            <DeltaBadge value="0.0%" status="neutral" />
+            <StatusBadge status="ACTIVE" />
+            <StatusBadge status="PENDING" />
+          </div>
+        </div>
+        <div>
+          <p className="text-[11px] font-mono uppercase tracking-wider text-foreground/50 mb-3">Tags</p>
+          <div className="flex flex-wrap gap-1.5">
+            <TagChip label="EQUITY" active />
+            <TagChip label="CRYPTO" />
+            <TagChip label="ETF" />
+            <TagChip label="FOREX" />
+            <TagChip label="OPTIONS" />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-2">
+        <p className="text-[11px] font-mono uppercase tracking-wider text-foreground/50">
+          Domain components &#x00B7; built on motion/react
+        </p>
+        <Link href="/tokens#finance" className="text-[11px] font-mono text-foreground/50 hover:text-foreground/80 transition-colors no-underline">
+          explore all <ArrowRight size={12} className="inline ml-0.5" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════ FOOTER ════════════════════════════════════════════════ */
+
+function Footer() {
+  return (
+    <footer className="border-t border-foreground/[0.06]">
+      <div className="max-w-5xl mx-auto px-5 sm:px-6 lg:px-10 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] font-medium">OpenMoney</span>
+          <Badge variant="outline" className="font-mono text-[10px]">v0.1.0</Badge>
+        </div>
+        <div className="flex items-center gap-6">
+          <p className="text-[11px] font-mono uppercase tracking-wider text-foreground/50">
+            Dark-first &#x00B7; TypeScript &#x00B7; Tailwind &#x00B7; React
+          </p>
+          <div className="flex items-center gap-3">
+            <Link href="https://github.com/your-org/openmoney" target="_blank" rel="noopener noreferrer" className="text-foreground/40 hover:text-foreground/70 transition-colors">
+              <Github size={14} />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }
