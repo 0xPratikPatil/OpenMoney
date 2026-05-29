@@ -112,7 +112,7 @@ export default function HomePage() {
             description="Every component is optimized for TypeScript, Tailwind v4, React 19, and the motion ecosystem."
           />
 
-          <BentoGrid columns={3} gap={5}>
+          <BentoGrid columns={3} gap="md">
             <BentoGridItem colSpan={2} rowSpan={1}>
               <CursorGlow glowSize={500}>
                 <div className="p-2 space-y-4">

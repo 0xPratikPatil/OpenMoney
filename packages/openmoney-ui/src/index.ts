@@ -60,7 +60,7 @@ export { Slider } from './components/ui/slider';
 export { Toaster as SonnerToaster } from './components/ui/sonner';
 export { Spinner } from './components/ui/spinner';
 export { Switch } from './components/ui/switch';
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption } from './components/ui/table';
+export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from './components/ui/table';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs';
 export { Textarea } from './components/ui/textarea';
 export { ToastProvider, ToastViewport, Toast, ToastTitle, ToastDescription, ToastClose, ToastAction } from './components/ui/toast';
@@ -133,22 +133,14 @@ export type { TopBarProps } from './components/openmoney/topbar';
 // ---------------------------------------------------------------------------
 export { AnimatedBadge } from './components/openmoney/animated-badge';
 export type { AnimatedBadgeProps } from './components/openmoney/animated-badge';
-export { AnimatedTabs, AnimatedTabsList, AnimatedTabsTrigger, AnimatedTabsContent } from './components/openmoney/animated-tabs';
-export type { AnimatedTabsProps } from './components/openmoney/animated-tabs';
-export { BentoGrid, BentoGridItem } from './components/openmoney/bento-grid';
-export type { BentoGridProps, BentoGridItemProps } from './components/openmoney/bento-grid';
 export { CountUp } from './components/openmoney/count-up';
 export type { CountUpProps } from './components/openmoney/count-up';
 export { CursorGlow } from './components/openmoney/cursor-glow';
 export type { CursorGlowProps } from './components/openmoney/cursor-glow';
 export { Dock, DockItem } from './components/openmoney/dock';
 export type { DockProps, DockItemProps } from './components/openmoney/dock';
-export { GradientText } from './components/openmoney/gradient-text';
-export type { GradientTextProps } from './components/openmoney/gradient-text';
 export { MagneticButton } from './components/openmoney/magnetic-button';
 export type { MagneticButtonProps } from './components/openmoney/magnetic-button';
-export { Marquee } from './components/openmoney/marquee';
-export type { MarqueeProps } from './components/openmoney/marquee';
 export { MorphingDialog, MorphingDialogTrigger, MorphingDialogContent } from './components/openmoney/morphing-dialog';
 export type { MorphingDialogProps } from './components/openmoney/morphing-dialog';
 export { ParticlesBackground } from './components/openmoney/particles-background';
@@ -168,7 +160,6 @@ export {
   SignalGauge,
   PriorityBadge,
   TagChip,
-  SectionHeader,
 } from './components/openmoney/arkon-components';
 
 // ---------------------------------------------------------------------------

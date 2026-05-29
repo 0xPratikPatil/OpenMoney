@@ -58,7 +58,7 @@ export class SignalGenerator {
 
       if (prices.length < 20) continue;
 
-      const priceData = prices.map((p) => ({
+      const priceData = prices.map((p: { time: { toISOString: () => string }; close: unknown; high: unknown; low: unknown; volume: unknown }) => ({
         time: p.time.toISOString(),
         close: p.close,
         high: p.high,

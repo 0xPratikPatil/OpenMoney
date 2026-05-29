@@ -324,6 +324,12 @@ export const api = {
     list: () => request<Signal[]>('/api/signals'),
   },
 
+  // ── Search ───────────────────────────────────────────────
+  search: {
+    ticker: (query: string, limit = 20, provider = 'yfinance') =>
+      request<TickerSearchResult[]>(`/api/search?query=${encodeURIComponent(query)}&limit=${limit}&provider=${provider}`),
+  },
+
   // ── User ────────────────────────────────────────────────
   user: {
     get: () => request<Record<string, unknown>>('/api/user'),

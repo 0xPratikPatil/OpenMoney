@@ -57,7 +57,7 @@ export function CountUp({
       const fixed = n.toFixed(decimals);
       // Use Intl for locale-aware formatting that preserves decimals
       const [intPart, fracPart] = fixed.split('.');
-      const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const formatted = (intPart ?? '0').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       return fracPart !== undefined ? `${formatted}.${fracPart}` : formatted;
     },
   });

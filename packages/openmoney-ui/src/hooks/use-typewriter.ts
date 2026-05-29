@@ -37,7 +37,7 @@ export function useTypewriter(options: UseTypewriterOptions) {
 
   const [index, setIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const reset = useCallback(() => {
     setIndex(0);

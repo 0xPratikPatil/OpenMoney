@@ -1,11 +1,11 @@
 'use client';
 
 import { Badge, StaggerChildren, AnimateOnScroll, FadeIn } from '@openmoney/ui';
-import { Component, Sparkles, Zap, Motion } from 'lucide-react';
+import { Component, Sparkles, Zap, Wand } from 'lucide-react';
 import { ComponentDemos } from '../../components/component-demos';
 
 const categories = [
-  { id: 'motion', label: 'Motion', icon: Motion },
+  { id: 'motion', label: 'Motion', icon: Wand },
   { id: 'premium', label: 'Premium', icon: Zap },
   { id: 'buttons', label: 'Buttons' },
   { id: 'forms', label: 'Forms & Input' },

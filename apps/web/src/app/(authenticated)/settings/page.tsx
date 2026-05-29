@@ -2,340 +2,96 @@
 export const dynamic = 'force-dynamic';
 
 import * as React from 'react';
-import { useSession } from '@/lib/auth-client';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Button,
-  Input,
-  Skeleton,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from '@openmoney/ui';
-import {
-  User,
-  Settings,
-  Palette,
-  Bell,
-  Save,
-} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Button, Card, CardHeader, CardTitle, CardContent, Input, Label, Switch, Tabs, TabsList, TabsTrigger, TabsContent, Badge } from '@openmoney/ui';
+import { Settings, User, Key, Bell, Palette, Shield, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-/* -------------------------------------------------------------------------- */
-/*  Profile Tab                                                                */
-/* -------------------------------------------------------------------------- */
-
-function ProfileTab({ loading }: { loading: boolean }) {
-  const { data: session } = useSession();
-  const [name, setName] = React.useState(session?.user?.name ?? '');
-  const [saving, setSaving] = React.useState(false);
-
-  React.useEffect(() => {
-    if (session?.user?.name) {
-      setName(session.user.name);
-    }
-  }, [session]);
-
-  const handleSave = async () => {
-    setSaving(true);
-    // Simulate save — no user update API yet in the client
-    await new Promise((r) => setTimeout(r, 600));
-    toast.success('Profile updated');
-    setSaving(false);
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-40 w-full rounded-xl" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-9 w-24" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Avatar */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--accent-brand)]/10 text-[var(--accent-brand)]">
-              <User size={28} />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-[var(--text-primary)]">
-                {session?.user?.name ?? 'User'}
-              </p>
-              <p className="text-xs text-[var(--text-secondary)]">
-                {session?.user?.email ?? ''}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Name */}
-      <div>
-        <label
-          htmlFor="settings-name"
-          className="mb-1.5 block text-xs font-medium text-[var(--text-primary)]"
-        >
-          Display Name
-        </label>
-        <Input
-          id="settings-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name"
-        />
-      </div>
-
-      {/* Email (disabled) */}
-      <div>
-        <label
-          htmlFor="settings-email"
-          className="mb-1.5 block text-xs font-medium text-[var(--text-primary)]"
-        >
-          Email
-        </label>
-        <Input
-          id="settings-email"
-          value={session?.user?.email ?? ''}
-          disabled
-          className="opacity-60"
-        />
-        <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
-          Email cannot be changed here.
-        </p>
-      </div>
-
-      <Button onClick={handleSave} disabled={saving}>
-        <Save size={14} className="mr-1.5" />
-        {saving ? 'Saving...' : 'Save Profile'}
-      </Button>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Preferences Tab                                                            */
-/* -------------------------------------------------------------------------- */
-
-function PreferencesTab({ loading }: { loading: boolean }) {
-  const [defaultCurrency, setDefaultCurrency] = React.useState('USD');
-  const [defaultTimeframe, setDefaultTimeframe] = React.useState('1y');
-  const [riskFreeRate, setRiskFreeRate] = React.useState('5');
-  const [notifySignals, setNotifySignals] = React.useState(true);
-  const [notifyJournal, setNotifyJournal] = React.useState(true);
-  const [notifyPrice, setNotifyPrice] = React.useState(false);
-  const [saving, setSaving] = React.useState(false);
-
-  const handleSave = async () => {
-    setSaving(true);
-    await new Promise((r) => setTimeout(r, 600));
-    toast.success('Preferences saved');
-    setSaving(false);
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-9 w-24" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Default Currency */}
-      <div>
-        <label className="mb-1.5 block text-xs font-medium text-[var(--text-primary)]">
-          Default Currency
-        </label>
-        <Select value={defaultCurrency} onValueChange={setDefaultCurrency}>
-          <SelectTrigger className="w-full max-w-xs">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="USD">USD ($)</SelectItem>
-            <SelectItem value="EUR">EUR (€)</SelectItem>
-            <SelectItem value="INR">INR (₹)</SelectItem>
-            <SelectItem value="GBP">GBP (£)</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Default Timeframe */}
-      <div>
-        <label className="mb-1.5 block text-xs font-medium text-[var(--text-primary)]">
-          Default Timeframe for Indicators
-        </label>
-        <Select value={defaultTimeframe} onValueChange={setDefaultTimeframe}>
-          <SelectTrigger className="w-full max-w-xs">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1m">1 Month</SelectItem>
-            <SelectItem value="3m">3 Months</SelectItem>
-            <SelectItem value="6m">6 Months</SelectItem>
-            <SelectItem value="1y">1 Year</SelectItem>
-            <SelectItem value="5y">5 Years</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Risk-free Rate */}
-      <div>
-        <label
-          htmlFor="settings-rfr"
-          className="mb-1.5 block text-xs font-medium text-[var(--text-primary)]"
-        >
-          Risk-free Rate (%)
-        </label>
-        <Input
-          id="settings-rfr"
-          type="number"
-          min={0}
-          max={20}
-          step={0.25}
-          value={riskFreeRate}
-          onChange={(e) => setRiskFreeRate(e.target.value)}
-          className="w-full max-w-xs font-mono"
-        />
-        <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
-          Used for Sharpe ratio and other risk-adjusted return calculations.
-        </p>
-      </div>
-
-      {/* Theme Toggle Hint */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-3">
-            <Palette size={18} className="text-[var(--accent-brand)]" />
-            <div className="flex-1">
-              <p className="text-sm font-medium text-[var(--text-primary)]">Theme</p>
-              <p className="text-xs text-[var(--text-secondary)]">
-                Toggle between dark and light mode using the theme switcher.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Notification Preferences */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Bell size={14} />
-            Notification Preferences
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={notifySignals}
-              onChange={(e) => setNotifySignals(e.target.checked)}
-              className="h-4 w-4 rounded border-[var(--border)] text-[var(--accent-brand)] focus:ring-[var(--accent-brand)]"
-            />
-            <span className="text-sm text-[var(--text-primary)]">New trading signals</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={notifyJournal}
-              onChange={(e) => setNotifyJournal(e.target.checked)}
-              className="h-4 w-4 rounded border-[var(--border)] text-[var(--accent-brand)] focus:ring-[var(--accent-brand)]"
-            />
-            <span className="text-sm text-[var(--text-primary)]">Journal reminders</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={notifyPrice}
-              onChange={(e) => setNotifyPrice(e.target.checked)}
-              className="h-4 w-4 rounded border-[var(--border)] text-[var(--accent-brand)] focus:ring-[var(--accent-brand)]"
-            />
-            <span className="text-sm text-[var(--text-primary)]">Price alerts</span>
-          </label>
-        </CardContent>
-      </Card>
-
-      <Button onClick={handleSave} disabled={saving}>
-        <Save size={14} className="mr-1.5" />
-        {saving ? 'Saving...' : 'Save Preferences'}
-      </Button>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Page                                                                       */
-/* -------------------------------------------------------------------------- */
-
 export default function SettingsPage() {
-  const { isPending } = useSession();
-  const loading = isPending;
-
-  /* ======== Loading ======== */
-
-  if (loading) {
-    return (
-      <div className="p-6 max-w-4xl mx-auto space-y-6">
-        <Skeleton className="h-8 w-32" />
-        <Skeleton className="h-10 w-full max-w-md" />
-        <Skeleton className="h-64 w-full rounded-xl" />
-      </div>
-    );
-  }
+  const router = useRouter();
+  const [saving, setSaving] = React.useState(false);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      {/* Header */}
+    <div className="p-6 max-w-3xl mx-auto space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Settings</h1>
-        <p className="mt-0.5 text-sm text-[var(--text-secondary)]">
-          Manage your account, preferences, and configuration
-        </p>
+        <h1 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2"><Settings size={18} /> Settings</h1>
+        <p className="font-mono text-[11px] text-[var(--text-secondary)] mt-0.5">Manage your account, preferences, and API keys</p>
       </div>
 
-      {/* Tabs */}
       <Tabs defaultValue="profile">
         <TabsList>
-          <TabsTrigger value="profile" className="flex items-center gap-2">
-            <User size={14} />
-            Profile
-          </TabsTrigger>
-          <TabsTrigger value="preferences" className="flex items-center gap-2">
-            <Settings size={14} />
-            Preferences
-          </TabsTrigger>
+          <TabsTrigger value="profile"><User size={13} /> Profile</TabsTrigger>
+          <TabsTrigger value="providers"><Key size={13} /> API Keys</TabsTrigger>
+          <TabsTrigger value="notifications"><Bell size={13} /> Notifications</TabsTrigger>
+          <TabsTrigger value="appearance"><Palette size={13} /> Appearance</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="profile" className="mt-6">
-          <ProfileTab loading={loading} />
+        <TabsContent value="profile" className="mt-4">
+          <Card>
+            <CardHeader><CardTitle className="text-sm font-mono uppercase text-[var(--text-secondary)] tracking-wider">Profile Settings</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Display Name</Label><Input placeholder="Your name" /></div>
+                <div><Label>Email</Label><Input placeholder="you@email.com" disabled /></div>
+              </div>
+              <div><Label>Default Currency</Label><Input defaultValue="USD" /></div>
+              <Button size="sm"><Save size={13} /> Save changes</Button>
+            </CardContent>
+          </Card>
         </TabsContent>
 
-        <TabsContent value="preferences" className="mt-6">
-          <PreferencesTab loading={loading} />
+        <TabsContent value="providers" className="mt-4 space-y-4">
+          {[
+            { name: 'Polygon.io', desc: 'Real-time & historical market data' },
+            { name: 'Financial Modeling Prep', desc: 'Fundamentals & financial statements' },
+            { name: 'Alpha Vantage', desc: 'Free tier: 25 req/day' },
+            { name: 'Benzinga', desc: 'News & analyst ratings' },
+            { name: 'FRED', desc: 'Economic data (free, no key needed)' },
+            { name: 'Intrinio', desc: 'Fundamentals & financial data' },
+          ].map(p => (
+            <Card key={p.name}>
+              <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Key size={13} className="text-[var(--brand)]" /> {p.name} <Badge variant="outline" className="text-[9px]">API Key</Badge></CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-xs text-[var(--text-secondary)]">{p.desc}</p>
+                <div className="flex gap-2">
+                  <Input type="password" placeholder="Enter API key..." className="font-mono text-xs flex-1" />
+                  <Button size="sm" variant="outline"><Save size={12} /> Save</Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+
+        <TabsContent value="notifications" className="mt-4">
+          <Card>
+            <CardHeader><CardTitle className="text-sm font-mono uppercase text-[var(--text-secondary)] tracking-wider">Notification Preferences</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { label: 'Daily Portfolio Digest', desc: 'Receive daily summary of portfolio performance' },
+                { label: 'Risk Alerts', desc: 'Get notified when risk thresholds are breached' },
+                { label: 'Signal Alerts', desc: 'Notifications for new buy/sell/hold signals' },
+                { label: 'Price Alerts', desc: 'Get notified when watched tickers hit price targets' },
+              ].map(n => (
+                <div key={n.label} className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)] last:border-0">
+                  <div><p className="text-sm font-medium text-[var(--text-primary)]">{n.label}</p><p className="text-xs text-[var(--text-secondary)]">{n.desc}</p></div>
+                  <Switch />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="appearance" className="mt-4">
+          <Card>
+            <CardHeader><CardTitle className="text-sm font-mono uppercase text-[var(--text-secondary)] tracking-wider">Appearance</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between"><div><p className="text-sm font-medium">Dark Mode</p><p className="text-xs text-[var(--text-secondary)]">Always dark. Light mode is not supported.</p></div><Switch defaultChecked disabled /></div>
+              <div className="flex items-center justify-between"><div><p className="text-sm font-medium">Compact Mode</p><p className="text-xs text-[var(--text-secondary)]">Reduce spacing for higher data density</p></div><Switch /></div>
+              <div className="flex items-center justify-between"><div><p className="text-sm font-medium">Monospace Numbers</p><p className="text-xs text-[var(--text-secondary)]">Always use Geist Mono for all numeric values</p></div><Switch defaultChecked disabled /></div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
   );
 }
-

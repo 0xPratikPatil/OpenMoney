@@ -4,10 +4,11 @@ import * as React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Toaster } from 'sonner';
+import { CommandPalette } from './command-palette';
 import {
   LayoutDashboard, Globe, TrendingUp, Search, Briefcase,
   Eye, ShieldAlert, Lightbulb, BookOpen, Settings, Database,
-  LogOut, Bell, ChevronLeft, ChevronRight,
+  LogOut, Bell, ChevronLeft, ChevronRight, Bot,
 } from 'lucide-react';
 
 const NAV_GROUPS = [
@@ -24,6 +25,7 @@ const NAV_GROUPS = [
     { id: 'recommendations', label: 'Recommendations', icon: Lightbulb,   href: '/portfolio/recommendations' },
   ]},
   { label: 'ANALYSIS', items: [
+    { id: 'ai',         label: 'AI Analysis', icon: Bot,               href: '/ai' },
     { id: 'journal',    label: 'Journal',     icon: BookOpen,        href: '/journal' },
     { id: 'dashboards', label: 'Dashboards',  icon: LayoutDashboard, href: '/dashboards' },
   ]},
@@ -48,6 +50,7 @@ export function Shell({ session, children }: ShellProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = React.useState(false);
+  const [cmdOpen, setCmdOpen] = React.useState(false);
   const activeId = getActiveId(pathname);
   const SIDEBAR_W = collapsed ? 48 : 220;
 
@@ -118,9 +121,11 @@ export function Shell({ session, children }: ShellProps) {
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
 
-      <Toaster position="bottom-right" theme="dark" toastOptions={{
+        <Toaster position="bottom-right" theme="dark" toastOptions={{
         style: { background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--foreground)', borderRadius: 'var(--radius)', fontSize: '13px', boxShadow: 'var(--shadow-lg)' },
       }} />
+      <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
+    </div>
     </div>
   );
 }

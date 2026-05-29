@@ -60,7 +60,7 @@ const router = new Hono<Bindings>()
 
     return c.json({
       success: true,
-      data: rows.map((r) => ({
+      data: rows.map((r: { bucket: { toISOString: () => string }; open: unknown; high: unknown; low: unknown; close: unknown; volume: unknown }) => ({
         time: r.bucket.toISOString(),
         open: r.open,
         high: r.high,

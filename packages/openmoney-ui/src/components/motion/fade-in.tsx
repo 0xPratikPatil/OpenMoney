@@ -1,14 +1,14 @@
 'use client';
 
 import { motion, type Variants } from 'motion/react';
-import type { ReactNode, HTMLMotionProps } from 'motion/react';
+import type { ReactNode, HTMLAttributes } from 'react';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    FadeIn — wraps children with configurable fade-in on mount.
    Follows DESIGN.md rules: duration 150-300ms, ease-out, no bounce.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export interface FadeInProps extends HTMLMotionProps<'div'> {
+export interface FadeInProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   /** Animation duration in seconds. Default: 0.3 */
   duration?: number;
@@ -19,8 +19,8 @@ export interface FadeInProps extends HTMLMotionProps<'div'> {
   /** Distance to travel in px. Default: 8 */
   distance?: number;
   /** If true, only animate when in viewport */
-  whileInView?: boolean;
-  /** Viewport threshold for whileInView. Default: 0.1 */
+  animateOnView?: boolean;
+  /** Viewport threshold for animateOnView. Default: 0.1 */
   threshold?: number;
 }
 
@@ -38,9 +38,10 @@ export function FadeIn({
   delay = 0,
   direction = 'none',
   distance,
-  whileInView = false,
+  animateOnView = false,
   threshold = 0.1,
-  ...props
+  className,
+  id,
 }: FadeInProps) {
   const dir = directionOffsets[direction];
   const dist = distance ?? (direction === 'none' ? 0 : 8);
@@ -55,12 +56,13 @@ export function FadeIn({
   return (
     <motion.div
       initial="hidden"
-      {...(whileInView
+      {...(animateOnView
         ? { whileInView: 'visible', viewport: { once: true, amount: threshold } }
         : { animate: 'visible' })}
       variants={variants}
       transition={{ duration, delay, ease: 'easeOut' }}
-      {...props}
+      className={className}
+      id={id}
     >
       {children}
     </motion.div>

@@ -141,7 +141,7 @@ function DateRangePicker({ value, onChange, className }: DateRangePickerProps) {
               <Button
                 key={preset.key}
                 variant="ghost"
-                size="xs"
+                size="sm"
                 className={cn(
                   "justify-start font-normal",
                   activePreset === preset.key && "bg-accent text-accent-foreground",
@@ -174,7 +174,7 @@ function DateRangePicker({ value, onChange, className }: DateRangePickerProps) {
               </span>
               <Button
                 variant="default"
-                size="xs"
+                size="sm"
                 disabled={!tempRange?.from || !tempRange?.to}
                 onClick={handleApply}
               >

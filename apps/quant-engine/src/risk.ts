@@ -50,7 +50,7 @@ export class RiskService {
       `;
 
       if (rows.length > 1) {
-        const closes = rows.map((r) => Number(r.close)).reverse();
+        const closes = rows.map((r: { close: unknown }) => Number(r.close)).reverse();
         const returns: number[] = [];
         for (let i = 1; i < closes.length; i++) {
           const prev = closes[i - 1]!;
@@ -58,7 +58,7 @@ export class RiskService {
           returns.push((curr - prev) / prev);
         }
         returnsByTicker[p.ticker] = returns;
-        pricesByDate[p.ticker] = rows.map((r) => ({ date: r.time.toISOString(), value: Number(r.close) }));
+        pricesByDate[p.ticker] = rows.map((r: { time: { toISOString: () => string }; close: unknown }) => ({ date: r.time.toISOString(), value: Number(r.close) }));
       }
     }
 
@@ -81,7 +81,7 @@ export class RiskService {
     const response = await this.quantClient.compute('risk_metrics', {
       returns: portfolioReturns,
       prices: portfolioValues.length > 0
-        ? portfolioValues.map((v) => ({ date: v.date.toISOString(), value: v.value }))
+        ? portfolioValues.map((v: { date: { toISOString: () => string }; value: number }) => ({ date: v.date.toISOString(), value: v.value }))
         : [],
       positions,
       riskFreeRate: 5.0,

@@ -139,6 +139,7 @@ export function ParticlesBackground({
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
+        if (!p) continue;
 
         // Move particle (unless reduced motion)
         if (!prefersReducedMotion.current) {
@@ -162,6 +163,7 @@ export function ParticlesBackground({
         // Check connections to other particles
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
+          if (!q) continue;
           const dx = p.x - q.x;
           const dy = p.y - q.y;
           const dist = Math.sqrt(dx * dx + dy * dy);

@@ -253,7 +253,7 @@ export function ComponentDemos() {
         <PreviewCard title="CountUp + Typewriter">
           <div className="space-y-2">
             <div className="font-mono text-2xl font-semibold tabular-nums">
-              <CountUp target={2400000} prefix="$" format={(n) => n.toLocaleString()} />
+              <CountUp target={2400000} prefix="$" decimals={0} />
             </div>
             <p className="text-sm text-text-secondary">
               <Typewriter text="Animated text reveal for taglines and descriptions" speed={30} />
@@ -321,7 +321,7 @@ export function ComponentDemos() {
         </PreviewCard>
 
         <PreviewCard title="BentoGrid">
-          <BentoGrid columns={3} gap={4}>
+          <BentoGrid columns={3} gap="md">
             <BentoGridItem colSpan={2}><div className="bg-surface-1 border border-border rounded-lg p-4 text-sm font-mono">2×1</div></BentoGridItem>
             <BentoGridItem colSpan={1}><div className="bg-surface-1 border border-border rounded-lg p-4 text-sm font-mono">1×1</div></BentoGridItem>
             <BentoGridItem colSpan={1}><div className="bg-surface-1 border border-border rounded-lg p-4 text-sm font-mono">1×1</div></BentoGridItem>
@@ -330,15 +330,15 @@ export function ComponentDemos() {
         </PreviewCard>
 
         <PreviewCard title="AnimatedTabs">
-          <AnimatedTabs>
+          <AnimatedTabs defaultValue="one">
             <AnimatedTabsList>
-              <AnimatedTabsTrigger>Tab One</AnimatedTabsTrigger>
-              <AnimatedTabsTrigger>Tab Two</AnimatedTabsTrigger>
-              <AnimatedTabsTrigger>Tab Three</AnimatedTabsTrigger>
+              <AnimatedTabsTrigger value="one">Tab One</AnimatedTabsTrigger>
+              <AnimatedTabsTrigger value="two">Tab Two</AnimatedTabsTrigger>
+              <AnimatedTabsTrigger value="three">Tab Three</AnimatedTabsTrigger>
             </AnimatedTabsList>
-            <AnimatedTabsContent><p className="text-sm text-text-secondary p-4">Content for tab one</p></AnimatedTabsContent>
-            <AnimatedTabsContent><p className="text-sm text-text-secondary p-4">Content for tab two</p></AnimatedTabsContent>
-            <AnimatedTabsContent><p className="text-sm text-text-secondary p-4">Content for tab three</p></AnimatedTabsContent>
+            <AnimatedTabsContent value="one"><p className="text-sm text-text-secondary p-4">Content for tab one</p></AnimatedTabsContent>
+            <AnimatedTabsContent value="two"><p className="text-sm text-text-secondary p-4">Content for tab two</p></AnimatedTabsContent>
+            <AnimatedTabsContent value="three"><p className="text-sm text-text-secondary p-4">Content for tab three</p></AnimatedTabsContent>
           </AnimatedTabs>
         </PreviewCard>
       </Section>
@@ -354,13 +354,12 @@ export function ComponentDemos() {
           <Button variant="destructive">Destructive</Button>
         </PreviewCard>
 
-        <PreviewCard title="Sizes (xs/sm/default/lg/icon)">
-          <Button size="xs">XS</Button>
+        <PreviewCard title="Sizes (sm/default/lg/icon)">
+          <Button size="sm">Small</Button>
           <Button size="sm">Small</Button>
           <Button size="default">Default</Button>
           <Button size="lg">Large</Button>
           <Button size="icon"><Settings /></Button>
-          <Button size="icon-sm"><Settings /></Button>
         </PreviewCard>
 
         <PreviewCard title="Button Group">
@@ -756,10 +755,10 @@ export function ComponentDemos() {
       {/* ── Domain Components ── */}
       <Section id="domain" label="Domain Components" description="OpenMoney-specific financial components.">
         <PreviewCard title="Callout (info/warn/error/success)">
-          <Callout variant="info" title="Market Status">US markets open. Regular trading session.</Callout>
-          <Callout variant="warn" title="Drawdown Alert">Drawdown exceeds 10% threshold. Review positions.</Callout>
-          <Callout variant="error" title="Rate Limit">API rate limit reached. Backoff 60 seconds.</Callout>
-          <Callout variant="success" title="Rebalance">Portfolio rebalanced successfully.</Callout>
+          <Callout type="info" title="Market Status">US markets open. Regular trading session.</Callout>
+          <Callout type="warn" title="Drawdown Alert">Drawdown exceeds 10% threshold. Review positions.</Callout>
+          <Callout type="error" title="Rate Limit">API rate limit reached. Backoff 60 seconds.</Callout>
+          <Callout type="success" title="Rebalance">Portfolio rebalanced successfully.</Callout>
         </PreviewCard>
 
         <PreviewCardVertical title="Metric Block">
