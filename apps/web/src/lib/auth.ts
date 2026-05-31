@@ -5,6 +5,8 @@ import { prisma } from '@openmoney/database';
 import { config } from '@openmoney/config';
 
 export const auth = betterAuth({
+  baseURL: config.api.betterAuthUrl,
+  secret: config.api.betterAuthSecret,
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
