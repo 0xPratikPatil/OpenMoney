@@ -250,6 +250,26 @@ model ProviderCredential {
   @@index([userId, provider])
 }
 
+// TimescaleDB hypertable for market data
+model MarketData {
+  id       String   @id @default(cuid())
+  time     DateTime
+  ticker   String
+  open     Decimal  @db.Decimal(18, 4)
+  high     Decimal  @db.Decimal(18, 4)
+  low      Decimal  @db.Decimal(18, 4)
+  close    Decimal  @db.Decimal(18, 4)
+  volume   BigInt?
+  vwap     Decimal? @db.Decimal(18, 4)
+  interval String   @default("1d")
+  source   String
+
+  @@unique([time, ticker, interval])
+  @@index([ticker, time])
+  @@index([time])
+  @@map("market_data")
+}
+
 // Future: strategy rules engine
 model StrategyRule {
   id          String   @id @default(cuid())
