@@ -2,6 +2,7 @@ import { config } from '@openmoney/config';
 import { prisma } from '@openmoney/database';
 import { YFinanceAdapter } from './adapters/yfinance';
 import { Pipeline } from './pipeline';
+import { backfillTicker, backfillAllActive } from './backfill';
 
 console.log(`[ingestion] Starting OpenMoney ingestion pipeline...`);
 console.log(`[ingestion] NODE_ENV=${config.app.nodeEnv}`);
@@ -22,10 +23,28 @@ async function startAdapters() {
   await pipeline.start();
 }
 
-startAdapters().catch((err) => {
-  console.error('[ingestion] Fatal error:', err);
-  process.exit(1);
-});
+// CLI mode: backfill command
+const args = process.argv.slice(2);
+if (args[0] === 'backfill') {
+  const yf = new YFinanceAdapter({ rateLimitMs: config.ingestion.yfinanceRateLimitMs });
+
+  if (args[1]) {
+    // Backfill single ticker
+    await backfillTicker(args[1].toUpperCase(), yf, parseInt(args[2] ?? '365', 10));
+  } else {
+    // Backfill all active
+    await backfillAllActive();
+  }
+
+  await prisma.$disconnect();
+  process.exit(0);
+} else {
+  // Normal mode: start polling pipeline
+  startAdapters().catch((err) => {
+    console.error('[ingestion] Fatal error:', err);
+    process.exit(1);
+  });
+}
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
